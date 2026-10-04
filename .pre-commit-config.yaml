@@ -1,0 +1,27 @@
+# The hooks run inside the API image rather than in environments pre-commit
+# builds for itself: mypy needs the project's real dependencies to check
+# anything, and ruff stays on the version uv.lock pins instead of a second copy
+# that drifts from it. --no-deps keeps the database down; nothing here needs it.
+repos:
+  - repo: local
+    hooks:
+      - id: ruff-check
+        name: ruff check
+        entry: docker compose run --rm --build --no-deps api ruff check app tests alembic
+        language: system
+        files: ^api/
+        pass_filenames: false
+
+      - id: ruff-format
+        name: ruff format
+        entry: docker compose run --rm --build --no-deps api ruff format --check app tests alembic
+        language: system
+        files: ^api/
+        pass_filenames: false
+
+      - id: mypy
+        name: mypy
+        entry: docker compose run --rm --build --no-deps api mypy app
+        language: system
+        files: ^api/
+        pass_filenames: false

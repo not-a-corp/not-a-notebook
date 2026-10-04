@@ -35,7 +35,14 @@ Every failure uses the same envelope:
 
 `code` is the contract and its text never changes. `message` is for humans and
 **must not be interpreted by code**. A `500` also carries a `request_id`, and the
-traceback goes to the log under it — never into the response.
+traceback goes to the log under it — never into the response:
+
+```json
+{ "error": { "code": "INTERNAL_ERROR", "message": "Something went wrong.",
+             "request_id": "5f0c6a52-…" } }
+```
+
+A `422` never repeats the rejected input — it may have been a password.
 
 | code | HTTP | When |
 | --- | --- | --- |
@@ -665,7 +672,13 @@ Cancelling a run that already finished is a `202` that changes nothing.
 
 ### `GET /health`
 
-`200` if the service is up and can reach the database. No authentication.
+```json
+// 200
+{ "status": "ok" }
+```
+
+The service is up and reached the database within two seconds. No authentication.
+Anything else is `INTERNAL_ERROR`.
 
 ---
 
