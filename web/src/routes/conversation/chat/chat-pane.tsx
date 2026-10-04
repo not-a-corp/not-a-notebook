@@ -1,35 +1,152 @@
 import { FileSpreadsheet, TriangleAlert } from "lucide-react";
+import { useRef } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
 import {
   summarizeProfile,
+  type Cell,
   type ConversationDetail,
   type FileInfo,
   type Message,
 } from "@/api/conversation-detail";
-import { formatBytes, formatCount, plural } from "@/lib/format";
+import type { RestartReason } from "@/api/events";
+import type { Connection } from "@/api/runs";
+import { formatBytes, formatClock, formatCount, plural } from "@/lib/format";
+import { restartReason } from "@/lib/kernel-words";
+import { useStickToBottom } from "@/lib/use-stick-to-bottom";
+import { sentenceFor } from "@/lib/words";
 
-import { buildTimeline } from "./timeline";
+import type { LiveRun } from "../live/live-run";
+import { ActivityLine } from "./activity";
+import { Composer } from "./composer";
+import { GroundingBadge } from "./grounding-badge";
+import { buildTimeline, type Restart } from "./timeline";
+import { wordsOnly } from "./words-only";
 
-// design.md §2.4 — the chat pane: files bar, then the timeline.
-export function ChatPane({ conversation }: { conversation: ConversationDetail }) {
-  const timeline = buildTimeline(conversation.files, conversation.messages);
+interface ChatPaneProps {
+  conversation: ConversationDetail;
+  live: LiveRun | null;
+  connection: Connection;
+  onShowCell: (cellId: string) => void;
+}
+
+// design.md §2.4 — the chat pane: files bar, the timeline, the composer.
+export function ChatPane({ conversation, live, connection, onShowCell }: ChatPaneProps) {
+  const restarts: Restart[] = [];
+  if (live?.restarted != null) {
+    restarts.push(live.restarted);
+  }
+  const timeline = buildTimeline(conversation.files, conversation.messages, restarts);
+  const running = conversation.activeRunId !== null;
+  const scroller = useRef<HTMLDivElement>(null);
+  useStickToBottom(scroller, [timeline.length, live?.steps, live?.activity]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {conversation.files.length > 0 && <FilesBar files={conversation.files} />}
-      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+      <div ref={scroller} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {/* Anchored to the bottom: a short conversation sits by the composer. */}
         <div className="mt-auto flex flex-col gap-6 p-6">
           {timeline.map((item) => {
             if (item.kind === "file") {
               return <FileArrived key={`file-${item.file.id}`} file={item.file} />;
             }
-            return <MessageView key={item.message.id} message={item.message} />;
+            if (item.kind === "restart") {
+              return (
+                <RestartDivider key={`restart-${item.at}`} at={item.at} reason={item.reason} />
+              );
+            }
+            return (
+              <MessageView
+                key={item.message.id}
+                message={item.message}
+                cells={conversation.cells}
+                onShowCell={onShowCell}
+              />
+            );
           })}
+          {running && live?.kind === "message" && (
+            <LiveMessage live={live} connection={connection} onShowCell={onShowCell} />
+          )}
+          {live !== null && <RunEnding live={live} />}
         </div>
       </div>
+      <Composer conversation={conversation} />
+    </div>
+  );
+}
+
+// The analyst at work, inside its message (design.md §2.4). The activity line
+// is announced politely; the streamed words are not, chunk by chunk (§8).
+function LiveMessage({
+  live,
+  connection,
+  onShowCell,
+}: {
+  live: LiveRun;
+  connection: Connection;
+  onShowCell: (cellId: string) => void;
+}) {
+  const words = live.steps
+    .map(wordsOnly)
+    .filter((step) => step !== "")
+    .join("\n\n");
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="text-xs font-medium text-text-muted">Analyst</div>
+      {words !== "" && <AnswerText text={words} />}
+      <div aria-live="polite">
+        <ActivityLine activity={live.activity} connection={connection} onShowCell={onShowCell} />
+      </div>
+    </div>
+  );
+}
+
+// How a run ended when it did not end with an answer: our failure, a stop, or
+// events lost on the way (design.md §4, §6).
+function RunEnding({ live }: { live: LiveRun }) {
+  return (
+    <>
+      {live.failure !== null && (
+        <p role="alert" className="border-l-2 border-danger pl-3 text-sm text-danger">
+          {sentenceFor(live.failure.code, live.failure.message)}
+          {live.failure.errorId !== null && ` Reference: ${live.failure.errorId}.`}
+        </p>
+      )}
+      {live.finished === "cancelled" && live.kind === "message" && (
+        <p className="text-sm text-text-muted">Stopped.</p>
+      )}
+      {live.finished === "timed_out" && (
+        <p className="text-sm text-text-muted">The run reached its time limit and was stopped.</p>
+      )}
+      {live.lost && (
+        <p className="text-sm text-warning">
+          Some updates were lost —{" "}
+          <button
+            type="button"
+            className="font-medium underline"
+            onClick={() => {
+              window.location.reload();
+            }}
+          >
+            reload
+          </button>
+        </p>
+      )}
+    </>
+  );
+}
+
+function RestartDivider({ at, reason }: { at: string; reason: RestartReason }) {
+  return (
+    <div className="flex items-center gap-3 text-xs text-text-muted">
+      <span className="h-px flex-1 bg-border" />
+      <span>
+        Kernel restarted · {restartReason(reason)} · {formatClock(at)}
+      </span>
+      <span className="h-px flex-1 bg-border" />
     </div>
   );
 }
@@ -110,7 +227,15 @@ function FileArrived({ file }: { file: FileInfo }) {
   );
 }
 
-function MessageView({ message }: { message: Message }) {
+function MessageView({
+  message,
+  cells,
+  onShowCell,
+}: {
+  message: Message;
+  cells: Cell[];
+  onShowCell: (cellId: string) => void;
+}) {
   if (message.role === "user") {
     return (
       <div className="max-w-[85%] self-end rounded-xl bg-surface px-3 py-2 whitespace-pre-wrap">
@@ -119,10 +244,28 @@ function MessageView({ message }: { message: Message }) {
     );
   }
 
+  // A question back is styled as one: a distinct left rule (§2.4).
+  if (message.kind === "question") {
+    return (
+      <div className="flex flex-col gap-3 border-l-2 border-accent pl-3">
+        <div className="text-xs font-medium text-text-muted">The analyst asks</div>
+        <AnswerText text={message.text} />
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-3">
       <div className="text-xs font-medium text-text-muted">Analyst</div>
       <AnswerText text={message.text} />
+      {message.grounding !== null && (
+        <GroundingBadge
+          message={message}
+          grounding={message.grounding}
+          cells={cells}
+          onShowCell={onShowCell}
+        />
+      )}
     </div>
   );
 }

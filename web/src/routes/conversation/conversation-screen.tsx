@@ -6,13 +6,16 @@ import { ApiError } from "@/api/errors";
 import { plural } from "@/lib/format";
 import { sentenceForError } from "@/lib/words";
 
+import { cancelRun } from "@/api/runs";
+
 import { ChatPane } from "./chat/chat-pane";
 import { ConversationHeader } from "./conversation-header";
+import { conversationKey, useLiveRun } from "./live/use-live-run";
 import { NotebookPane } from "./notebook/notebook-pane";
 import { Pane } from "./panes";
 
-export function conversationKey(id: string) {
-  return ["conversation", id];
+function showCell(cellId: string) {
+  document.getElementById(`cell-${cellId}`)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
 export function ConversationScreen({ conversationId }: { conversationId: string }) {
@@ -20,6 +23,14 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
     queryKey: conversationKey(conversationId),
     queryFn: () => getConversationDetail(conversationId),
   });
+  const activeRunId = conversation.data?.activeRunId ?? null;
+  const { live, connection } = useLiveRun(conversationId, activeRunId);
+
+  function stop() {
+    if (activeRunId !== null) {
+      void cancelRun(activeRunId);
+    }
+  }
 
   if (conversation.isError) {
     return <QuietPage error={conversation.error} />;
@@ -33,10 +44,15 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
 
   return (
     <div className="flex min-w-0 flex-1 flex-col">
-      <ConversationHeader conversation={detail} />
+      <ConversationHeader conversation={detail} live={live} />
       <div className="flex min-h-0 flex-1">
         <Pane icon={MessageSquare} label="Chat" className="flex w-2/5 flex-none flex-col">
-          <ChatPane conversation={detail} />
+          <ChatPane
+            conversation={detail}
+            live={live}
+            connection={connection}
+            onShowCell={showCell}
+          />
         </Pane>
         <div className="w-px flex-none bg-border" />
         <Pane
@@ -45,7 +61,7 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
           detail={plural(detail.cells.length, "cell", "cells")}
           className="flex min-w-0 flex-1 flex-col"
         >
-          <NotebookPane cells={detail.cells} />
+          <NotebookPane cells={detail.cells} live={live} onStop={stop} />
         </Pane>
       </div>
     </div>
