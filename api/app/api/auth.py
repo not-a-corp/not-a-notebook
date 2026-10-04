@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Response, status
 
-from app.api.refresh_cookie import clear_refresh_cookie, set_refresh_cookie
+from app.api.cookies import clear_refresh_cookie, set_refresh_cookie
 from app.core.get_auth_options import get_auth_options
 from app.core.login_user import login_user
 from app.core.logout_user import logout_user
@@ -18,7 +18,11 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.get("/options")
 async def options(conn: Db, settings: Config) -> AuthOptions:
-    return await get_auth_options(conn, settings.registration_open)
+    return await get_auth_options(
+        conn,
+        registration_open=settings.registration_open,
+        oauth_providers=settings.oauth_providers(),
+    )
 
 
 @router.post("/register", status_code=status.HTTP_201_CREATED)

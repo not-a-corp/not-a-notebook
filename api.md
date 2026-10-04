@@ -188,17 +188,22 @@ come with it.
 
 Where the provider sends the browser back. Never called by a client.
 
-On success: `302` to the web app, with the refresh cookie set. The app then calls
-`/auth/refresh` like on any page load.
+On success: `302` to the web app at `PUBLIC_URL`, with the refresh cookie set. The
+app then calls `/auth/refresh` like on any page load.
 
-On failure: `302` to `/login?error=<code>`, never a JSON body — there is no client
-on the other end to read one. Possible codes: `OAUTH_FAILED` (denied consent, bad
-`state`, provider error), `REGISTRATION_CLOSED`, and `EMAIL_ALREADY_REGISTERED`.
+On failure: `302` to `PUBLIC_URL/login?error=<code>`, never a JSON body — there is
+no client on the other end to read one. Possible codes: `OAUTH_FAILED` (denied
+consent, bad or missing `state`, provider error, an email the provider has not
+verified), `REGISTRATION_CLOSED`, and `EMAIL_ALREADY_REGISTERED`.
+
+Only an email the provider marks as **verified** is accepted — on GitHub, the
+verified primary one.
 
 **An OAuth sign-in never joins an existing password account**, even with the same
 email. Emails registered with a password are not verified, so someone could
 register your address first and wait for you to arrive through Google. The answer
-is `EMAIL_ALREADY_REGISTERED`: sign in with the password instead.
+is `EMAIL_ALREADY_REGISTERED`: sign in with the password instead. The same goes for
+an email that already arrived through the other provider.
 
 A first OAuth sign-in with a new email creates the account, subject to
 `REGISTRATION_OPEN` like `/auth/register`.

@@ -6,6 +6,7 @@ from collections.abc import AsyncIterator
 from typing import Annotated, Any
 from uuid import UUID
 
+import httpx2
 from fastapi import Cookie, Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from psycopg import AsyncConnection
@@ -15,6 +16,7 @@ from app.domain.errors import Unauthenticated
 from app.security.access_tokens import read_access_token
 
 REFRESH_COOKIE = "nan_refresh"
+OAUTH_COOKIE = "nan_oauth"
 
 # auto_error=False so a missing header raises our Unauthenticated rather than
 # FastAPI's own 403, which would leave through a different shape.
@@ -34,6 +36,15 @@ async def db(request: Request) -> AsyncIterator[AsyncConnection[Any]]:
 Db = Annotated[AsyncConnection[Any], Depends(db)]
 
 Config = Annotated[Settings, Depends(get_settings)]
+
+
+async def http(request: Request) -> httpx2.AsyncClient:
+    """The process-wide client for calls out, opened and closed by the lifespan."""
+    client: httpx2.AsyncClient = request.app.state.http
+    return client
+
+
+Http = Annotated[httpx2.AsyncClient, Depends(http)]
 
 
 async def caller(

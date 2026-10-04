@@ -7,6 +7,7 @@ dependencies = [
     "argon2-cffi>=25.1",
     "email-validator>=2.3",
     "fastapi>=0.118",
+    "httpx2>=2.13",
     "psycopg[binary,pool]>=3.2.10",
     "pydantic-settings>=2.11",
     "pyjwt>=2.10",
@@ -15,7 +16,6 @@ dependencies = [
 
 [dependency-groups]
 dev = [
-    "httpx2>=2.13",
     "mypy>=1.18",
     "pytest>=8.4",
     "ruff>=0.14",
