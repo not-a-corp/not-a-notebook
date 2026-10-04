@@ -67,3 +67,15 @@ class SandboxUnavailable(DomainError):
     code = "SANDBOX_UNAVAILABLE"
     status = 503
     message = "A kernel could not be started."
+
+
+class ModelNotFound(DomainError):
+    code = "MODEL_NOT_FOUND"
+    status = 404
+    message = "No such model."
+
+
+class ConversationNotFound(DomainError):
+    code = "CONVERSATION_NOT_FOUND"
+    status = 404
+    message = "No such conversation."
