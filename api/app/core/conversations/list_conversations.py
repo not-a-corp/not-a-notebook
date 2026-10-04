@@ -50,11 +50,19 @@ async def list_conversations(
     }
 
     # c.id breaks ties, so a page boundary never falls between two rows that
-    # could swap places from one request to the next.
+    # could swap places from one request to the next. At most one run is
+    # 'running' per conversation — a unique index says so — so the subquery
+    # returns one row or none.
     sql = """
         SELECT c.external_id AS id,
                c.title,
                m.external_id AS model_id,
+               (
+                   SELECT r.external_id
+                     FROM runs r
+                    WHERE r.conversation_id = c.id
+                      AND r.status = 'running'
+               ) AS active_run_id,
                c.created_at,
                c.updated_at
           FROM conversations c

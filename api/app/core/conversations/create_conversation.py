@@ -21,6 +21,7 @@ async def create_conversation(
     # Someone else's model is not found, the same as one that does not exist. The
     # INSERT happens only when a requested model was found, so a typo never
     # quietly makes a conversation with no model.
+    # A conversation just created has had no run, so none is in progress.
     sql = """
         WITH inserted AS (
             INSERT INTO conversations AS c (user_id, model_id, title)
@@ -42,6 +43,7 @@ async def create_conversation(
         SELECT i.external_id AS id,
                i.title,
                m.external_id AS model_id,
+               NULL::uuid AS active_run_id,
                i.created_at,
                i.updated_at
           FROM inserted i
