@@ -28,6 +28,7 @@ def to_conversation(row: dict[str, Any], running: Set[UUID]) -> Conversation:
         title=row["title"],
         model_id=row["model_id"],
         kernel=kernel_state(row["id"], running),
+        active_run_id=row["active_run_id"],
         created_at=row["created_at"],
         updated_at=row["updated_at"],
     )

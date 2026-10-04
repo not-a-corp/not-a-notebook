@@ -348,6 +348,7 @@ GET /conversations?page=1&per_page=50&q=sales
   "data": [
     { "id": "019b2a7d-…", "title": "Sales 2025 by region",
       "model_id": "019b1c02-…", "kernel": "running",
+      "active_run_id": null,
       "created_at": "2026-10-03T14:05:40.118302Z",
       "updated_at": "2026-10-03T14:21:09.774120Z" }
   ],
@@ -356,7 +357,8 @@ GET /conversations?page=1&per_page=50&q=sales
 ```
 `VALIDATION_ERROR` · `UNAUTHENTICATED`
 
-Newest activity first. `kernel` is `running` or `stopped`.
+Newest activity first. `kernel` is `running` or `stopped`. `active_run_id` is the
+run in progress, or `null` — so a list can show which conversations are busy.
 
 A page past the end returns `200` with an empty `data`.
 

@@ -44,6 +44,20 @@ def a_model(sql: Run, owner_email: str | None) -> str:
     return str(rows[0][0])
 
 
+def start_a_run(sql: Run, conversation_id: str) -> str:
+    rows = sql(
+        """
+        INSERT INTO runs AS r (conversation_id, kind)
+        SELECT c.id, 'cell'
+          FROM conversations c
+         WHERE c.external_id = %(id)s
+        RETURNING r.external_id::text
+        """,
+        {"id": conversation_id},
+    )
+    return str(rows[0][0])
+
+
 @pytest.fixture
 def token(client: TestClient) -> str:
     return sign_up_and_in(client, RAFAEL)
@@ -55,8 +69,17 @@ def token(client: TestClient) -> str:
 def test_creates_an_untitled_conversation_with_no_model(client: TestClient, token: str) -> None:
     body = create(client, token)
 
-    assert set(body) == {"id", "title", "model_id", "kernel", "created_at", "updated_at"}
+    assert set(body) == {
+        "id",
+        "title",
+        "model_id",
+        "kernel",
+        "active_run_id",
+        "created_at",
+        "updated_at",
+    }
     assert body["title"] == "Untitled"
+    assert body["active_run_id"] is None
     assert body["model_id"] is None
     assert body["kernel"] == "stopped"
     UUID(body["id"])
@@ -127,6 +150,37 @@ def test_lists_newest_activity_first(client: TestClient, token: str) -> None:
 
     titles = [conversation["title"] for conversation in body["data"]]
     assert titles == ["touched", "second"]
+
+
+def test_the_list_says_which_conversation_has_a_run_in_progress(
+    client: TestClient, token: str, sql: Run
+) -> None:
+    busy = create(client, token, title="busy")
+    create(client, token, title="idle")
+    run_id = start_a_run(sql, busy["id"])
+
+    body = client.get(CONVERSATIONS, headers=bearer(token)).json()
+
+    active = {conversation["title"]: conversation["active_run_id"] for conversation in body["data"]}
+    assert active == {"busy": run_id, "idle": None}
+
+
+def test_a_finished_run_is_not_active(client: TestClient, token: str, sql: Run) -> None:
+    created = create(client, token)
+    run_id = start_a_run(sql, created["id"])
+    sql(
+        """
+        UPDATE runs r
+           SET status = 'succeeded',
+               finished_at = now()
+         WHERE r.external_id = %(run_id)s
+        """,
+        {"run_id": run_id},
+    )
+
+    body = client.get(CONVERSATIONS, headers=bearer(token)).json()
+
+    assert body["data"][0]["active_run_id"] is None
 
 
 def test_pages_come_wrapped_with_meta(client: TestClient, token: str) -> None:
