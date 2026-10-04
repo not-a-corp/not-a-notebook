@@ -3,6 +3,7 @@ import { createRootRoute, createRoute, createRouter, redirect } from "@tanstack/
 import { ensureSession } from "@/api/session";
 import { AppLayout } from "@/routes/app-layout";
 import { AuthPage } from "@/routes/auth/auth-page";
+import { ConversationScreen } from "@/routes/conversation/conversation-screen";
 import { Home } from "@/routes/home";
 import { Root } from "@/routes/root";
 
@@ -69,10 +70,20 @@ const homeRoute = createRoute({
   component: Home,
 });
 
+const conversationRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: "/c/$conversationId",
+  component: function Conversation() {
+    const { conversationId } = conversationRoute.useParams();
+    // Keyed by id, so moving between conversations starts each screen fresh.
+    return <ConversationScreen key={conversationId} conversationId={conversationId} />;
+  },
+});
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
-  appRoute.addChildren([homeRoute]),
+  appRoute.addChildren([homeRoute, conversationRoute]),
 ]);
 
 export const router = createRouter({ routeTree });
