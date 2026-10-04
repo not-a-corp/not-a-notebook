@@ -3,10 +3,10 @@ import { useNavigate } from "@tanstack/react-router";
 import { ChevronDown, Ellipsis, Pencil, Trash } from "lucide-react";
 import { useState } from "react";
 
+import type { ConversationDetail } from "@/api/conversation-detail";
 import {
   deleteConversation,
   updateConversation,
-  type Conversation,
   type ConversationChanges,
 } from "@/api/conversations";
 import { listModels } from "@/api/models";
@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip } from "@/components/ui/tooltip";
 
-function kernelStatus(conversation: Conversation): KernelStatus {
+function kernelStatus(conversation: ConversationDetail): KernelStatus {
   if (conversation.activeRunId !== null) {
     return "busy";
   }
@@ -35,7 +35,7 @@ function kernelStatus(conversation: Conversation): KernelStatus {
 }
 
 // design.md §2.1 — the conversation's header, 48 px.
-export function ConversationHeader({ conversation }: { conversation: Conversation }) {
+export function ConversationHeader({ conversation }: { conversation: ConversationDetail }) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -43,7 +43,7 @@ export function ConversationHeader({ conversation }: { conversation: Conversatio
   const update = useMutation({
     mutationFn: (changes: ConversationChanges) => updateConversation(conversation.id, changes),
     onSuccess: (updated) => {
-      queryClient.setQueryData<Conversation>(["conversation", conversation.id], (current) => {
+      queryClient.setQueryData<ConversationDetail>(["conversation", conversation.id], (current) => {
         if (current === undefined) {
           return current;
         }
@@ -53,6 +53,9 @@ export function ConversationHeader({ conversation }: { conversation: Conversatio
           modelId: updated.modelId,
           kernel: current.kernel,
           activeRunId: current.activeRunId,
+          files: current.files,
+          messages: current.messages,
+          cells: current.cells,
         };
       });
       void queryClient.invalidateQueries({ queryKey: ["conversations"] });

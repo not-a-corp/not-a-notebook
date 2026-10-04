@@ -1,15 +1,24 @@
 import { useQuery } from "@tanstack/react-query";
+import { MessageSquare, NotebookText } from "lucide-react";
 
-import { getConversation } from "@/api/conversations";
+import { getConversationDetail } from "@/api/conversation-detail";
 import { ApiError } from "@/api/errors";
+import { plural } from "@/lib/format";
 import { sentenceForError } from "@/lib/words";
 
+import { ChatPane } from "./chat/chat-pane";
 import { ConversationHeader } from "./conversation-header";
+import { NotebookPane } from "./notebook/notebook-pane";
+import { Pane } from "./panes";
+
+export function conversationKey(id: string) {
+  return ["conversation", id];
+}
 
 export function ConversationScreen({ conversationId }: { conversationId: string }) {
   const conversation = useQuery({
-    queryKey: ["conversation", conversationId],
-    queryFn: () => getConversation(conversationId),
+    queryKey: conversationKey(conversationId),
+    queryFn: () => getConversationDetail(conversationId),
   });
 
   if (conversation.isError) {
@@ -20,10 +29,25 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
     return null;
   }
 
+  const detail = conversation.data;
+
   return (
     <div className="flex min-w-0 flex-1 flex-col">
-      <ConversationHeader conversation={conversation.data} />
-      <div className="min-h-0 flex-1" />
+      <ConversationHeader conversation={detail} />
+      <div className="flex min-h-0 flex-1">
+        <Pane icon={MessageSquare} label="Chat" className="flex w-2/5 flex-none flex-col">
+          <ChatPane conversation={detail} />
+        </Pane>
+        <div className="w-px flex-none bg-border" />
+        <Pane
+          icon={NotebookText}
+          label="Notebook"
+          detail={plural(detail.cells.length, "cell", "cells")}
+          className="flex min-w-0 flex-1 flex-col"
+        >
+          <NotebookPane cells={detail.cells} />
+        </Pane>
+      </div>
     </div>
   );
 }
