@@ -5,6 +5,7 @@ import {
   boolean,
   isRecord,
   nullableNumber,
+  nullableOneOf,
   nullableString,
   number,
   oneOf,
@@ -17,11 +18,21 @@ import type { KernelState } from "./conversations";
 // GET /conversations/{id}: everything the conversation screen needs, in one
 // call (decision 19). The stream patches this same object as events arrive.
 
+export interface Grounding {
+  numbers: number;
+  found: number;
+  unfound: string[];
+}
+
 export interface Message {
   id: string;
   role: "user" | "assistant";
   runId: string | null;
   text: string;
+  // The analyst's: an answer, or a question asked instead of guessing. Yours: null.
+  kind: "answer" | "question" | null;
+  // An answer's grounding check, kept with it (api.md).
+  grounding: Grounding | null;
   createdAt: string;
 }
 
@@ -70,6 +81,26 @@ export interface ConversationDetail {
   cells: Cell[];
 }
 
+function decodeUnfound(value: unknown): string {
+  if (typeof value !== "string") {
+    throw new TypeError("an unfound number is not a string");
+  }
+  return value;
+}
+
+function decodeGrounding(value: unknown): Grounding | null {
+  if (value === null) {
+    return null;
+  }
+  const json = asRecord(value, "grounding");
+
+  return {
+    numbers: number(json, "numbers"),
+    found: number(json, "found"),
+    unfound: array(json, "unfound", decodeUnfound),
+  };
+}
+
 export function decodeMessage(value: unknown): Message {
   const json = asRecord(value, "message");
 
@@ -78,6 +109,8 @@ export function decodeMessage(value: unknown): Message {
     role: oneOf(json, "role", ["user", "assistant"]),
     runId: nullableString(json, "run_id"),
     text: string(json, "text"),
+    kind: nullableOneOf(json, "kind", ["answer", "question"]),
+    grounding: decodeGrounding(json.grounding),
     createdAt: string(json, "created_at"),
   };
 }

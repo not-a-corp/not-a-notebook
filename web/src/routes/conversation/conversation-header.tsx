@@ -24,7 +24,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Tooltip } from "@/components/ui/tooltip";
 
-function kernelStatus(conversation: ConversationDetail): KernelStatus {
+import type { LiveRun } from "./live/live-run";
+import { conversationKey } from "./live/use-live-run";
+
+function kernelStatus(conversation: ConversationDetail, live: LiveRun | null): KernelStatus {
+  if (live?.activity?.kind === "starting-kernel") {
+    return "starting";
+  }
   if (conversation.activeRunId !== null) {
     return "busy";
   }
@@ -35,7 +41,13 @@ function kernelStatus(conversation: ConversationDetail): KernelStatus {
 }
 
 // design.md §2.1 — the conversation's header, 48 px.
-export function ConversationHeader({ conversation }: { conversation: ConversationDetail }) {
+export function ConversationHeader({
+  conversation,
+  live,
+}: {
+  conversation: ConversationDetail;
+  live: LiveRun | null;
+}) {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -43,7 +55,7 @@ export function ConversationHeader({ conversation }: { conversation: Conversatio
   const update = useMutation({
     mutationFn: (changes: ConversationChanges) => updateConversation(conversation.id, changes),
     onSuccess: (updated) => {
-      queryClient.setQueryData<ConversationDetail>(["conversation", conversation.id], (current) => {
+      queryClient.setQueryData<ConversationDetail>(conversationKey(conversation.id), (current) => {
         if (current === undefined) {
           return current;
         }
@@ -65,7 +77,7 @@ export function ConversationHeader({ conversation }: { conversation: Conversatio
   const remove = useMutation({
     mutationFn: () => deleteConversation(conversation.id),
     onSuccess: async () => {
-      queryClient.removeQueries({ queryKey: ["conversation", conversation.id] });
+      queryClient.removeQueries({ queryKey: conversationKey(conversation.id) });
       await queryClient.invalidateQueries({ queryKey: ["conversations"] });
       await navigate({ to: "/" });
     },
@@ -86,7 +98,7 @@ export function ConversationHeader({ conversation }: { conversation: Conversatio
           update.mutate({ modelId });
         }}
       />
-      <KernelIndicator status={kernelStatus(conversation)} />
+      <KernelIndicator status={kernelStatus(conversation, live)} />
       <DropdownMenu>
         <Tooltip label="More">
           <DropdownMenuTrigger asChild>
