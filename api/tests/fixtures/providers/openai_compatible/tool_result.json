@@ -1,0 +1,71 @@
+{
+  "note": "Recorded from a live API through openrouter.ai. Replayed by tests/test_provider_adapters.py; regenerate with tests/record_provider_fixtures.py.",
+  "recorded_at": "2026-10-04T03:49:25+00:00",
+  "adapter": "openai_compatible",
+  "model": "qwen/qwen3.7-flash",
+  "dialect": "tools",
+  "case": "tool_result",
+  "request": {
+    "model": "qwen/qwen3.7-flash",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a terse assistant in a data analysis tool. Answer in as few words as possible."
+      },
+      {
+        "role": "user",
+        "content": "Use the run_python tool to compute 6 * 7. Do not answer before running it."
+      },
+      {
+        "role": "assistant",
+        "content": null,
+        "tool_calls": [
+          {
+            "id": "call_02cb05f1e2c449e898345213",
+            "type": "function",
+            "function": {
+              "name": "run_python",
+              "arguments": "{\"code\": \"print(6 * 7)\"}"
+            }
+          }
+        ]
+      },
+      {
+        "role": "tool",
+        "tool_call_id": "call_02cb05f1e2c449e898345213",
+        "content": "42\n"
+      }
+    ],
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    },
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "run_python",
+          "description": "Run Python in the conversation's Jupyter kernel. State persists between runs: variables, imports and loaded DataFrames are still there next time. The user's files are read-only at /data. Returns what the code printed, the value of its last expression, and any error with its traceback.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "The Python to run, as one cell."
+              }
+            },
+            "required": [
+              "code"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "parallel_tool_calls": false
+  },
+  "status": 200,
+  "content_type": "text/event-stream",
+  "body": "data: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\",\"reasoning\":\"The\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\"The\",\"format\":\"unknown\",\"index\":0}]},\"finish_reason\":null,\"native_finish_reason\":null}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\",\"reasoning\":\" result\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\" result\",\"format\":\"unknown\",\"index\":0}]},\"finish_reason\":null,\"native_finish_reason\":null}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\",\"reasoning\":\" of\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\" of\",\"format\":\"unknown\",\"index\":0}]},\"finish_reason\":null,\"native_finish_reason\":null}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\",\"reasoning\":\" 6\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\" 6\",\"format\":\"unknown\",\"index\":0}]},\"finish_reason\":null,\"native_finish_reason\":null}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\",\"reasoning\":\" * 7 is\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\" * 7 is\",\"format\":\"unknown\",\"index\":0}]},\"finish_reason\":null,\"native_finish_reason\":null}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\",\"reasoning\":\" 42\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\" 42\",\"format\":\"unknown\",\"index\":0}]},\"finish_reason\":null,\"native_finish_reason\":null}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\",\"reasoning\":\".\",\"reasoning_details\":[{\"type\":\"reasoning.text\",\"text\":\".\",\"format\":\"unknown\",\"index\":0}]},\"finish_reason\":null,\"native_finish_reason\":null}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"42\",\"role\":\"assistant\"},\"finish_reason\":null,\"native_finish_reason\":null}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\",\"reasoning\":null},\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\"}]}\n\ndata: {\"id\":\"gen-1791085764-dksJL4H52HeLzDFhPTXU\",\"object\":\"chat.completion.chunk\",\"created\":1791085764,\"model\":\"qwen/qwen3.7-flash\",\"provider\":\"Alibaba\",\"service_tier\":null,\"choices\":[{\"index\":0,\"delta\":{\"content\":\"\",\"role\":\"assistant\"},\"finish_reason\":\"stop\",\"native_finish_reason\":\"stop\"}],\"usage\":{\"prompt_tokens\":430,\"completion_tokens\":18,\"total_tokens\":448,\"cost\":0.00001524,\"is_byok\":false,\"prompt_tokens_details\":{\"cached_tokens\":0,\"cache_write_tokens\":0,\"audio_tokens\":0,\"video_tokens\":0},\"cost_details\":{\"upstream_inference_cost\":0.00001524,\"upstream_inference_prompt_cost\":0.0000129,\"upstream_inference_completions_cost\":0.00000234},\"completion_tokens_details\":{\"reasoning_tokens\":13,\"image_tokens\":0,\"audio_tokens\":0}}}\n\ndata: [DONE]\n\n"
+}

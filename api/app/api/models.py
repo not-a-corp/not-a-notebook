@@ -6,17 +6,21 @@ from uuid import UUID
 
 from fastapi import APIRouter, Response, status
 
+from app.core.check_model import check_model
 from app.core.create_model import create_model
 from app.core.delete_model import delete_model
 from app.core.list_models import list_models
+from app.core.resolve_model import resolve_endpoint
 from app.core.update_model import update_model
-from app.dependencies import Caller, Crypto, Db, EnvironmentKeys
+from app.dependencies import Caller, Crypto, Db, EnvironmentKeys, Http
 from app.domain.model_configs import (
     CreateModelRequest,
     ModelConfig,
     ModelList,
+    ModelTestResult,
     UpdateModelRequest,
 )
+from app.providers.factory import model_for
 
 router = APIRouter(prefix="/models", tags=["models"])
 
@@ -54,3 +58,20 @@ async def delete(model_id: UUID, caller: Caller, conn: Db) -> Response:
     await delete_model(conn, caller, model_id)
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
+@router.post("/{model_id}/test")
+async def test(
+    model_id: UUID,
+    caller: Caller,
+    conn: Db,
+    cipher: Crypto,
+    keys: EnvironmentKeys,
+    http: Http,
+) -> ModelTestResult:
+    endpoint = await resolve_endpoint(conn, caller, model_id, cipher, keys)
+    model = model_for(endpoint, http)
+
+    checked = await check_model(model, endpoint.dialect)
+
+    return ModelTestResult(ok=checked.ok, latency_ms=checked.latency_ms, error=checked.error)

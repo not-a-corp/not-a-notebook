@@ -96,6 +96,14 @@ class ModelList(BaseModel):
     data: list[ModelConfig]
 
 
+class ModelTestResult(BaseModel):
+    """200 whether or not the model passed: the test ran, and this is its result."""
+
+    ok: bool
+    latency_ms: int
+    error: str | None
+
+
 @dataclass(frozen=True)
 class EnvironmentModel:
     """A model the operator declared in .env. Upserted by env_name on startup, so

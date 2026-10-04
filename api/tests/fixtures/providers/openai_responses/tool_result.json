@@ -1,0 +1,80 @@
+{
+  "note": "Recorded from a live API through openrouter.ai. Replayed by tests/test_provider_adapters.py; regenerate with tests/record_provider_fixtures.py.",
+  "recorded_at": "2026-10-04T03:49:17+00:00",
+  "adapter": "openai_responses",
+  "model": "openai/gpt-5-nano",
+  "dialect": "tools",
+  "case": "tool_result",
+  "request": {
+    "model": "openai/gpt-5-nano",
+    "instructions": "You are a terse assistant in a data analysis tool. Answer in as few words as possible.",
+    "input": [
+      {
+        "role": "user",
+        "content": [
+          {
+            "type": "input_text",
+            "text": "Use the run_python tool to compute 6 * 7. Do not answer before running it."
+          }
+        ]
+      },
+      {
+        "id": "rs_04cd10719a2040f7016ac1ccb94d8887d19688b933e7d0bce7",
+        "type": "reasoning",
+        "status": "completed",
+        "summary": [
+          {
+            "type": "summary_text",
+            "text": "**Running a calculation**\n\nI need to compute 6 times 7 using the run_python tool. The user's request is straightforward: just get the result and respond. I'll call functions.run_python with the code \"6*7\" to get the result. The tool will return the value of the last expression, which, in this case, will be 42. The developer prefers concise responses, so I think stating \"42\" alone should suffice. Let’s get that calculation underway!**Understanding tool output**\n\nThe run_python tool will return an output structured like this: {\"print_output\": ..., \"last_expression\": 42, \"error\": null}. According to the schema, it provides what the code printed, the value of the last expression, and details on any error alongside traceback information. The exact structure isn't fully defined, but I know it returns something useful. So, let's go ahead and call the tool to perform this computation and get the result!"
+          }
+        ],
+        "encrypted_content": "gAAAAABqwcy8e-L6JyQDwCyDGclnUisBVTsJEJJAlR2PsQdllpOasMr5Tdi95IjToUWxlYxSbZ42CsndPib6PlL02nkMKHBARC58HAYnG5BvHoCGEJ4vu21Rwbwb9rDkplJ2YGsqJkIyIzbC2_m5jLXac3umgV593BdwqZT_D_FJnGpHvR7bdE_ZNNIS4To0fRzxnUd6kYCgpWKHBMBgUrSgj0s3_2tXqveR-hpfTdnahoqcBf439RnHvQ5K9pCMoOBw3zv1GJHvSNqnUwfcu0lBLKgxccj-bJjDJ5Tfwd5ho2j0EW2enL4pYvWRN1SiVVeMVeCg92B48K8muo6Yztvgzu8hyDA2Vxrv-N98-ZbHIsN53GNFuI6Yoaad2ddU1HI1tsRExmOLocOn2FqwZBGH05uoYrBk8mbchsB_v2jjVnI-31IWYjZs-AX3W24eo5HNuLtRlxyxnk19EdgVMdKZTWo4wNmKI_FPhUs0b62XnOHxL2N5skX7zLfD955SgdBqG_PyjffeWhhfbwIQZYbpAAvSNsXIPbmfyUIatUP_GmhJb3uMlfO99poeN3412E0xV2aw5oWSB4BUroiI7Nu5oINsGmwqc0P_FMeZXXla7f4Cyfzwb4cqakfUZDibmz0-WWb5acJmqDHOpkgfiF1l8_9ocoetq9PrhgXUOfV3-GA3zxbaZd8xfIRCf5Q8Edl2ej8R6sfI1TEu21KGVBJ455JqfBpPef9SmWF7A-bQsnUDnJ7nZ8gC5lHAtqR52jib1lvjGU9pBJupZWoHIEUyYeSq6YpVSyjEDtpc4gfQny2VL8iwY8SvZFR6Cp__jjUCSi-jbnBvLDjnz-Aa8RaAV2KiF77eczR09Igbgt9XsTcCZnfSn6ynkJmpB27Z15P2P1pYZW8m4u_6KP65XxhcgLPpwzaYHW6Y6W_unclK7TaB3Ho_iuphYitBdieHpWAgMgArLzo2RnR-Gw6vEbSfRl-ayE2uem-bA1HHocgxMNwH1aUThn9k3RixB3Q4kB0PaefoDLG9vXpzzg6ZrWiHOmExYoTjaGaBIHJo6Q3DmhFG59FZ_akqb1ktCX-kLxNyVDQI2o0oYJcsVQGGpuAEfFSPNSZ9Lu_556_it4s6Ur_HtgOQPE6LRcL9tvK7f0X9vLGi-HiJc0yqd4L3w8JM8nyFmHAXIS-OBg9DQofkcpamj1hbj_sWiXPwUbcsJYTGZUaClkzz3Ui9_dre06HQ0fghIuQ53Y2DDa28_UwPtH140h7Pu_LjpIpbCbUzSZTx5I1kzWfK5GNA55jcqtJ-dzX7yzpMRAbuuG0utRD_wegpEjCwTDygkSdA_qBJgIUxsOhSZ2SQtBo7a1XLdlEjHIEpqP715OCxL3ly6x3V3LvTC2h4MrhYqE5m6RsNebAOlKIb3T_DJDhkRvU64RCPhmU2ND3WxWBBnRPWI-h5RO2jsmDA84qHPNF1wV5ITDmJgITowco7t-nL83RNUA9RoxMQbXf_NH19r8bc5E_xxWnKDTX4nWKzGoVebN9_qhXF_DfdXMP3e04S29rquuv6kDklxbQojlwWlvjdDQaOSLsN6_2YgXT_8OU7yiVE2B5e_yfMPp4wV9ajCeYqSbNbNJXJmiHJqY8ud99dSHoeH1AHbt2MJ4dI5_h1bojhdcFwdN86nNxAhNKaPwNeMRP3CqzxEazIbPRy6lQMTgT1fMQfAP5Xv4-lDUL-KsBGW6dh10Rd7Lre2V34DH89rKjg6apqoMqWb0IG-asloVZZ419ssvgz4-ekfHLoJUE_4qJcSROh_wQhdpXNxITNNVBCUG2l_i4RPQSNZ47vyLyiP2zHRgRFcZccFbRDyMGu9HmUTFXkqGkcP0NagpNmJXbzqueazRU-QBoPCsZZcMJr0ZaJPkUWVCftC9DqNXPrpokvbzg_YT3oMnUThEgcH-SPJBiYQdIERXGnLyAHKARhzpu0JTGaKtxM1Zgxs2T9xfuAsRqfZxJln365On9bbKR4SFnAMKrrMZgD4tqM0TAVoV6VoojWDV4TXIFEHVRfjoKfrxyj1m_JGHXofcnleb0oXewQDFR6aeqX3Ubuc8OYGFoaOGhpxI4hp6V4VFTAtnMzhMUGd-Bfao6qICUIuv9a2deT9sU_6mtMPYeuUiiBfh_ImAFqLyiGqLXXhMcKvoP0rWOnkaXkfrHDbtxBpMQzPCmDuu0Sw6k8TYcoj1kZan4GSWcOAUVQKcHO3O_8lcCEgYbCC8JeW4uL580KcBaFz52BdyyVuVrn3lUAaWansctGQWEkRrOG18HTw9l2wSqAEVBE9se0ElTqLaV9Cqwk4DiWB5cQRqfunbaXnFnrG2uGt_CF3wUFZgRggvXL7OOZTZNfH_L9EKLWJdBAs5gbkpMLCWHK3k2fnn_uQT32vfKQU-_K8MgtKUVhuh2bRmVcsYgKPC3V2Owlvknl0GNABfS4qxCtu2eeuKWWVhgrzX6l5fQEy_nQadJDiHV-6_4U082aBZgECFswaDcQgxWWkfYX4RU2QNVOdMC93hX59Utc82IpcaQ-c4vHd1mzCzc735PG5MfajPWoxfXauYrotnzWlrF-yumNZcdtR9hVH1z4PPF3f2b_bZvjOetsBgLUo48p_64bPnoGojuqvrzsKs6ZL25sDh8ZBqHh7qVZ6mnNzn_mZWjK_mYcXayLJPAakp7QMJLBGEvPnT7-JOpUc20IVX3DZkqPtoW7wcrOSduZpvueQ-ykQSqHpouNJ-T_ccFs_V6eqJ5xFlX25fL1EyiJiM2mYi6dAO3snl-564rjR5eqsC9-hUqCwrchLd8LkLFKR8wVVVvKv9OlZLtwrmp0ayLW1Q==.eyJlbmRwb2ludF9zbHVnIjoib3BlbmFpL2dwdC01LW5hbm8tMjAyNS0wOC0wN3xvcGVuYWkifQ",
+        "format": "openai-responses-v1"
+      },
+      {
+        "id": "fc_tmp_m81tuwbi9x",
+        "type": "function_call",
+        "status": "completed",
+        "call_id": "call_WXWe9s5DpDCTAuzlThsqWedj",
+        "name": "run_python",
+        "arguments": "{\"code\":\"6*7\"}"
+      },
+      {
+        "type": "function_call_output",
+        "call_id": "call_WXWe9s5DpDCTAuzlThsqWedj",
+        "output": "42\n"
+      }
+    ],
+    "max_output_tokens": 2000,
+    "stream": true,
+    "store": false,
+    "include": [
+      "reasoning.encrypted_content"
+    ],
+    "tools": [
+      {
+        "type": "function",
+        "name": "run_python",
+        "description": "Run Python in the conversation's Jupyter kernel. State persists between runs: variables, imports and loaded DataFrames are still there next time. The user's files are read-only at /data. Returns what the code printed, the value of its last expression, and any error with its traceback.",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "code": {
+              "type": "string",
+              "description": "The Python to run, as one cell."
+            }
+          },
+          "required": [
+            "code"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "parallel_tool_calls": false
+  },
+  "status": 200,
+  "content_type": "text/event-stream",
+  "body": "data: {\"type\":\"response.created\",\"response\":{\"id\":\"gen-1791085757-ns4Rpd8zHrjl5ySsPskk\",\"object\":\"response\",\"created_at\":1791085757,\"model\":\"openai/gpt-5-nano\",\"status\":\"in_progress\",\"completed_at\":null,\"output\":[],\"error\":null,\"incomplete_details\":null,\"tools\":[{\"type\":\"function\",\"name\":\"run_python\",\"description\":\"Run Python in the conversation's Jupyter kernel. State persists between runs: variables, imports and loaded DataFrames are still there next time. The user's files are read-only at /data. Returns what the code printed, the value of its last expression, and any error with its traceback.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"string\",\"description\":\"The Python to run, as one cell.\"}},\"required\":[\"code\"],\"additionalProperties\":false},\"strict\":null}],\"tool_choice\":\"auto\",\"parallel_tool_calls\":false,\"max_output_tokens\":2000,\"temperature\":1,\"top_p\":1,\"presence_penalty\":0,\"frequency_penalty\":0,\"top_logprobs\":0,\"max_tool_calls\":null,\"metadata\":{},\"background\":false,\"previous_response_id\":null,\"service_tier\":\"auto\",\"truncation\":\"disabled\",\"store\":false,\"instructions\":\"You are a terse assistant in a data analysis tool. Answer in as few words as possible.\",\"text\":{\"format\":{\"type\":\"text\"}},\"reasoning\":null,\"safety_identifier\":null,\"prompt_cache_key\":null,\"prompt_cache_options\":null,\"usage\":null},\"sequence_number\":0}\n\ndata: {\"type\":\"response.in_progress\",\"response\":{\"id\":\"gen-1791085757-ns4Rpd8zHrjl5ySsPskk\",\"object\":\"response\",\"created_at\":1791085757,\"model\":\"openai/gpt-5-nano\",\"status\":\"in_progress\",\"completed_at\":null,\"output\":[],\"error\":null,\"incomplete_details\":null,\"tools\":[{\"type\":\"function\",\"name\":\"run_python\",\"description\":\"Run Python in the conversation's Jupyter kernel. State persists between runs: variables, imports and loaded DataFrames are still there next time. The user's files are read-only at /data. Returns what the code printed, the value of its last expression, and any error with its traceback.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"string\",\"description\":\"The Python to run, as one cell.\"}},\"required\":[\"code\"],\"additionalProperties\":false},\"strict\":null}],\"tool_choice\":\"auto\",\"parallel_tool_calls\":false,\"max_output_tokens\":2000,\"temperature\":1,\"top_p\":1,\"presence_penalty\":0,\"frequency_penalty\":0,\"top_logprobs\":0,\"max_tool_calls\":null,\"metadata\":{},\"background\":false,\"previous_response_id\":null,\"service_tier\":\"auto\",\"truncation\":\"disabled\",\"store\":false,\"instructions\":\"You are a terse assistant in a data analysis tool. Answer in as few words as possible.\",\"text\":{\"format\":{\"type\":\"text\"}},\"reasoning\":null,\"safety_identifier\":null,\"prompt_cache_key\":null,\"prompt_cache_options\":null,\"usage\":null},\"sequence_number\":1}\n\ndata: {\"type\":\"response.output_item.added\",\"output_index\":0,\"item\":{\"id\":\"msg_tmp_kstkt7o8mln\",\"type\":\"message\",\"status\":\"in_progress\",\"role\":\"assistant\",\"content\":[]},\"sequence_number\":2}\n\ndata: {\"type\":\"response.content_part.added\",\"output_index\":0,\"item_id\":\"msg_tmp_kstkt7o8mln\",\"content_index\":0,\"part\":{\"type\":\"output_text\",\"text\":\"\",\"annotations\":[],\"logprobs\":[]},\"sequence_number\":3}\n\ndata: {\"type\":\"response.output_text.delta\",\"output_index\":0,\"item_id\":\"msg_tmp_kstkt7o8mln\",\"content_index\":0,\"delta\":\"42\",\"logprobs\":[],\"sequence_number\":4}\n\ndata: {\"type\":\"response.output_text.done\",\"output_index\":0,\"item_id\":\"msg_tmp_kstkt7o8mln\",\"content_index\":0,\"text\":\"42\",\"logprobs\":[],\"sequence_number\":5}\n\ndata: {\"type\":\"response.content_part.done\",\"output_index\":0,\"item_id\":\"msg_tmp_kstkt7o8mln\",\"content_index\":0,\"part\":{\"type\":\"output_text\",\"text\":\"42\",\"annotations\":[],\"logprobs\":[]},\"sequence_number\":6}\n\ndata: {\"type\":\"response.output_item.done\",\"output_index\":0,\"item\":{\"id\":\"msg_tmp_kstkt7o8mln\",\"type\":\"message\",\"status\":\"completed\",\"role\":\"assistant\",\"content\":[{\"type\":\"output_text\",\"text\":\"42\",\"annotations\":[],\"logprobs\":[]}]},\"sequence_number\":7}\n\ndata: {\"type\":\"response.completed\",\"response\":{\"id\":\"gen-1791085757-ns4Rpd8zHrjl5ySsPskk\",\"object\":\"response\",\"created_at\":1791085757,\"model\":\"openai/gpt-5-nano\",\"status\":\"completed\",\"completed_at\":1791085757,\"output\":[{\"id\":\"msg_tmp_kstkt7o8mln\",\"type\":\"message\",\"role\":\"assistant\",\"status\":\"completed\",\"content\":[{\"type\":\"output_text\",\"text\":\"42\",\"annotations\":[],\"logprobs\":[]}]}],\"error\":null,\"incomplete_details\":null,\"tools\":[{\"type\":\"function\",\"name\":\"run_python\",\"description\":\"Run Python in the conversation's Jupyter kernel. State persists between runs: variables, imports and loaded DataFrames are still there next time. The user's files are read-only at /data. Returns what the code printed, the value of its last expression, and any error with its traceback.\",\"parameters\":{\"type\":\"object\",\"properties\":{\"code\":{\"type\":\"string\",\"description\":\"The Python to run, as one cell.\"}},\"required\":[\"code\"],\"additionalProperties\":false},\"strict\":null}],\"tool_choice\":\"auto\",\"parallel_tool_calls\":false,\"max_output_tokens\":2000,\"temperature\":1,\"top_p\":1,\"presence_penalty\":0,\"frequency_penalty\":0,\"top_logprobs\":0,\"max_tool_calls\":null,\"metadata\":{},\"background\":false,\"previous_response_id\":null,\"service_tier\":\"default\",\"truncation\":\"disabled\",\"store\":false,\"instructions\":\"You are a terse assistant in a data analysis tool. Answer in as few words as possible.\",\"text\":{\"format\":{\"type\":\"text\"}},\"reasoning\":{\"context\":\"current_turn\",\"effort\":\"medium\",\"mode\":\"standard\",\"summary\":\"detailed\"},\"safety_identifier\":null,\"prompt_cache_key\":null,\"prompt_cache_options\":null,\"usage\":{\"input_tokens\":525,\"input_tokens_details\":{\"cached_tokens\":0},\"output_tokens\":5,\"output_tokens_details\":{\"reasoning_tokens\":0},\"total_tokens\":530,\"cost\":0.00002825,\"is_byok\":false,\"cost_details\":{\"upstream_inference_cost\":0.00002825,\"upstream_inference_input_cost\":0.00002625,\"upstream_inference_output_cost\":0.000002}}},\"sequence_number\":8}\n\ndata: [DONE]\n\n"
+}
