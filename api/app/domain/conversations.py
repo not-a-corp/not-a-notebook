@@ -50,6 +50,8 @@ class Conversation(BaseModel):
     title: str
     model_id: UUID | None
     kernel: KernelState
+    # The run in progress, if any: a list can show which conversations are busy.
+    active_run_id: UUID | None
     created_at: datetime
     updated_at: datetime
 
