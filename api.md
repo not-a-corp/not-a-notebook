@@ -101,6 +101,9 @@ What the sign-in screen should offer. No authentication.
 
 `oauth` lists only the providers whose credentials are configured — often none.
 
+`registration_open` is also `true` on an instance with `REGISTRATION_OPEN=false`
+that has no accounts yet — the first one can still get in.
+
 ---
 
 ### `POST /auth/register`
@@ -153,6 +156,10 @@ No body — the refresh cookie is the credential.
 The refresh token is **rotated**: the old one stops working the moment the new one
 is issued. A client loading the page calls this first — a valid cookie means the
 user is already signed in.
+
+Two refreshes sent at once with the same cookie — two tabs loading together — do
+not both succeed: one gets the new cookie, the other `UNAUTHENTICATED`. The browser
+holds the winner's cookie by then, so retrying once is enough.
 
 ---
 

@@ -4,9 +4,21 @@ from __future__ import annotations
 
 from collections.abc import AsyncIterator
 from typing import Annotated, Any
+from uuid import UUID
 
-from fastapi import Depends, Request
+from fastapi import Cookie, Depends, Request
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from psycopg import AsyncConnection
+
+from app.config import Settings, get_settings
+from app.domain.errors import Unauthenticated
+from app.security.access_tokens import read_access_token
+
+REFRESH_COOKIE = "nan_refresh"
+
+# auto_error=False so a missing header raises our Unauthenticated rather than
+# FastAPI's own 403, which would leave through a different shape.
+bearer = HTTPBearer(auto_error=False)
 
 
 async def db(request: Request) -> AsyncIterator[AsyncConnection[Any]]:
@@ -20,3 +32,40 @@ async def db(request: Request) -> AsyncIterator[AsyncConnection[Any]]:
 
 
 Db = Annotated[AsyncConnection[Any], Depends(db)]
+
+Config = Annotated[Settings, Depends(get_settings)]
+
+
+async def caller(
+    credentials: Annotated[HTTPAuthorizationCredentials | None, Depends(bearer)],
+    settings: Config,
+) -> UUID:
+    """The signed-in user's external id, read from the access token alone.
+
+    No database lookup: the signature and the expiry are the whole check. The
+    use cases take this UUID and join `users` on it, so whose rows they touch is
+    still decided in the WHERE.
+    """
+    if credentials is None:
+        raise Unauthenticated
+
+    user_id = read_access_token(credentials.credentials, settings.jwt_secret)
+    if user_id is None:
+        raise Unauthenticated
+
+    return user_id
+
+
+Caller = Annotated[UUID, Depends(caller)]
+
+
+async def refresh_token(
+    token: Annotated[str | None, Cookie(alias=REFRESH_COOKIE)] = None,
+) -> str:
+    if token is None:
+        raise Unauthenticated
+
+    return token
+
+
+RefreshToken = Annotated[str, Depends(refresh_token)]

@@ -125,7 +125,7 @@ Everything runs in Docker, so **Docker with Compose** is all it needs.
 ```bash
 git clone https://github.com/not-a-corp/not-a-notebook.git
 cd not-a-notebook
-cp .env.example .env    # POSTGRES_PASSWORD and SECRETS_KEY, nothing else required
+cp .env.example .env    # POSTGRES_PASSWORD, JWT_SECRET and SECRETS_KEY, nothing else required
 docker compose up
 ```
 
