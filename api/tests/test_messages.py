@@ -148,6 +148,30 @@ def test_a_question_becomes_cells_and_an_answer(
     assert body["active_run_id"] is None
 
 
+def test_an_answer_keeps_its_grounding_check(
+    client: TestClient, token: str, conversation: str, script: Any, sql: Run
+) -> None:
+    script(
+        [wants("print(1840231.5)"), answers("Sudeste: 1840231.5, 41% of the total.")],
+        [prints("1840231.5\n")],
+    )
+
+    run_id = send(client, token, conversation, "Which region?").json()["run_id"]
+    settled(sql, run_id)
+    body = client.get(f"{CONVERSATIONS}/{conversation}", headers=bearer(token)).json()
+
+    question, answer = body["messages"]
+    assert (question["kind"], question["grounding"]) == (None, None)
+    assert answer["kind"] == "answer"
+    assert answer["grounding"] == {"numbers": 2, "found": 1, "unfound": ["41%"]}
+
+    events = events_of(sql, run_id)
+    answered = next(e for e in events if e["type"] == "answer")
+    checked = next(e for e in events if e["type"] == "grounding.checked")
+    assert answered["message"]["grounding"] == answer["grounding"]
+    assert (checked["numbers"], checked["found"], checked["unfound"]) == (2, 1, ["41%"])
+
+
 def test_every_event_is_stored_in_order_without_gaps(
     client: TestClient, token: str, conversation: str, script: Any, sql: Run
 ) -> None:
@@ -199,6 +223,10 @@ def test_a_question_back_leaves_the_run_awaiting_the_user(
     assert events[-2]["type"] == "question"
     assert events[-2]["message"]["text"] == "2024 or 2025?"
     assert events[-1]["status"] == "awaiting_user"
+
+    body = client.get(f"{CONVERSATIONS}/{conversation}", headers=bearer(token)).json()
+    asked = body["messages"][-1]
+    assert (asked["kind"], asked["grounding"]) == ("question", None)
 
 
 def test_a_provider_failure_is_a_run_error_then_a_failed_run(

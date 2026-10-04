@@ -243,14 +243,25 @@ CREATE TABLE messages (
     role            VARCHAR(10) NOT NULL,
     text            TEXT        NOT NULL,
     created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+    kind            VARCHAR(10),
+    grounding       JSONB,
 
     CONSTRAINT messages_role_known
-        CHECK (role IN ('user', 'assistant'))
+        CHECK (role IN ('user', 'assistant')),
+    CONSTRAINT messages_kind_follows_role
+        CHECK ((role = 'user' AND kind IS NULL)
+            OR (role = 'assistant' AND kind IN ('answer', 'question'))),
+    CONSTRAINT messages_grounding_only_on_answers
+        CHECK (grounding IS NULL OR kind = 'answer')
 );
 
 -- A user message points at the run it started; an assistant message at the run
--- that produced it. A question the agent asks is an assistant message from a run
--- that ended 'awaiting_user'.
+-- that produced it. An assistant message is an answer, or a question the agent
+-- asked instead of guessing (its run ended 'awaiting_user'); kind says which, so
+-- a screen reloaded later can tell them apart without reading the run.
+-- grounding is an answer's grounding check ({numbers, found, unfound}), kept
+-- with it for the same reason. kind and grounding come last because they were
+-- added in 0002, and ALTER TABLE appends.
 CREATE INDEX messages_conversation_id_created_at_idx ON messages (conversation_id, created_at);
 
 
