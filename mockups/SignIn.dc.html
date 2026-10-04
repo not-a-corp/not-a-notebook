@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet"></helmet>
+<div style="width:1440px;height:900px;display:flex;align-items:center;justify-content:center;background:var(--surface);color:var(--text);font:400 14px/22px Inter,system-ui,sans-serif">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px">
+    <div style="width:400px;box-sizing:border-box;padding:32px;background:var(--raised);border:1px solid var(--border);border-radius:12px;display:flex;flex-direction:column;gap:24px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="width:12px;height:12px;border-radius:3px;border:2px solid var(--text);box-sizing:border-box"></span>
+        <span style="font:600 13px/20px 'JetBrains Mono',monospace;letter-spacing:-0.2px">not-a-notebook</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        <h1 style="margin:0;font:600 24px/32px Inter">Sign in</h1>
+        <p style="margin:0;color:var(--muted)">A data analyst that shows its work.</p>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <label style="display:flex;flex-direction:column;gap:8px">
+          <span style="font:500 13px/20px Inter">Email</span>
+          <span style="height:32px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)">rafael@example.com</span>
+        </label>
+        <label style="display:flex;flex-direction:column;gap:8px">
+          <span style="font:500 13px/20px Inter">Password</span>
+          <span style="height:32px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;border:1px solid var(--accent);border-radius:6px;background:var(--bg);box-shadow:0 0 0 2px var(--raised),0 0 0 4px var(--accent);letter-spacing:2px">••••••••••<span style="width:1px;height:16px;background:var(--text);margin-left:2px"></span></span>
+        </label>
+        <div style="height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--accent);color:var(--on-accent);font:500 14px/20px Inter">Sign in</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;font:400 12px/16px Inter;color:var(--muted)"><span style="flex:1;height:1px;background:var(--border)"></span>or<span style="flex:1;height:1px;background:var(--border)"></span></div>
+      <div style="display:flex;flex-direction:column;gap:8px">
+        <div style="height:32px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--border);border-radius:6px;font:500 14px/20px Inter">
+          <span title="Google mark goes here" style="width:16px;height:16px;box-sizing:border-box;border-radius:8px;border:1px dashed var(--muted);display:flex;align-items:center;justify-content:center;font:600 9px/1 Inter;color:var(--muted)">G</span>Continue with Google
+        </div>
+        <div style="height:32px;display:flex;align-items:center;justify-content:center;gap:8px;border:1px solid var(--border);border-radius:6px;font:500 14px/20px Inter">
+          <dc-import name="Icon" n="github" hint-size="16px,16px"></dc-import>Continue with GitHub
+        </div>
+      </div>
+      <div style="text-align:center;font:400 13px/20px Inter;color:var(--muted)">No account yet? <span style="color:var(--accent);font-weight:500">Create one</span></div>
+    </div>
+    <div style="font:400 12px/16px 'JetBrains Mono',monospace;color:var(--muted)">analytics.example.com</div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900}}"></script>
+</body>
+</html>

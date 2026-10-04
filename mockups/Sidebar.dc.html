@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="width:248px;height:100%;box-sizing:border-box;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;font:400 13px/20px Inter,system-ui,sans-serif;color:var(--text)">
+  <div style="height:48px;flex:none;display:flex;align-items:center;justify-content:space-between;padding:0 8px 0 16px">
+    <div style="display:flex;align-items:center;gap:8px">
+      <span style="width:12px;height:12px;border-radius:3px;border:2px solid var(--text);box-sizing:border-box"></span>
+      <span style="font:600 13px/20px 'JetBrains Mono',monospace;letter-spacing:-0.2px">not-a-notebook</span>
+    </div>
+    <div title="Collapse sidebar" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--muted)"><dc-import name="Icon" n="panel-left" hint-size="16px,16px"></dc-import></div>
+  </div>
+  <div style="padding:4px 8px 12px;display:flex;flex-direction:column;gap:2px">
+    <sc-if value="{{ actNew }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:6px;font-weight:500;background:color-mix(in oklab,var(--text) 8%,transparent)"><dc-import name="Icon" n="square-pen" hint-size="16px,16px"></dc-import><span style="flex:1">New conversation</span></div>
+    </sc-if>
+    <sc-if value="{{ notActNew }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:6px;font-weight:500"><dc-import name="Icon" n="square-pen" hint-size="16px,16px"></dc-import><span style="flex:1">New conversation</span></div>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:6px;color:var(--muted)">
+      <dc-import name="Icon" n="search" hint-size="16px,16px"></dc-import>
+      <span style="flex:1">Search</span>
+      <span style="font:400 12px/16px 'JetBrains Mono',monospace;padding:0 4px;border:1px solid var(--border);border-radius:4px">⌘K</span>
+    </div>
+  </div>
+  <div style="flex:1;min-height:0;overflow:hidden;padding:0 8px;display:flex;flex-direction:column;gap:16px">
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <div style="font:500 12px/16px Inter;color:var(--muted);padding:0 8px 4px">Today</div>
+      <sc-if value="{{ actConv }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:6px;background:color-mix(in oklab,var(--text) 8%,transparent);font-weight:500">
+          <span style="flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Faturamento por região 2025</span>
+          <sc-if value="{{ live }}" hint-placeholder-val="{{ false }}"><span title="Running" style="width:6px;height:6px;border-radius:3px;background:var(--accent);flex:none"></span></sc-if>
+        </div>
+      </sc-if>
+      <sc-if value="{{ notActConv }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Faturamento por região 2025</span></div>
+      </sc-if>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Churn de clientes — Q3</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <div style="font:500 12px/16px Inter;color:var(--muted);padding:0 8px 4px">Yesterday</div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Estoque: divergências entre filiais</span></div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">NPS por canal de atendimento</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <div style="font:500 12px/16px Inter;color:var(--muted);padding:0 8px 4px">Last 7 days</div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Cohort de assinaturas 2024</span></div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Custos de frete por transportadora</span></div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Leads por origem — setembro</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2px">
+      <div style="font:500 12px/16px Inter;color:var(--muted);padding:0 8px 4px">Earlier</div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Comissões dos vendedores</span></div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Base de clientes: duplicados</span></div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Inadimplência por faixa de valor</span></div>
+      <div style="display:flex;align-items:center;height:32px;padding:0 8px;border-radius:6px"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Ticket médio por loja</span></div>
+    </div>
+  </div>
+  <div style="flex:none;border-top:1px solid var(--border);padding:8px;display:flex;flex-direction:column;gap:2px">
+    <sc-if value="{{ actSet }}" hint-placeholder-val="{{ false }}">
+      <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:6px;background:color-mix(in oklab,var(--text) 8%,transparent);font-weight:500"><dc-import name="Icon" n="settings" hint-size="16px,16px"></dc-import><span style="flex:1">Settings</span><span style="font:400 12px/16px 'JetBrains Mono',monospace;color:var(--muted)">⌘,</span></div>
+    </sc-if>
+    <sc-if value="{{ notActSet }}" hint-placeholder-val="{{ true }}">
+      <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 8px;border-radius:6px;color:var(--muted)"><dc-import name="Icon" n="settings" hint-size="16px,16px"></dc-import><span style="flex:1;color:var(--text)">Settings</span></div>
+    </sc-if>
+    <div style="display:flex;align-items:center;gap:8px;height:40px;padding:0 8px;border-radius:6px">
+      <span style="width:24px;height:24px;border-radius:12px;background:color-mix(in oklab,var(--text) 12%,transparent);display:flex;align-items:center;justify-content:center;font:600 12px/16px Inter;flex:none">RL</span>
+      <span style="flex:1;font-weight:500">Rafael Langsch</span>
+      <span style="color:var(--muted);display:flex"><dc-import name="Icon" n="ellipsis" hint-size="16px,16px"></dc-import></span>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:248,&quot;height&quot;:900},&quot;active&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;conv&quot;,&quot;new&quot;,&quot;settings&quot;,&quot;none&quot;],&quot;default&quot;:&quot;conv&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;live&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const a = this.props.active ?? 'conv';
+    return { actConv: a === 'conv', notActConv: a !== 'conv', actNew: a === 'new', notActNew: a !== 'new', actSet: a === 'settings', notActSet: a !== 'settings', live: !!this.props.live };
+  }
+}
+</script>
+</body>
+</html>
