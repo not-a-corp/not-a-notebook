@@ -9,7 +9,7 @@ nothing happened.
 from __future__ import annotations
 
 import json
-from typing import Any, Literal
+from typing import Any
 
 from psycopg import AsyncConnection
 from psycopg.types.json import Jsonb
@@ -46,41 +46,43 @@ async def read_profile(kernel: Kernel, name: str) -> dict[str, Any]:
     return profile
 
 
-async def finish_profile_run(
+async def store_profile(
     conn: AsyncConnection[Any],
-    run_id: int,
     file_id: int,
-    profile: dict[str, Any] | None,
-    status: Literal["succeeded", "failed"],
+    profile: dict[str, Any],
 ) -> None:
-    profile_sql = """
+    sql = """
         UPDATE files f
            SET profile = %(profile)s
          WHERE f.id = %(file_id)s
     """
 
-    profile_params: dict[str, Any] = {
+    params: dict[str, Any] = {
         "profile": Jsonb(profile),
         "file_id": file_id,
     }
 
-    # Only a run still running is closed: one closed already — as abandoned, by a
-    # restart — keeps the status it was given.
-    run_sql = """
-        UPDATE runs r
-           SET status = %(status)s,
-               finished_at = now()
-         WHERE r.id = %(run_id)s
-           AND r.status = 'running'
+    await conn.execute(sql, params)
+
+
+async def cells_have_run(conn: AsyncConnection[Any], conversation_row_id: int) -> bool:
+    """Whether a kernel starting now replaces one that held the notebook's state."""
+    sql = """
+        SELECT EXISTS (
+                   SELECT 1
+                     FROM cells c
+                    WHERE c.conversation_id = %(conversation_id)s
+                      AND c.execution_count IS NOT NULL
+               ) AS have_run
     """
 
-    run_params: dict[str, Any] = {
-        "status": status,
-        "run_id": run_id,
-    }
+    params = {"conversation_id": conversation_row_id}
 
-    async with conn.transaction():
-        if profile is not None:
-            await conn.execute(profile_sql, profile_params)
+    async with conn.cursor() as cur:
+        await cur.execute(sql, params)
+        row = await cur.fetchone()
 
-        await conn.execute(run_sql, run_params)
+    assert row is not None  # SELECT EXISTS always returns its one row
+
+    have_run: bool = row["have_run"]
+    return have_run

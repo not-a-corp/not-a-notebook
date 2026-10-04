@@ -81,10 +81,29 @@ async def replay(adapter: str, case: str, history: list[Item]) -> tuple[Reply, d
 
     reply, streamed = await complete(endpoint_of(recorded), history, serving(recorded, sent))
 
-    assert sent == [recorded["request"]], "the adapter no longer builds the recorded request"
+    assert len(sent) == 1
+    assert without_tools(sent[0]) == without_tools(recorded["request"]), (
+        "the adapter no longer builds the recorded request"
+    )
     assert streamed == reply.turn.text
 
     return reply, recorded
+
+
+def without_tools(request: dict[str, Any]) -> dict[str, Any]:
+    """The request minus its tool definitions.
+
+    The recordings predate ask_user, the second tool. The replies stay true — each
+    model answered the same question with the same tool — so only the tool list,
+    a constant tested on its own, is left out of the comparison. Re-recording puts
+    it back in.
+    """
+    kept = {}
+    for field, value in request.items():
+        if field != "tools":
+            kept[field] = value
+
+    return kept
 
 
 # ── replaying real streams ───────────────────────────────────────────────────
@@ -357,3 +376,90 @@ async def test_calls_beyond_the_first_are_answered_as_not_run() -> None:
 )
 def test_code_is_found_in_text(text: str, code: str | None) -> None:
     assert extract_code(text) == code
+
+
+# ── asking instead of guessing ───────────────────────────────────────────────
+
+
+async def test_the_tools_dialect_offers_both_tools() -> None:
+    body = await request_for("openai_compatible", "tools", [UserText("hi")])
+
+    names = [tool["function"]["name"] for tool in body["tools"]]
+    assert names == ["run_python", "ask_user"]
+
+
+async def test_an_ask_user_call_is_a_question() -> None:
+    chunks = [
+        {
+            "choices": [
+                {
+                    "delta": {
+                        "tool_calls": [
+                            {
+                                "index": 0,
+                                "id": "call_1",
+                                "function": {"name": "ask_user", "arguments": ""},
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "choices": [
+                {
+                    "delta": {
+                        "tool_calls": [
+                            {"index": 0, "function": {"arguments": '{"question": "2024 or 2025?"}'}}
+                        ]
+                    }
+                }
+            ]
+        },
+        {"choices": [{"delta": {}, "finish_reason": "tool_calls"}]},
+    ]
+    body = "".join(f"data: {json.dumps(chunk)}\n\n" for chunk in chunks) + "data: [DONE]\n\n"
+
+    reply, _ = await complete(
+        endpoint("openai_compatible"), [UserText("hi")], lambda r: sse(200, body)
+    )
+
+    assert reply.stop == "question"
+    assert reply.question == "2024 or 2025?"
+    assert reply.turn.code is None
+
+
+async def test_the_text_dialect_asks_with_a_marker() -> None:
+    chunk = {"choices": [{"delta": {"content": "QUESTION: Do you mean 2024 or 2025?"}}]}
+    body = f"data: {json.dumps(chunk)}\n\ndata: [DONE]\n\n"
+
+    reply, _ = await complete(
+        endpoint("openai_compatible", "text"), [UserText("hi")], lambda r: sse(200, body)
+    )
+
+    assert reply.stop == "question"
+    assert reply.question == "Do you mean 2024 or 2025?"
+
+
+async def test_a_call_to_a_tool_that_does_not_exist_is_a_protocol_error() -> None:
+    chunk = {
+        "choices": [
+            {
+                "delta": {
+                    "tool_calls": [
+                        {
+                            "index": 0,
+                            "id": "call_1",
+                            "function": {"name": "rm_rf", "arguments": "{}"},
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+    body = f"data: {json.dumps(chunk)}\n\ndata: [DONE]\n\n"
+
+    with pytest.raises(ProviderError) as raised:
+        await complete(endpoint("openai_compatible"), [UserText("hi")], lambda r: sse(200, body))
+
+    assert raised.value.kind == "protocol"

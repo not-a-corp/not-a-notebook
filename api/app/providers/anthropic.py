@@ -28,18 +28,18 @@ from app.domain.llm import (
     OnDelta,
     ProviderError,
     Reply,
-    StopReason,
     ToolResult,
     Usage,
     UserText,
 )
 from app.providers.dialect import (
     NOT_RUN,
-    TOOL_DESCRIPTION,
     TOOL_NAME,
-    TOOL_PARAMETERS,
-    extract_code,
+    TOOLS,
+    Call,
+    read_reply,
     result_as_text,
+    stop_of,
     turn_as_text,
 )
 from app.providers.endpoint import Endpoint
@@ -89,12 +89,16 @@ class AnthropicModel:
         }
 
         if self.endpoint.dialect == "tools":
-            tool = {
-                "name": TOOL_NAME,
-                "description": TOOL_DESCRIPTION,
-                "input_schema": TOOL_PARAMETERS,
-            }
-            body["tools"] = [tool]
+            tools = []
+            for spec in TOOLS:
+                tool = {
+                    "name": spec.name,
+                    "description": spec.description,
+                    "input_schema": spec.parameters,
+                }
+                tools.append(tool)
+
+            body["tools"] = tools
             body["tool_choice"] = {"type": "auto", "disable_parallel_tool_use": True}
 
         return body
@@ -259,57 +263,29 @@ class StreamedMessage:
             if block.get("type") == "text":
                 text_parts.append(block.get("text", ""))
             elif block.get("type") == "tool_use":
-                calls.append(block)
+                call = Call(id=block["id"], name=block["name"], arguments=block.get("input") or {})
+                calls.append(call)
 
         text = "".join(text_parts)
-        code, call_id, extra = code_of(endpoint, text, calls)
+        reading = read_reply(endpoint.dialect, text, calls)
 
         turn = AssistantTurn(
             text=text,
-            code=code,
-            call_id=call_id,
+            code=reading.code,
+            call_id=reading.call_id,
             source=endpoint.source,
             raw=content,
-            extra_call_ids=extra,
+            extra_call_ids=reading.extra_call_ids,
         )
         usage = Usage(
             input_tokens=self.input_tokens,
             output_tokens=self.output_tokens,
             reasoning_tokens=self.thinking_tokens,
         )
+        stop = stop_of(
+            reading,
+            refused=self.stop_reason == "refusal",
+            cut_off=self.stop_reason == "max_tokens",
+        )
 
-        return Reply(turn=turn, usage=usage, stop=self.stop(code))
-
-    def stop(self, code: str | None) -> StopReason:
-        if self.stop_reason == "refusal":
-            return "refusal"
-
-        if self.stop_reason == "max_tokens":
-            return "max_tokens"
-
-        if code is not None:
-            return "code"
-
-        return "answer"
-
-
-def code_of(
-    endpoint: Endpoint,
-    text: str,
-    calls: list[dict[str, Any]],
-) -> tuple[str | None, str | None, tuple[str, ...]]:
-    """The code to run, the call it answers, and any calls that will not run."""
-    if endpoint.dialect == "text":
-        return extract_code(text), None, ()
-
-    if not calls:
-        return None, None, ()
-
-    first = calls[0]
-    code = first.get("input", {}).get("code")
-    extra = tuple(call["id"] for call in calls[1:])
-
-    if not isinstance(code, str):
-        raise ProviderError("protocol", "a run_python call without a code string")
-
-    return code, first["id"], extra
+        return Reply(turn=turn, usage=usage, stop=stop, question=reading.question)

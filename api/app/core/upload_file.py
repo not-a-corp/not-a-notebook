@@ -36,7 +36,10 @@ class ProfileJob:
     the process."""
 
     run_id: int
+    run_external_id: UUID
     file_id: int
+    file: FileInfo
+    conversation_row_id: int
     conversation_id: UUID
     folder: str
     name: str
@@ -157,7 +160,10 @@ async def record(
 
     job = ProfileJob(
         run_id=run["id"],
+        run_external_id=run["external_id"],
         file_id=stored["id"],
+        file=file,
+        conversation_row_id=run["conversation_id"],
         conversation_id=conversation_id,
         folder=conversation_folder(user_id, conversation_id),
         name=name,

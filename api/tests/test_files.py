@@ -460,3 +460,37 @@ def test_profiling_does_not_touch_the_users_execution_count(
 
     count = client.portal.call(first_count)  # type: ignore[attr-defined]
     assert count == 1
+
+
+def test_the_profile_run_streams_its_events(
+    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+) -> None:
+    run_id = upload(client, token, conversation).json()["run_id"]
+    settled(client, token, conversation)
+
+    rows = sql(
+        """
+        SELECT e.event
+          FROM run_events e
+          JOIN runs r
+            ON r.id = e.run_id
+         WHERE r.external_id = %(id)s
+         ORDER BY e.seq
+        """,
+        {"id": run_id},
+    )
+    events = [row[0] for row in rows]
+
+    assert [e["type"] for e in events] == [
+        "run.started",
+        "file.uploaded",
+        "kernel.starting",
+        "kernel.ready",
+        "file.profiled",
+        "run.finished",
+    ]
+    assert events[0]["kind"] == "profile"
+    assert events[0]["model"] is None
+    assert events[1]["file"]["name"] == "sales.csv"
+    assert events[4]["profile"] == CANNED_PROFILE
+    assert events[5]["status"] == "succeeded"
