@@ -4,6 +4,8 @@ x-api: &api
     dockerfile: api/Dockerfile
   environment:
     DATABASE_URL: postgresql://notebook:${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}@db:5432/notebook
+    JWT_SECRET: ${JWT_SECRET:?set JWT_SECRET in .env}
+    REGISTRATION_OPEN: ${REGISTRATION_OPEN:-true}
 
 services:
   db:

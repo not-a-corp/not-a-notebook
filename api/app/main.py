@@ -26,7 +26,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import health
+from app.api import account, auth, health
 from app.config import get_settings
 from app.db.pool import create_pool
 from app.domain.errors import DomainError
@@ -111,4 +111,6 @@ app = FastAPI(
 )
 
 register_error_handlers(app)
+app.include_router(account.router, prefix=API_PREFIX)
+app.include_router(auth.router, prefix=API_PREFIX)
 app.include_router(health.router, prefix=API_PREFIX)

@@ -23,3 +23,27 @@ class DomainError(Exception):
             self.message = message
 
         super().__init__(self.message)
+
+
+class Unauthenticated(DomainError):
+    code = "UNAUTHENTICATED"
+    status = 401
+    message = "Missing, invalid or expired credentials."
+
+
+class InvalidCredentials(DomainError):
+    code = "INVALID_CREDENTIALS"
+    status = 401
+    message = "Wrong email or password."
+
+
+class RegistrationClosed(DomainError):
+    code = "REGISTRATION_CLOSED"
+    status = 403
+    message = "This instance does not accept new accounts."
+
+
+class EmailAlreadyRegistered(DomainError):
+    code = "EMAIL_ALREADY_REGISTERED"
+    status = 409
+    message = "That email already has an account."
