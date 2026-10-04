@@ -41,7 +41,8 @@ async def update_conversation(
                AND u.external_id = %(user_id)s
                AND c.external_id = %(conversation_id)s
                AND (NOT %(set_model)s OR %(model_id)s::uuid IS NULL OR m.id IS NOT NULL)
-            RETURNING c.external_id,
+            RETURNING c.id,
+                      c.external_id,
                       c.model_id,
                       c.title,
                       c.created_at,
@@ -50,6 +51,12 @@ async def update_conversation(
         SELECT d.external_id AS id,
                d.title,
                m.external_id AS model_id,
+               (
+                   SELECT r.external_id
+                     FROM runs r
+                    WHERE r.conversation_id = d.id
+                      AND r.status = 'running'
+               ) AS active_run_id,
                d.created_at,
                d.updated_at
           FROM updated d
