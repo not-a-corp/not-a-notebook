@@ -8,36 +8,35 @@ kernel start and a profile would tie up a pool slot for seconds or minutes.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import uuid
 from typing import Any
 
-from psycopg_pool import AsyncConnectionPool
-
-from app.core.profile_file import cells_have_run, read_profile, store_profile
+from app.core.profile_file import ProfilingFailed, cells_have_run, read_profile, store_profile
 from app.core.run_records import RunStatus, finish_run
 from app.core.upload_file import ProfileJob
 from app.domain.agent import Emit
 from app.domain.errors import SandboxUnavailable
 from app.domain.llm import Usage
 from app.domain.runtime import KernelDied
-from app.runs.broadcast import Broadcast
 from app.runs.events import RunEvents
 from app.runs.kernels import ConversationKernels
-from app.runtime.registry import KernelRegistry
+from app.runs.services import Services
 
 log = logging.getLogger(__name__)
 
 
-async def profile_in_background(
-    pool: AsyncConnectionPool,
-    broadcast: Broadcast,
-    kernels: KernelRegistry,
-    job: ProfileJob,
-) -> None:
-    emit = RunEvents(pool, broadcast, job.run_id)
+async def profile_in_background(services: Services, job: ProfileJob) -> None:
+    pool = services.pool
+    emit = RunEvents(pool, services.broadcast, job.run_id)
+    control = services.controls.open(job.run_external_id, job.conversation_id)
 
-    status = await profile(pool, kernels, job, emit)
+    try:
+        async with services.kernels.hold(job.conversation_id):
+            status = await profile(services, job, emit, control.stop)
+    finally:
+        services.controls.close(job.run_external_id)
 
     async with pool.connection() as conn:
         finished = await finish_run(conn, job.run_id, status, Usage())
@@ -53,10 +52,10 @@ async def profile_in_background(
 
 
 async def profile(
-    pool: AsyncConnectionPool,
-    registry: KernelRegistry,
+    services: Services,
     job: ProfileJob,
     emit: Emit,
+    stop: asyncio.Event,
 ) -> RunStatus:
     started = {
         "run_id": str(job.run_external_id),
@@ -68,14 +67,27 @@ async def profile(
     await emit("file.uploaded", {"file": job.file.model_dump(mode="json")})
 
     details = {"run_id": job.run_id}
+    pool = services.pool
+    registry = services.kernels
 
     try:
         async with pool.connection() as conn:
             have_run = await cells_have_run(conn, job.conversation_row_id)
 
-        kernels = ConversationKernels(registry, job.conversation_id, job.folder, emit, have_run)
+        kernels = ConversationKernels(
+            registry, services.store, job.conversation_id, job.folder, emit, have_run
+        )
         kernel = await kernels.current()
         profile = await read_profile(kernel, job.name)
+    except ProfilingFailed:
+        # Interrupted on request is a cancelled run; anything else is the
+        # profiler breaking, which is ours.
+        if stop.is_set():
+            return "cancelled"
+        error_id = str(uuid.uuid4())
+        log.exception("run %(run_id)s: the profiler failed", details)
+        await run_error(emit, "INTERNAL_ERROR", "Something went wrong.", error_id)
+        return "failed"
     except SandboxUnavailable:
         await run_error(emit, "SANDBOX_UNAVAILABLE", "A kernel could not be started.")
         return "failed"

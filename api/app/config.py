@@ -62,6 +62,10 @@ class Settings(BaseSettings):
     kernel_cpus: float = 1.0
     kernel_pids: int = 256
     execution_timeout_seconds: float = 300
+    # A kernel nobody has used for this long is reaped: it costs RAM while nobody
+    # looks at it, and the next run starts a fresh one (decision 3). Provisional —
+    # the plan leaves the number to real usage; the POC used 5.
+    kernel_idle_minutes: float = 15
 
     # Uploaded files: where the API keeps them, and the Docker volume that holds
     # that directory — kernels mount their conversation's part of it at /data.

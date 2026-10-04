@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import time
 from collections.abc import Iterator, Sequence
 from typing import Any
 
@@ -251,3 +252,30 @@ def test_a_run_whose_process_died_still_ends_its_stream(
     assert events[1]["code"] == "INTERNAL_ERROR"
     assert events[2]["status"] == "failed"
     assert [event["seq"] for event in events] == [1, 2, 3]
+
+
+def test_cancelling_while_the_model_thinks_ends_the_run_cancelled(
+    client: TestClient, token: str, conversation: str, script: Any, sql: Run
+) -> None:
+    model = script([answers("never sent")], [])
+
+    async def forever(system: str, history: Sequence[Item], on_delta: OnDelta) -> Reply:
+        await asyncio.sleep(60)
+        raise AssertionError("the request should have been abandoned")
+
+    model.complete = forever
+    run_id = send(client, token, conversation, "Think forever.").json()["run_id"]
+
+    deadline = time.monotonic() + 10
+    while not [e for e in events_of(sql, run_id) if e["type"] == "llm.started"]:
+        assert time.monotonic() < deadline
+        time.sleep(0.02)
+
+    response = client.post(f"{RUNS}/{run_id}/cancel", headers=bearer(token))
+
+    assert response.status_code == 202
+    assert settled(sql, run_id) == "cancelled"
+    events = events_of(sql, run_id)
+    assert events[-1]["type"] == "run.finished"
+    assert events[-1]["status"] == "cancelled"
+    assert "run.error" not in [e["type"] for e in events]

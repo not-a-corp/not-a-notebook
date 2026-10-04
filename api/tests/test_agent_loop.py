@@ -3,6 +3,8 @@ and the events in the order events.md promises."""
 
 from __future__ import annotations
 
+import asyncio
+
 import pytest
 from app.agent.loop import MAX_ATTEMPTS, MAX_STEPS, Meter, ModelRefused, StepLimit, run_turn
 from app.domain.llm import AssistantTurn, Reply, ToolResult, Usage, UserText
@@ -38,6 +40,7 @@ async def turn(
         notebook,
         events,
         meter,
+        asyncio.Event(),
     )
 
     return outcome, model, kernel, notebook, events, meter
@@ -149,7 +152,9 @@ async def test_a_dead_kernel_is_replaced_and_the_model_is_told() -> None:
     notebook = MemoryNotebook()
     events = Events()
 
-    await run_turn(model, kernels, "s", [UserText("go")], notebook, events, Meter())
+    await run_turn(
+        model, kernels, "s", [UserText("go")], notebook, events, Meter(), asyncio.Event()
+    )
 
     assert kernels.replaced == 1
     assert {"reason": "died"} in events.of("kernel.restarted")
@@ -193,6 +198,7 @@ async def test_a_model_that_never_answers_hits_the_step_limit_and_its_tokens_sti
             MemoryNotebook(),
             Events(),
             meter,
+            asyncio.Event(),
         )
 
     assert meter.usage.input_tokens == 100 * MAX_STEPS

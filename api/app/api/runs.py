@@ -5,11 +5,11 @@ from __future__ import annotations
 from typing import Annotated
 from uuid import UUID
 
-from fastapi import APIRouter, Header
+from fastapi import APIRouter, Header, Response, status
 from fastapi.responses import StreamingResponse
 
 from app.core.runs import find_run
-from app.dependencies import Caller, Db, Live, Pool
+from app.dependencies import Caller, Controls, Db, Kernels, Live, Pool
 from app.domain.runs import RunView
 from app.runs.stream import resume_after, stream
 
@@ -48,3 +48,19 @@ async def events(
         media_type="text/event-stream",
         headers=headers,
     )
+
+
+@router.post("/{run_id}/cancel", status_code=status.HTTP_202_ACCEPTED)
+async def cancel(
+    run_id: UUID,
+    caller: Caller,
+    conn: Db,
+    controls: Controls,
+    kernels: Kernels,
+) -> Response:
+    # Found first, so someone else's run is a 404 like everywhere. A run that
+    # already finished is a 202 that changes nothing.
+    await find_run(conn, caller, run_id)
+    await controls.cancel(run_id, kernels)
+
+    return Response(status_code=status.HTTP_202_ACCEPTED)

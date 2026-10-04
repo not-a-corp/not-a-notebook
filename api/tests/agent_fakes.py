@@ -3,6 +3,7 @@ events — the whole agent loop with nothing real behind it (decision 15)."""
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Sequence
 from dataclasses import dataclass, field
 from typing import Any
@@ -67,6 +68,8 @@ class Run:
     outputs: list[Output] = field(default_factory=list)
     status: str = "ok"
     dies: bool = False
+    # Runs until interrupted, like a while True — then ends cancelled.
+    blocks: bool = False
 
 
 def prints(text: str) -> Run:
@@ -83,6 +86,8 @@ class ScriptedKernel:
         self.runs = list(runs)
         self.executed: list[str] = []
         self.count = 0
+        self.interrupted = asyncio.Event()
+        self.running = asyncio.Event()
 
     async def execute(
         self, code: str, on_output: OnOutput, store_history: bool = True
@@ -93,6 +98,14 @@ class ScriptedKernel:
         if run.dies:
             raise KernelDied("out of memory")
 
+        if run.blocks:
+            self.running.set()
+            await self.interrupted.wait()
+            self.interrupted.clear()
+            interrupted = ErrorOutput(name="KeyboardInterrupt", value="", traceback=[])
+            await on_output(interrupted)
+            return ExecutionResult(status="cancelled", execution_count=None, duration_ms=3)
+
         for output in run.outputs:
             await on_output(output)
 
@@ -100,7 +113,7 @@ class ScriptedKernel:
         return ExecutionResult(status=run.status, execution_count=self.count, duration_ms=3)  # type: ignore[arg-type]
 
     async def interrupt(self) -> None:
-        pass
+        self.interrupted.set()
 
     async def shutdown(self) -> None:
         pass
