@@ -26,3 +26,11 @@ repos:
         language: system
         files: ^api/
         pass_filenames: false
+
+      # The web app's whole gate in its own image: tsc, eslint, prettier, vitest.
+      - id: web-check
+        name: web check
+        entry: docker compose run --rm --build web-test
+        language: system
+        files: ^web/
+        pass_filenames: false
