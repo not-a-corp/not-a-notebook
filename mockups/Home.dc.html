@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet"></helmet>
+<div style="width:1440px;height:900px;display:flex;overflow:hidden;background:var(--bg);color:var(--text);font:400 14px/22px Inter,system-ui,sans-serif">
+  <dc-import name="Sidebar" active="new" hint-size="248px,900px"></dc-import>
+  <div style="position:relative;flex:1;min-width:0;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:24px;padding-bottom:48px;box-sizing:border-box">
+    <div style="position:absolute;width:620px;height:620px;left:-220px;top:-260px;border-radius:50%;background:var(--accent);opacity:.12;filter:blur(120px);pointer-events:none"></div>
+    <div style="position:absolute;width:680px;height:680px;right:-240px;bottom:-300px;border-radius:50%;background:var(--c2);opacity:.10;filter:blur(120px);pointer-events:none"></div>
+    <div style="position:absolute;width:420px;height:420px;right:80px;top:-260px;border-radius:50%;background:var(--accent);opacity:.08;filter:blur(120px);pointer-events:none"></div>
+    <div style="position:absolute;inset:0;background-image:linear-gradient(var(--border) 1px,transparent 1px),linear-gradient(90deg,var(--border) 1px,transparent 1px);background-size:96px 96px;background-position:center center;-webkit-mask-image:radial-gradient(ellipse 58% 62% at 50% 46%,transparent 25%,#000 90%);mask-image:radial-gradient(ellipse 58% 62% at 50% 46%,transparent 25%,#000 90%);pointer-events:none"></div>
+
+    <h1 style="position:relative;margin:0;font:500 24px/32px Inter;letter-spacing:-0.2px">What do you want to know about your data?</h1>
+    <div style="position:relative;width:720px;box-sizing:border-box;background:var(--raised);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);padding:16px 12px 12px 16px;display:flex;flex-direction:column;gap:12px">
+      <div style="min-height:66px;display:flex;align-items:flex-start;color:var(--muted)"><span style="width:1px;height:20px;margin-top:1px;background:var(--text);flex:none"></span><span>Ask a question, or drop a file…</span></div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="display:flex;align-items:center;gap:8px;height:32px;padding:0 12px 0 8px;border-radius:6px;color:var(--muted);font:500 13px/20px Inter"><dc-import name="Icon" n="paperclip" hint-size="16px,16px"></dc-import><span style="color:var(--text)">Attach</span></div>
+        <sc-if value="{{ hasFile }}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;gap:8px;height:28px;padding:0 4px 0 8px;border:1px solid var(--border);border-radius:6px;background:var(--surface)">
+            <span style="color:var(--muted);display:flex"><dc-import name="Icon" n="file-spreadsheet" s="14" hint-size="14px,14px"></dc-import></span>
+            <span style="font:500 13px/20px Inter">vendas_2025.xlsx</span>
+            <span style="font:400 12px/16px Inter;color:var(--muted)">1.2 MB</span>
+            <div title="Remove vendas_2025.xlsx" style="width:20px;height:20px;display:flex;align-items:center;justify-content:center;border-radius:4px;color:var(--muted)"><dc-import name="Icon" n="x" s="14" hint-size="14px,14px"></dc-import></div>
+          </div>
+        </sc-if>
+        <div style="flex:1"></div>
+        <div title="Model for this conversation" style="display:flex;align-items:center;gap:8px;height:32px;padding:0 8px 0 12px;border-radius:6px;font:500 13px/20px Inter">Claude<span style="color:var(--muted);display:flex"><dc-import name="Icon" n="chevron-down" hint-size="16px,16px"></dc-import></span></div>
+        <sc-if value="{{ hasFile }}" hint-placeholder-val="{{ false }}">
+          <div title="Send" style="width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:var(--accent);color:var(--on-accent)"><dc-import name="Icon" n="arrow-up" w="2" hint-size="16px,16px"></dc-import></div>
+        </sc-if>
+        <sc-if value="{{ noFile }}" hint-placeholder-val="{{ true }}">
+          <div title="Send — type a question or attach a file first" style="width:32px;height:32px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:color-mix(in oklab,var(--text) 8%,transparent);color:var(--muted)"><dc-import name="Icon" n="arrow-up" w="2" hint-size="16px,16px"></dc-import></div>
+        </sc-if>
+      </div>
+    </div>
+    <div style="position:relative;font:400 13px/20px Inter;color:var(--muted)">CSV, TSV, Excel or Parquet — drop it anywhere</div>
+
+    <sc-if value="{{ isDragging }}" hint-placeholder-val="{{ false }}">
+      <div style="position:absolute;inset:12px;border:2px dashed var(--accent);border-radius:12px;background:color-mix(in oklab,var(--accent-soft) 55%,transparent);pointer-events:none"></div>
+      <div style="position:absolute;left:50%;top:200px;transform:translateX(-50%);display:flex;align-items:center;gap:8px;height:40px;padding:0 16px;border-radius:8px;background:var(--raised);border:1px solid var(--border);box-shadow:var(--shadow);font:500 16px/24px Inter"><span style="color:var(--accent);display:flex"><dc-import name="Icon" n="upload" s="20" hint-size="20px,20px"></dc-import></span>Drop to attach</div>
+      <div style="position:absolute;left:760px;top:618px;display:flex;align-items:center;gap:8px;height:28px;padding:0 8px;border:1px solid var(--border);border-radius:6px;background:var(--raised);box-shadow:var(--shadow);opacity:.9;transform:rotate(-2deg)">
+        <span style="color:var(--muted);display:flex"><dc-import name="Icon" n="file-spreadsheet" s="14" hint-size="14px,14px"></dc-import></span>
+        <span style="font:500 13px/20px Inter">relatorio.csv</span>
+        <span style="font:400 12px/16px Inter;color:var(--muted)">84 KB</span>
+      </div>
+      <div style="position:absolute;left:748px;top:606px;color:var(--bg)"><dc-import name="Icon" n="mouse-pointer-2" s="20" w="1.5" f="var(--text)" hint-size="20px,20px"></dc-import></div>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;state&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;empty&quot;,&quot;attached&quot;,&quot;dragging&quot;],&quot;default&quot;:&quot;empty&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.props.state ?? 'empty';
+    return { hasFile: s === 'attached', noFile: s !== 'attached', isDragging: s === 'dragging' };
+  }
+}
+</script>
+</body>
+</html>

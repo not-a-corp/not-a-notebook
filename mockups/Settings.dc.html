@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=JetBrains+Mono:wght@400;600&amp;display=swap" rel="stylesheet"></helmet>
+<div style="width:1440px;height:900px;display:flex;overflow:hidden;background:var(--bg);color:var(--text);font:400 14px/22px Inter,system-ui,sans-serif">
+  <dc-import name="Sidebar" active="settings" hint-size="248px,900px"></dc-import>
+  <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+    <div style="height:48px;flex:none;box-sizing:border-box;display:flex;align-items:center;gap:8px;padding:0 24px 0 12px;border-bottom:1px solid var(--border)">
+      <div title="Back to the conversation (Esc)" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;color:var(--muted)"><dc-import name="Icon" n="arrow-left" s="20" hint-size="20px,20px"></dc-import></div>
+      <span style="font:600 14px/22px Inter">Settings</span>
+    </div>
+    <div style="flex:1;min-height:0;display:flex">
+      <nav style="width:200px;flex:none;box-sizing:border-box;padding:16px 8px;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:2px;font:400 13px/20px Inter">
+        <sc-if value="{{ isGeneral }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;height:32px;padding:0 12px;border-radius:6px;background:color-mix(in oklab,var(--text) 8%,transparent);font-weight:500">General</div></sc-if>
+        <sc-if value="{{ notGeneral }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;height:32px;padding:0 12px;border-radius:6px">General</div></sc-if>
+        <sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;height:32px;padding:0 12px;border-radius:6px;background:color-mix(in oklab,var(--text) 8%,transparent);font-weight:500">Account</div></sc-if>
+        <sc-if value="{{ notAccount }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;height:32px;padding:0 12px;border-radius:6px">Account</div></sc-if>
+        <sc-if value="{{ isModels }}" hint-placeholder-val="{{ false }}"><div style="display:flex;align-items:center;height:32px;padding:0 12px;border-radius:6px;background:color-mix(in oklab,var(--text) 8%,transparent);font-weight:500">Models</div></sc-if>
+        <sc-if value="{{ notModels }}" hint-placeholder-val="{{ true }}"><div style="display:flex;align-items:center;height:32px;padding:0 12px;border-radius:6px">Models</div></sc-if>
+      </nav>
+      <div style="flex:1;min-width:0;padding:32px 48px;overflow:hidden">
+        <div style="max-width:760px;display:flex;flex-direction:column;gap:32px">
+
+          <sc-if value="{{ isGeneral }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h1 style="margin:0;font:600 20px/28px Inter">General</h1>
+              <p style="margin:0;color:var(--muted)">How not-a-notebook looks in this browser.</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="font:600 13px/20px Inter">Appearance</div>
+              <div style="border:1px solid var(--border);border-radius:8px">
+                <div style="display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:16px">
+                  <div style="display:flex;flex-direction:column;gap:4px">
+                    <span style="font:500 13px/20px Inter">Theme</span>
+                    <span style="font:400 13px/20px Inter;color:var(--muted);text-wrap:pretty">Saved in this browser, not in your account. System follows your operating system's light or dark setting.</span>
+                  </div>
+                  <div style="display:flex;flex-direction:column;gap:12px">
+                    <div role="radiogroup" aria-label="Theme" style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px">
+
+                      <div role="radio" style="display:flex;flex-direction:column;gap:8px">
+                        <div style="position:relative;height:80px">
+                          <div style="position:absolute;inset:0;border-radius:8px;overflow:hidden;border:1px solid var(--border)">
+                            <div style="position:absolute;inset:0;background:#FFFFFF">
+                              <div style="position:absolute;left:0;top:0;bottom:0;width:24px;background:#F7F7F8;border-right:1px solid #E4E4E7"></div>
+                              <div style="position:absolute;left:6px;top:10px;width:12px;height:3px;border-radius:2px;background:#6B6B74"></div>
+                              <div style="position:absolute;left:6px;top:18px;width:10px;height:3px;border-radius:2px;background:#C4C4CA"></div>
+                              <div style="position:absolute;left:32px;top:10px;width:44px;height:4px;border-radius:2px;background:#18181B"></div>
+                              <div style="position:absolute;left:32px;top:20px;width:64px;height:3px;border-radius:2px;background:#A1A1AA"></div>
+                              <div style="position:absolute;left:32px;right:8px;top:32px;height:26px;border-radius:4px;background:#F7F7F8;border:1px solid #E4E4E7"></div>
+                              <div style="position:absolute;left:38px;top:39px;width:30px;height:3px;border-radius:2px;background:#6D28D9"></div>
+                              <div style="position:absolute;left:38px;top:47px;width:46px;height:3px;border-radius:2px;background:#0E7490"></div>
+                              <div style="position:absolute;right:8px;bottom:8px;width:20px;height:8px;border-radius:2px;background:#0E7490"></div>
+                            </div>
+                            <div style="position:absolute;inset:0;background:#0B0D10;clip-path:inset(0 0 0 50%)">
+                              <div style="position:absolute;left:0;top:0;bottom:0;width:24px;background:#121418;border-right:1px solid #26292F"></div>
+                              <div style="position:absolute;left:32px;top:10px;width:44px;height:4px;border-radius:2px;background:#E7E7EA"></div>
+                              <div style="position:absolute;left:32px;top:20px;width:64px;height:3px;border-radius:2px;background:#5F6169"></div>
+                              <div style="position:absolute;left:32px;right:8px;top:32px;height:26px;border-radius:4px;background:#121418;border:1px solid #26292F"></div>
+                              <div style="position:absolute;left:38px;top:39px;width:30px;height:3px;border-radius:2px;background:#C4B5FD"></div>
+                              <div style="position:absolute;left:38px;top:47px;width:46px;height:3px;border-radius:2px;background:#22B8CF"></div>
+                              <div style="position:absolute;right:8px;bottom:8px;width:20px;height:8px;border-radius:2px;background:#22B8CF"></div>
+                            </div>
+                          </div>
+                          <sc-if value="{{ selSystem }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:-3px;border:2px solid var(--accent);border-radius:10px"></div></sc-if>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;font:500 13px/20px Inter">
+                          <sc-if value="{{ selSystem }}" hint-placeholder-val="{{ false }}"><span style="width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:4px solid var(--accent);flex:none"></span></sc-if>
+                          <sc-if value="{{ notSystem }}" hint-placeholder-val="{{ true }}"><span style="width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:1px solid color-mix(in oklab,var(--text) 35%,transparent);flex:none"></span></sc-if>
+                          System
+                        </div>
+                      </div>
+
+                      <div role="radio" style="display:flex;flex-direction:column;gap:8px">
+                        <div style="position:relative;height:80px">
+                          <div style="position:absolute;inset:0;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#FFFFFF">
+                            <div style="position:absolute;left:0;top:0;bottom:0;width:24px;background:#F7F7F8;border-right:1px solid #E4E4E7"></div>
+                            <div style="position:absolute;left:6px;top:10px;width:12px;height:3px;border-radius:2px;background:#6B6B74"></div>
+                            <div style="position:absolute;left:6px;top:18px;width:10px;height:3px;border-radius:2px;background:#C4C4CA"></div>
+                            <div style="position:absolute;left:32px;top:10px;width:44px;height:4px;border-radius:2px;background:#18181B"></div>
+                            <div style="position:absolute;left:32px;top:20px;width:64px;height:3px;border-radius:2px;background:#A1A1AA"></div>
+                            <div style="position:absolute;left:32px;right:8px;top:32px;height:26px;border-radius:4px;background:#F7F7F8;border:1px solid #E4E4E7"></div>
+                            <div style="position:absolute;left:38px;top:39px;width:30px;height:3px;border-radius:2px;background:#6D28D9"></div>
+                            <div style="position:absolute;left:38px;top:47px;width:46px;height:3px;border-radius:2px;background:#0E7490"></div>
+                            <div style="position:absolute;right:8px;bottom:8px;width:20px;height:8px;border-radius:2px;background:#0E7490"></div>
+                          </div>
+                          <sc-if value="{{ selLight }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:-3px;border:2px solid var(--accent);border-radius:10px"></div></sc-if>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;font:500 13px/20px Inter">
+                          <sc-if value="{{ selLight }}" hint-placeholder-val="{{ false }}"><span style="width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:4px solid var(--accent);flex:none"></span></sc-if>
+                          <sc-if value="{{ notLight }}" hint-placeholder-val="{{ true }}"><span style="width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:1px solid color-mix(in oklab,var(--text) 35%,transparent);flex:none"></span></sc-if>
+                          Light
+                        </div>
+                      </div>
+
+                      <div role="radio" style="display:flex;flex-direction:column;gap:8px">
+                        <div style="position:relative;height:80px">
+                          <div style="position:absolute;inset:0;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#0B0D10">
+                            <div style="position:absolute;left:0;top:0;bottom:0;width:24px;background:#121418;border-right:1px solid #26292F"></div>
+                            <div style="position:absolute;left:6px;top:10px;width:12px;height:3px;border-radius:2px;background:#9A9AA3"></div>
+                            <div style="position:absolute;left:6px;top:18px;width:10px;height:3px;border-radius:2px;background:#3A3D44"></div>
+                            <div style="position:absolute;left:32px;top:10px;width:44px;height:4px;border-radius:2px;background:#E7E7EA"></div>
+                            <div style="position:absolute;left:32px;top:20px;width:64px;height:3px;border-radius:2px;background:#5F6169"></div>
+                            <div style="position:absolute;left:32px;right:8px;top:32px;height:26px;border-radius:4px;background:#121418;border:1px solid #26292F"></div>
+                            <div style="position:absolute;left:38px;top:39px;width:30px;height:3px;border-radius:2px;background:#C4B5FD"></div>
+                            <div style="position:absolute;left:38px;top:47px;width:46px;height:3px;border-radius:2px;background:#22B8CF"></div>
+                            <div style="position:absolute;right:8px;bottom:8px;width:20px;height:8px;border-radius:2px;background:#22B8CF"></div>
+                          </div>
+                          <sc-if value="{{ selDark }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:-3px;border:2px solid var(--accent);border-radius:10px"></div></sc-if>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;font:500 13px/20px Inter">
+                          <sc-if value="{{ selDark }}" hint-placeholder-val="{{ false }}"><span style="width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:4px solid var(--accent);flex:none"></span></sc-if>
+                          <sc-if value="{{ notDark }}" hint-placeholder-val="{{ true }}"><span style="width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:1px solid color-mix(in oklab,var(--text) 35%,transparent);flex:none"></span></sc-if>
+                          Dark
+                        </div>
+                      </div>
+
+                      <div role="radio" style="display:flex;flex-direction:column;gap:8px">
+                        <div style="position:relative;height:80px">
+                          <div style="position:absolute;inset:0;border-radius:8px;overflow:hidden;border:1px solid var(--border);background:#1E1E2E">
+                            <div style="position:absolute;left:0;top:0;bottom:0;width:24px;background:#181825;border-right:1px solid #313244"></div>
+                            <div style="position:absolute;left:6px;top:10px;width:12px;height:3px;border-radius:2px;background:#A6ADC8"></div>
+                            <div style="position:absolute;left:6px;top:18px;width:10px;height:3px;border-radius:2px;background:#45475A"></div>
+                            <div style="position:absolute;left:32px;top:10px;width:44px;height:4px;border-radius:2px;background:#CDD6F4"></div>
+                            <div style="position:absolute;left:32px;top:20px;width:64px;height:3px;border-radius:2px;background:#6C7086"></div>
+                            <div style="position:absolute;left:32px;right:8px;top:32px;height:26px;border-radius:4px;background:#181825;border:1px solid #313244"></div>
+                            <div style="position:absolute;left:38px;top:39px;width:30px;height:3px;border-radius:2px;background:#CBA6F7"></div>
+                            <div style="position:absolute;left:38px;top:47px;width:46px;height:3px;border-radius:2px;background:#89B4FA"></div>
+                            <div style="position:absolute;right:8px;bottom:8px;width:20px;height:8px;border-radius:2px;background:#CBA6F7"></div>
+                          </div>
+                          <sc-if value="{{ selMocha }}" hint-placeholder-val="{{ false }}"><div style="position:absolute;inset:-3px;border:2px solid var(--accent);border-radius:10px"></div></sc-if>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:8px;font:500 13px/20px Inter;white-space:nowrap">
+                          <sc-if value="{{ selMocha }}" hint-placeholder-val="{{ false }}"><span style="width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:4px solid var(--accent);flex:none"></span></sc-if>
+                          <sc-if value="{{ notMocha }}" hint-placeholder-val="{{ true }}"><span style="width:14px;height:14px;box-sizing:border-box;border-radius:7px;border:1px solid color-mix(in oklab,var(--text) 35%,transparent);flex:none"></span></sc-if>
+                          Catppuccin Mocha
+                        </div>
+                      </div>
+                    </div>
+                    <div style="display:flex;align-items:flex-start;gap:8px;font:400 12px/16px Inter;color:var(--muted)"><span style="display:flex;padding-top:0"><dc-import name="Icon" n="info" s="14" hint-size="14px,14px"></dc-import></span><span style="text-wrap:pretty">Catppuccin Mocha's chart colours are close in lightness, so charts with five or more series are harder to tell apart with colour blindness.</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isAccount }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;flex-direction:column;gap:4px">
+              <h1 style="margin:0;font:600 20px/28px Inter">Account</h1>
+              <p style="margin:0;color:var(--muted)">How you sign in to this instance.</p>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="font:600 13px/20px Inter">Sign-in</div>
+              <div style="border:1px solid var(--border);border-radius:8px">
+                <div style="display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:16px">
+                  <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 13px/20px Inter">Email</span><span style="font:400 13px/20px Inter;color:var(--muted);text-wrap:pretty">You sign in with it. Only an admin can change it.</span></div>
+                  <div style="display:flex;align-items:flex-start"><span style="width:320px;height:32px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--muted)">rafael@example.com<dc-import name="Icon" n="lock" s="14" hint-size="14px,14px"></dc-import></span></div>
+                </div>
+                <div style="display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:16px;border-top:1px solid var(--border)">
+                  <div style="display:flex;flex-direction:column;gap:4px"><span style="font:500 13px/20px Inter">Password</span><span style="font:400 13px/20px Inter;color:var(--muted);text-wrap:pretty">Changing it signs you out on every device, this one included.</span></div>
+                  <div style="display:flex;flex-direction:column;gap:12px;width:320px">
+                    <label style="display:flex;flex-direction:column;gap:4px"><span style="font:500 13px/20px Inter">Current password</span><span style="height:32px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg);letter-spacing:2px">••••••••••</span></label>
+                    <label style="display:flex;flex-direction:column;gap:4px"><span style="font:500 13px/20px Inter">New password</span><span style="height:32px;box-sizing:border-box;display:flex;align-items:center;padding:0 12px;border:1px solid var(--border);border-radius:6px;background:var(--bg)"></span><span style="font:400 12px/16px Inter;color:var(--muted)">At least 12 characters.</span></label>
+                    <div style="align-self:flex-start;display:flex;align-items:center;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font:500 13px/20px Inter">Change password</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <div style="font:600 13px/20px Inter">Linked accounts</div>
+              <div style="border:1px solid var(--border);border-radius:8px">
+                <div style="display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:16px;align-items:center">
+                  <div style="display:flex;align-items:center;gap:8px"><dc-import name="Icon" n="github" hint-size="16px,16px"></dc-import><span style="font:500 13px/20px Inter">GitHub</span></div>
+                  <div style="display:flex;align-items:center;gap:16px"><span style="flex:1;font:400 13px/20px Inter;color:var(--muted)">Linked as <span style="color:var(--text);font-family:'JetBrains Mono',monospace">rafael</span></span><div style="display:flex;align-items:center;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font:500 13px/20px Inter">Unlink</div></div>
+                </div>
+                <div style="display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;padding:16px;align-items:center;border-top:1px solid var(--border)">
+                  <div style="display:flex;align-items:center;gap:8px"><span title="Google mark goes here" style="width:16px;height:16px;box-sizing:border-box;border-radius:8px;border:1px dashed var(--muted);display:flex;align-items:center;justify-content:center;font:600 9px/1 Inter;color:var(--muted)">G</span><span style="font:500 13px/20px Inter">Google</span></div>
+                  <div style="display:flex;align-items:center;gap:16px"><span style="flex:1;font:400 13px/20px Inter;color:var(--muted)">Not linked</span><div style="display:flex;align-items:center;height:32px;padding:0 12px;border:1px solid var(--border);border-radius:6px;font:500 13px/20px Inter">Link Google</div></div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isModels }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex;align-items:flex-end;gap:16px">
+              <div style="flex:1;display:flex;flex-direction:column;gap:4px">
+                <h1 style="margin:0;font:600 20px/28px Inter">Models</h1>
+                <p style="margin:0;color:var(--muted);text-wrap:pretty">The models this instance offers and the ones you added. Each conversation picks one in its header.</p>
+              </div>
+              <div style="flex:none;display:flex;align-items:center;gap:8px;height:32px;padding:0 12px;border-radius:6px;background:var(--accent);color:var(--on-accent);font:500 13px/20px Inter"><dc-import name="Icon" n="plus" w="2" hint-size="16px,16px"></dc-import>Add model</div>
+            </div>
+            <div style="border:1px solid var(--border);border-radius:8px">
+              <table style="border-collapse:collapse;width:100%;font:400 13px/20px Inter;font-variant-numeric:tabular-nums">
+                <thead>
+                  <tr style="background:var(--surface);color:var(--muted)">
+                    <th style="padding:8px 12px 8px 16px;text-align:left;font-weight:500;border-bottom:1px solid var(--border);border-top-left-radius:8px">Name</th>
+                    <th style="padding:8px 12px;text-align:left;font-weight:500;border-bottom:1px solid var(--border)">Adapter</th>
+                    <th style="padding:8px 12px;text-align:left;font-weight:500;border-bottom:1px solid var(--border)">Model · key</th>
+                    <th style="padding:8px 12px;text-align:left;font-weight:500;border-bottom:1px solid var(--border)">Dialect</th>
+                    <th style="padding:8px 16px 8px 12px;border-bottom:1px solid var(--border);border-top-right-radius:8px"></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="padding:12px 12px 12px 16px;vertical-align:top"><div style="font-weight:500">Claude</div><span style="display:inline-flex;align-items:center;height:20px;padding:0 4px;border:1px solid var(--border);border-radius:4px;font:500 12px/16px Inter;color:var(--muted)">instance</span></td>
+                    <td style="padding:12px;vertical-align:top"><div>Anthropic</div><div style="font:400 12px/16px 'JetBrains Mono',monospace;color:var(--muted);white-space:nowrap">api.anthropic.com</div></td>
+                    <td style="padding:12px;vertical-align:top"><div style="font:400 13px/20px 'JetBrains Mono',monospace;white-space:nowrap">claude-sonnet-4-5</div><div style="font:400 12px/16px 'JetBrains Mono',monospace;color:var(--muted)">…x9Qa</div></td>
+                    <td style="padding:12px;vertical-align:top;white-space:nowrap">Tool calling</td>
+                    <td style="padding:12px 16px 12px 12px;vertical-align:top"><div style="display:flex;align-items:center;justify-content:flex-end;gap:4px">
+                      <div style="display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 8px;border:1px solid var(--border);border-radius:6px;font:500 13px/20px Inter"><dc-import name="Icon" n="flask-conical" s="14" hint-size="14px,14px"></dc-import>Test</div>
+                      <div style="position:relative;width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--muted)"><dc-import name="Icon" n="lock" hint-size="16px,16px"></dc-import>
+                        <div role="tooltip" style="position:absolute;right:0;bottom:calc(100% + 4px);white-space:nowrap;padding:4px 8px;border-radius:6px;background:var(--text);color:var(--bg);font:500 12px/16px Inter;box-shadow:var(--shadow)">Set in the server's environment</div>
+                      </div>
+                    </div></td>
+                  </tr>
+                  <tr style="border-top:1px solid var(--border)">
+                    <td style="padding:12px 12px 8px 16px;vertical-align:top"><div style="font-weight:500;white-space:nowrap">Qwen local</div><div style="font:400 12px/16px Inter;color:var(--muted)">yours</div></td>
+                    <td style="padding:12px 12px 8px;vertical-align:top"><div style="white-space:nowrap">OpenAI-compatible</div><div style="font:400 12px/16px 'JetBrains Mono',monospace;color:var(--muted);white-space:nowrap">localhost:11434/v1</div></td>
+                    <td style="padding:12px 12px 8px;vertical-align:top"><div style="font:400 13px/20px 'JetBrains Mono',monospace;white-space:nowrap">qwen2.5-coder:14b</div><div style="font:400 12px/16px Inter;color:var(--muted);font-style:italic">no key</div></td>
+                    <td style="padding:12px 12px 8px;vertical-align:top;white-space:nowrap">Code blocks</td>
+                    <td style="padding:12px 16px 8px 12px;vertical-align:top"><div style="display:flex;align-items:center;justify-content:flex-end;gap:4px">
+                      <div style="display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 8px;border:1px solid var(--border);border-radius:6px;font:500 13px/20px Inter"><dc-import name="Icon" n="flask-conical" s="14" hint-size="14px,14px"></dc-import>Test</div>
+                      <div title="Edit or delete" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--muted)"><dc-import name="Icon" n="ellipsis" hint-size="16px,16px"></dc-import></div>
+                    </div></td>
+                  </tr>
+                  <tr>
+                    <td colspan="5" style="padding:0 16px 12px"><div role="status" style="display:flex;align-items:center;gap:8px;font:500 13px/20px Inter;color:var(--success)"><dc-import name="Icon" n="check" w="2.25" hint-size="16px,16px"></dc-import>4.8 s</div></td>
+                  </tr>
+                  <tr style="border-top:1px solid var(--border)">
+                    <td style="padding:12px 12px 8px 16px;vertical-align:top"><div style="font-weight:500">DeepSeek</div><div style="font:400 12px/16px Inter;color:var(--muted)">yours</div></td>
+                    <td style="padding:12px 12px 8px;vertical-align:top"><div style="white-space:nowrap">OpenAI-compatible</div><div style="font:400 12px/16px 'JetBrains Mono',monospace;color:var(--muted);white-space:nowrap">openrouter.ai/api/v1</div></td>
+                    <td style="padding:12px 12px 8px;vertical-align:top"><div style="font:400 13px/20px 'JetBrains Mono',monospace;white-space:nowrap">deepseek/deepseek-chat-v3.1</div><div style="font:400 12px/16px 'JetBrains Mono',monospace;color:var(--muted)">…7f2K</div></td>
+                    <td style="padding:12px 12px 8px;vertical-align:top;white-space:nowrap">Tool calling</td>
+                    <td style="padding:12px 16px 8px 12px;vertical-align:top"><div style="display:flex;align-items:center;justify-content:flex-end;gap:4px">
+                      <div style="display:inline-flex;align-items:center;gap:8px;height:28px;padding:0 8px;border:1px solid var(--border);border-radius:6px;font:500 13px/20px Inter"><dc-import name="Icon" n="flask-conical" s="14" hint-size="14px,14px"></dc-import>Test</div>
+                      <div title="Edit or delete" style="width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--muted)"><dc-import name="Icon" n="ellipsis" hint-size="16px,16px"></dc-import></div>
+                    </div></td>
+                  </tr>
+                  <tr>
+                    <td colspan="5" style="padding:0 16px 12px"><div role="status" style="display:flex;align-items:center;gap:8px;font:400 13px/20px Inter;color:var(--danger)"><dc-import name="Icon" n="x" w="2.25" hint-size="16px,16px"></dc-import><span style="font-weight:500">the model answered without calling the tool</span><span style="color:var(--muted)">· 3.1 s</span></div></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex;align-items:flex-start;gap:8px;font:400 13px/20px Inter;color:var(--muted)">
+              <span style="display:flex;padding-top:2px"><dc-import name="Icon" n="info" hint-size="16px,16px"></dc-import></span>
+              <span style="text-wrap:pretty">A test sends one short question and checks that the model answers in its dialect. If a model keeps answering without calling the tool, switch it to <span style="color:var(--text);font-weight:500">Code blocks</span>.</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1440,&quot;height&quot;:900},&quot;section&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;general&quot;,&quot;account&quot;,&quot;models&quot;],&quot;default&quot;:&quot;general&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;system&quot;,&quot;light&quot;,&quot;dark&quot;,&quot;mocha&quot;],&quot;default&quot;:&quot;mocha&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const s = this.props.section ?? 'general';
+    const t = this.props.theme ?? 'mocha';
+    return {
+      isGeneral: s === 'general', notGeneral: s !== 'general',
+      isAccount: s === 'account', notAccount: s !== 'account',
+      isModels: s === 'models', notModels: s !== 'models',
+      selSystem: t === 'system', notSystem: t !== 'system',
+      selLight: t === 'light', notLight: t !== 'light',
+      selDark: t === 'dark', notDark: t !== 'dark',
+      selMocha: t === 'mocha', notMocha: t !== 'mocha'
+    };
+  }
+}
+</script>
+</body>
+</html>
