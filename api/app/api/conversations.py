@@ -7,11 +7,11 @@ from uuid import UUID
 
 from fastapi import APIRouter, Query, Response, status
 
-from app.core.create_conversation import create_conversation
-from app.core.delete_conversation import delete_conversation
-from app.core.get_conversation import get_conversation
-from app.core.list_conversations import list_conversations
-from app.core.update_conversation import update_conversation
+from app.core.conversations.create_conversation import create_conversation
+from app.core.conversations.delete_conversation import delete_conversation
+from app.core.conversations.get_conversation import get_conversation
+from app.core.conversations.list_conversations import list_conversations
+from app.core.conversations.update_conversation import update_conversation
 from app.dependencies import Caller, Db, Kernels, Store
 from app.domain.conversations import (
     DEFAULT_PER_PAGE,

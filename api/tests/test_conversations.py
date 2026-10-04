@@ -7,8 +7,8 @@ from uuid import UUID, uuid4
 
 import pytest
 from fastapi.testclient import TestClient
-from tests.auth_helpers import ANA, RAFAEL, bearer, sign_up_and_in
 from tests.conftest import Run
+from tests.support.auth import ANA, RAFAEL, bearer, sign_up_and_in
 
 CONVERSATIONS = "/api/v1/conversations"
 

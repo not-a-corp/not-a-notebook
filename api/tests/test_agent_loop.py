@@ -8,7 +8,7 @@ import asyncio
 import pytest
 from app.agent.loop import MAX_ATTEMPTS, MAX_STEPS, Meter, ModelRefused, StepLimit, run_turn
 from app.domain.llm import AssistantTurn, Reply, ToolResult, Usage, UserText
-from tests.agent_fakes import (
+from tests.support.agent import (
     Events,
     MemoryNotebook,
     Run,

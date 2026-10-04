@@ -14,10 +14,11 @@ import pytest
 from app.domain.llm import Item, OnDelta, Reply
 from app.main import app
 from fastapi.testclient import TestClient
-from tests.agent_fakes import ScriptedKernel, ScriptedModel, answers, prints, wants
-from tests.auth_helpers import ANA, RAFAEL, bearer, sign_up_and_in
 from tests.conftest import Run
-from tests.message_helpers import ScriptedRegistry, events_of, send, settled
+from tests.support.agent import ScriptedKernel, ScriptedModel, answers, prints, wants
+from tests.support.auth import ANA, RAFAEL, bearer, sign_up_and_in
+from tests.support.kernels import FakeRegistry
+from tests.support.runs import events_of, send, settled
 
 RUNS = "/api/v1/runs"
 CONVERSATIONS = "/api/v1/conversations"
@@ -50,8 +51,8 @@ def conversation(client: TestClient, token: str) -> str:
 def script(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> Iterator[Any]:
     def set_up(replies: list[Reply], runs: list[Any]) -> ScriptedModel:
         model = ScriptedModel(replies)
-        monkeypatch.setattr("app.runs.message.model_for", lambda endpoint, http: model)
-        monkeypatch.setattr(app.state, "kernels", ScriptedRegistry(ScriptedKernel(runs)))
+        monkeypatch.setattr("app.jobs.message.model_for", lambda endpoint, http: model)
+        monkeypatch.setattr(app.state, "kernels", FakeRegistry.scripted(ScriptedKernel(runs)))
         return model
 
     yield set_up
@@ -204,7 +205,7 @@ def test_silence_is_filled_with_keepalives(
     script: Any,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    monkeypatch.setattr("app.runs.stream.KEEPALIVE_SECONDS", 0.05)
+    monkeypatch.setattr("app.jobs.stream.KEEPALIVE_SECONDS", 0.05)
     model = ScriptedModel([answers("Done.")])
     scripted = model.complete
 
@@ -214,7 +215,7 @@ def test_silence_is_filled_with_keepalives(
 
     model.complete = thinking
     script([], [])
-    monkeypatch.setattr("app.runs.message.model_for", lambda endpoint, http: model)
+    monkeypatch.setattr("app.jobs.message.model_for", lambda endpoint, http: model)
 
     run_id = send(client, token, conversation, "Think.").json()["run_id"]
     events, keepalives = parsed(stream_of(client, token, run_id))

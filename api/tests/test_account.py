@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from fastapi.testclient import TestClient
-from tests.auth_helpers import (
+from tests.conftest import Run
+from tests.support.auth import (
     ACCOUNT,
     ANA,
     LOGIN,
@@ -13,7 +14,6 @@ from tests.auth_helpers import (
     bearer,
     sign_up_and_in,
 )
-from tests.conftest import Run
 
 NEW_PASSWORD = "the new password"
 

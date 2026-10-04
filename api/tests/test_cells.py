@@ -10,10 +10,11 @@ from typing import Any
 import pytest
 from app.main import app
 from fastapi.testclient import TestClient
-from tests.agent_fakes import Run, ScriptedKernel, fails, prints
-from tests.auth_helpers import ANA, RAFAEL, bearer, sign_up_and_in
 from tests.conftest import Run as Sql
-from tests.message_helpers import ScriptedRegistry, events_of, settled
+from tests.support.agent import Run, ScriptedKernel, fails, prints
+from tests.support.auth import ANA, RAFAEL, bearer, sign_up_and_in
+from tests.support.kernels import FakeRegistry
+from tests.support.runs import events_of, settled
 
 CONVERSATIONS = "/api/v1/conversations"
 CELLS = "/api/v1/cells"
@@ -33,8 +34,8 @@ def conversation(client: TestClient, token: str) -> str:
 def kernel(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> Iterator[Any]:
     """Call with the kernel's runs; returns the registry handing it out."""
 
-    def set_up(runs: list[Run]) -> ScriptedRegistry:
-        registry = ScriptedRegistry(ScriptedKernel(runs))
+    def set_up(runs: list[Run]) -> FakeRegistry:
+        registry = FakeRegistry.scripted(ScriptedKernel(runs))
         monkeypatch.setattr(app.state, "kernels", registry)
         return registry
 
@@ -339,7 +340,7 @@ def test_a_cancelled_run_stops_the_code_and_keeps_the_kernel(
     assert status == "cancelled"
     assert events_of(sql, run_id)[-1]["status"] == "cancelled"
     assert cells(client, token, conversation)[0]["status"] == "cancelled"
-    assert registry.started  # an interrupt is not a restart
+    assert registry.running()  # an interrupt is not a restart
 
 
 def test_cancelling_a_finished_run_changes_nothing(

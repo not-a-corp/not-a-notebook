@@ -15,8 +15,8 @@ from fastapi import APIRouter, Cookie
 from fastapi.responses import RedirectResponse
 
 from app.api.cookies import clear_oauth_cookie, set_oauth_cookie, set_refresh_cookie
-from app.core.finish_oauth import finish_oauth
-from app.core.start_oauth import start_oauth
+from app.core.auth.finish_oauth import finish_oauth
+from app.core.auth.start_oauth import start_oauth
 from app.dependencies import OAUTH_COOKIE, Config, Db, Http
 from app.domain.errors import DomainError
 

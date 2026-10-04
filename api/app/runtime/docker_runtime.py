@@ -35,7 +35,7 @@ from jupyter_client.connect import KernelConnectionInfo
 from app.domain.errors import SandboxUnavailable
 from app.domain.runtime import ExecutionResult, ExecutionStatus, KernelDied, OnOutput
 from app.runtime.docker_engine import DockerEngine, DockerError
-from app.runtime.outputs import from_message
+from app.runtime.jupyter_outputs import from_message
 
 log = logging.getLogger(__name__)
 

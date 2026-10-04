@@ -6,11 +6,11 @@ from uuid import UUID
 
 from fastapi import APIRouter, Response, UploadFile, status
 
-from app.core.delete_file import delete_file
-from app.core.upload_file import upload_file
+from app.core.files.delete_file import delete_file
+from app.core.files.upload_file import upload_file
 from app.dependencies import Caller, Config, Db, Jobs, Store, Work
 from app.domain.files import UploadAccepted
-from app.runs.profile import profile_in_background
+from app.jobs.profile import profile_in_background
 
 router = APIRouter(prefix="/conversations", tags=["files"])
 

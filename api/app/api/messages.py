@@ -6,11 +6,11 @@ from uuid import UUID
 
 from fastapi import APIRouter, status
 
-from app.core.start_message_run import start_message_run
+from app.core.runs.start_message_run import start_message_run
 from app.dependencies import Caller, Db, Jobs, Work
 from app.domain.files import conversation_folder
 from app.domain.messages import MessageAccepted, MessageRequest
-from app.runs.message import Question, answer_in_background
+from app.jobs.message import Question, answer_in_background
 
 router = APIRouter(prefix="/conversations", tags=["messages"])
 

@@ -3,8 +3,8 @@
 from __future__ import annotations
 
 from fastapi.testclient import TestClient
-from tests.auth_helpers import ANA, OPTIONS, RAFAEL, REGISTER
 from tests.conftest import Run
+from tests.support.auth import ANA, OPTIONS, RAFAEL, REGISTER
 
 
 def test_creates_an_account(client: TestClient) -> None:

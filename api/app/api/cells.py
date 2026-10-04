@@ -8,19 +8,16 @@ from uuid import UUID
 
 from fastapi import APIRouter, Response, status
 
-from app.core.notebook_cells import (
-    create_user_cell,
-    delete_cell,
-    edit_cell,
-    find_cell,
-    find_conversation,
-    start_run,
-)
+from app.core.cells.create_cell import create_user_cell
+from app.core.cells.delete_cell import delete_cell
+from app.core.cells.edit_cell import edit_cell
+from app.core.cells.restart_kernel import restart_kernel
+from app.core.cells.run_all import start_run_all
+from app.core.cells.run_cell import start_cell_run
 from app.dependencies import Caller, Db, Jobs, Work
 from app.domain.cells import CreateCellRequest, EditCellRequest, RunAccepted
-from app.domain.errors import ConversationBusy
 from app.domain.files import conversation_folder
-from app.runs.cells import CellJob, run_cells_in_background
+from app.jobs.cells import CellJob, run_cells_in_background
 
 router = APIRouter(tags=["cells"])
 
@@ -59,11 +56,11 @@ async def delete(cell_id: UUID, caller: Caller, conn: Db) -> Response:
 
 @router.post("/cells/{cell_id}/run", status_code=status.HTTP_202_ACCEPTED)
 async def run(cell_id: UUID, caller: Caller, conn: Db, work: Work, jobs: Jobs) -> RunAccepted:
-    cell = await find_cell(conn, caller, cell_id)
-    started = await start_run(conn, cell.conversation_row_id, "cell")
+    started = await start_cell_run(conn, caller, cell_id)
+    cell = started.cell
 
     job = CellJob(
-        run=started,
+        run=started.run,
         conversation_id=cell.conversation_id,
         folder=conversation_folder(caller, cell.conversation_id),
         cell=cell.ref,
@@ -71,7 +68,7 @@ async def run(cell_id: UUID, caller: Caller, conn: Db, work: Work, jobs: Jobs) -
     )
     jobs.spawn(run_cells_in_background(work, job))
 
-    return RunAccepted(run_id=started.run_id)
+    return RunAccepted(run_id=started.run.run_id)
 
 
 @router.post("/conversations/{conversation_id}/run-all", status_code=status.HTTP_202_ACCEPTED)
@@ -82,8 +79,7 @@ async def run_all(
     work: Work,
     jobs: Jobs,
 ) -> RunAccepted:
-    conversation = await find_conversation(conn, caller, conversation_id)
-    started = await start_run(conn, conversation.row_id, "run_all")
+    started = await start_run_all(conn, caller, conversation_id)
 
     job = CellJob(
         run=started,
@@ -100,14 +96,6 @@ async def run_all(
     status_code=status.HTTP_204_NO_CONTENT,
 )
 async def restart(conversation_id: UUID, caller: Caller, conn: Db, work: Work) -> Response:
-    conversation = await find_conversation(conn, caller, conversation_id)
-
-    # A run is using the kernel; cancel it first.
-    if conversation.busy:
-        raise ConversationBusy
-
-    # Nothing starts here: the next run starts a fresh kernel and tells the model
-    # the state is gone.
-    await work.kernels.stop(conversation_id, reason="requested")
+    await restart_kernel(conn, work.kernels, caller, conversation_id)
 
     return Response(status_code=status.HTTP_204_NO_CONTENT)

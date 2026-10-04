@@ -3,7 +3,8 @@
 from __future__ import annotations
 
 from fastapi.testclient import TestClient
-from tests.auth_helpers import (
+from tests.conftest import Run
+from tests.support.auth import (
     ACCOUNT,
     COOKIE,
     LOGIN,
@@ -15,7 +16,6 @@ from tests.auth_helpers import (
     only_cookie,
     sign_up_and_in,
 )
-from tests.conftest import Run
 
 
 def sign_in_for_cookie(client: TestClient) -> str:

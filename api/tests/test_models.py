@@ -18,8 +18,8 @@ from app.config import Settings, get_settings
 from app.main import app
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
-from tests.auth_helpers import ANA, RAFAEL, bearer, sign_up_and_in
 from tests.conftest import Run
+from tests.support.auth import ANA, RAFAEL, bearer, sign_up_and_in
 
 MODELS = "/api/v1/models"
 CONVERSATIONS = "/api/v1/conversations"
