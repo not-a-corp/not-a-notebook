@@ -40,6 +40,16 @@ services:
       db:
         condition: service_healthy
 
+  # The kernel image. Conversations get their own containers from it at runtime;
+  # this service exists so that `docker compose up` builds it, and proves it on
+  # the way: the check starts a kernel and exits. No network at all — the check
+  # needs none, and neither does anything the image is for.
+  sandbox:
+    build: sandbox
+    image: not-a-notebook-sandbox
+    command: ["python", "/opt/sandbox/check.py"]
+    network_mode: none
+
   api:
     <<: *api
     depends_on:

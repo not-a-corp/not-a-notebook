@@ -2,21 +2,22 @@
 # builds for itself: mypy needs the project's real dependencies to check
 # anything, and ruff stays on the version uv.lock pins instead of a second copy
 # that drifts from it. --no-deps keeps the database down; nothing here needs it.
+# sandbox/ is not in the API image, so it is mounted in for ruff to read.
 repos:
   - repo: local
     hooks:
       - id: ruff-check
         name: ruff check
-        entry: docker compose run --rm --build --no-deps api ruff check app tests alembic
+        entry: docker compose run --rm --build --no-deps -v ./sandbox:/srv/sandbox api ruff check app tests alembic sandbox
         language: system
-        files: ^api/
+        files: ^(api|sandbox)/
         pass_filenames: false
 
       - id: ruff-format
         name: ruff format
-        entry: docker compose run --rm --build --no-deps api ruff format --check app tests alembic
+        entry: docker compose run --rm --build --no-deps -v ./sandbox:/srv/sandbox api ruff format --check app tests alembic sandbox
         language: system
-        files: ^api/
+        files: ^(api|sandbox)/
         pass_filenames: false
 
       - id: mypy
