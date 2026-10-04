@@ -8,7 +8,7 @@ from fastapi import APIRouter, Response, UploadFile, status
 
 from app.core.delete_file import delete_file
 from app.core.upload_file import upload_file
-from app.dependencies import Caller, Config, Db, Jobs, Kernels, Pool, Store
+from app.dependencies import Caller, Config, Db, Jobs, Kernels, Live, Pool, Store
 from app.domain.files import UploadAccepted
 from app.runs.profile import profile_in_background
 
@@ -25,6 +25,7 @@ async def upload(
     settings: Config,
     pool: Pool,
     kernels: Kernels,
+    live: Live,
     jobs: Jobs,
 ) -> UploadAccepted:
     upload = await upload_file(
@@ -38,7 +39,7 @@ async def upload(
     )
 
     # The answer goes out now; the profile is written when the run finishes.
-    jobs.spawn(profile_in_background(pool, kernels, upload.job))
+    jobs.spawn(profile_in_background(pool, live, kernels, upload.job))
 
     return upload.accepted
 

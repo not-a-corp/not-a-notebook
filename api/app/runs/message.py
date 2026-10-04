@@ -35,6 +35,7 @@ from app.domain.agent import Emit
 from app.domain.errors import ModelNotFound, SandboxUnavailable
 from app.domain.llm import ProviderError
 from app.providers.factory import model_for
+from app.runs.broadcast import Broadcast
 from app.runs.events import RunEvents
 from app.runs.kernels import ConversationKernels
 from app.runs.notebook import StoredNotebook
@@ -49,6 +50,7 @@ class Services:
     """What a run takes from the process, as the lifespan built it."""
 
     pool: AsyncConnectionPool
+    broadcast: Broadcast
     kernels: KernelRegistry
     http: httpx2.AsyncClient
     cipher: Cipher
@@ -64,7 +66,7 @@ class Question:
 
 
 async def answer_in_background(services: Services, question: Question, run: MessageRun) -> None:
-    emit = RunEvents(services.pool, run.run_row_id)
+    emit = RunEvents(services.pool, services.broadcast, run.run_row_id)
     meter = Meter()
 
     status = await answer(services, question, run, emit, meter)

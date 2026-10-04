@@ -703,7 +703,8 @@ loses nothing.
 `RUN_NOT_FOUND` · `UNAUTHENTICATED`
 
 - `seq` starts at 1 and never skips. A gap means loss, and the client can say so.
-- `run.finished` is always the last event, even when something broke.
+- `run.finished` is always the last event, even when something broke — even when
+  the API itself died mid-run: the next one to start writes the ending.
 - A `: keepalive` comment every 15 seconds, so proxies do not drop the connection
   while the model thinks.
 - A browser's `EventSource` cannot send an `Authorization` header — clients read

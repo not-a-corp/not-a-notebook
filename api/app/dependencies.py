@@ -16,6 +16,7 @@ from app.config import Settings, get_settings
 from app.domain.errors import Unauthenticated
 from app.domain.files import FileStore
 from app.runs.background import Background
+from app.runs.broadcast import Broadcast
 from app.runtime.registry import KernelRegistry
 from app.security.access_tokens import read_access_token
 from app.security.secrets import Cipher
@@ -146,3 +147,11 @@ async def environment_keys(settings: Config) -> dict[str, str | None]:
 
 
 EnvironmentKeys = Annotated[dict[str, str | None], Depends(environment_keys)]
+
+
+async def broadcast(request: Request) -> Broadcast:
+    found: Broadcast = request.app.state.broadcast
+    return found
+
+
+Live = Annotated[Broadcast, Depends(broadcast)]
