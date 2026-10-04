@@ -1,0 +1,52 @@
+{
+  "note": "Recorded from a live API through openrouter.ai. Replayed by tests/test_provider_adapters.py; regenerate with tests/record_provider_fixtures.py.",
+  "recorded_at": "2026-10-04T03:49:29+00:00",
+  "adapter": "openai_compatible",
+  "model": "not-a-notebook/does-not-exist",
+  "dialect": "tools",
+  "case": "error",
+  "request": {
+    "model": "not-a-notebook/does-not-exist",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a terse assistant in a data analysis tool. Answer in as few words as possible."
+      },
+      {
+        "role": "user",
+        "content": "Reply with exactly one word: hello"
+      }
+    ],
+    "stream": true,
+    "stream_options": {
+      "include_usage": true
+    },
+    "tools": [
+      {
+        "type": "function",
+        "function": {
+          "name": "run_python",
+          "description": "Run Python in the conversation's Jupyter kernel. State persists between runs: variables, imports and loaded DataFrames are still there next time. The user's files are read-only at /data. Returns what the code printed, the value of its last expression, and any error with its traceback.",
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "The Python to run, as one cell."
+              }
+            },
+            "required": [
+              "code"
+            ],
+            "additionalProperties": false
+          }
+        }
+      }
+    ],
+    "tool_choice": "auto",
+    "parallel_tool_calls": false
+  },
+  "status": 400,
+  "content_type": "application/json",
+  "body": "{\"error\":{\"message\":\"not-a-notebook/does-not-exist is not a valid model ID\",\"code\":400},\"user_id\": \"redacted\"}"
+}

@@ -6,10 +6,13 @@ operator's: listed for everyone, changed by no one through the API.
 
 from __future__ import annotations
 
+import json
 from collections.abc import Iterator
+from pathlib import Path
 from typing import Any
 from uuid import uuid4
 
+import httpx2
 import pytest
 from app.config import Settings, get_settings
 from app.main import app
@@ -331,3 +334,113 @@ def test_half_a_configuration_stops_the_service(extra: dict[str, str], complaint
 
     with pytest.raises(ValidationError, match=complaint):
         Settings(**values)  # type: ignore[arg-type]
+
+
+# ── testing a model ──────────────────────────────────────────────────────────
+
+
+def recorded(adapter: str, case: str) -> httpx2.Response:
+    path = Path(__file__).parent / "fixtures" / "providers" / adapter / f"{case}.json"
+    fixture = json.loads(path.read_text())
+    headers = {"content-type": fixture["content_type"]}
+
+    return httpx2.Response(fixture["status"], headers=headers, content=fixture["body"])
+
+
+@pytest.fixture
+def provider(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> Iterator[list[Any]]:
+    """The app's outbound client, answering with recorded streams. Append the
+    responses the next calls should get; requests seen are kept beside them."""
+    answers: list[httpx2.Response] = []
+    seen: list[httpx2.Request] = []
+
+    def handle(request: httpx2.Request) -> httpx2.Response:
+        seen.append(request)
+        return answers.pop(0)
+
+    transport = httpx2.MockTransport(handle)
+    monkeypatch.setattr(app.state, "http", httpx2.AsyncClient(transport=transport))
+
+    yield [answers, seen]
+
+
+def claude_via_router(client: TestClient, token: str) -> dict[str, Any]:
+    return add(
+        client,
+        token,
+        name="Claude",
+        adapter="anthropic",
+        base_url="https://router.example/v1",
+        model="anthropic/claude-sonnet-5.5",
+        dialect="tools",
+        api_key=OWN_KEY,
+    )
+
+
+def test_a_model_that_calls_the_tool_passes(
+    client: TestClient, token: str, provider: list[Any]
+) -> None:
+    answers, seen = provider
+    answers.append(recorded("anthropic", "tool_call"))
+    model = claude_via_router(client, token)
+
+    response = client.post(f"{MODELS}/{model['id']}/test", headers=bearer(token))
+
+    assert response.status_code == 200
+    body = response.json()
+    assert body["ok"] is True
+    assert body["error"] is None
+    assert isinstance(body["latency_ms"], int)
+    # The stored key, decrypted, went to the provider — and only there.
+    assert seen[0].headers["x-api-key"] == OWN_KEY
+    assert str(seen[0].url) == "https://router.example/v1/messages"
+
+
+def test_a_model_that_answers_in_words_fails_and_says_so(
+    client: TestClient, token: str, provider: list[Any]
+) -> None:
+    answers, _ = provider
+    answers.append(recorded("anthropic", "text"))
+    model = claude_via_router(client, token)
+
+    body = client.post(f"{MODELS}/{model['id']}/test", headers=bearer(token)).json()
+
+    assert body["ok"] is False
+    assert body["error"] == "the model answered without calling the tool"
+
+
+def test_a_provider_error_is_a_failed_test_not_a_failed_request(
+    client: TestClient, token: str, provider: list[Any]
+) -> None:
+    answers, _ = provider
+    answers.append(recorded("anthropic", "error"))
+    model = claude_via_router(client, token)
+
+    response = client.post(f"{MODELS}/{model['id']}/test", headers=bearer(token))
+
+    assert response.status_code == 200
+    assert response.json()["ok"] is False
+    assert "not a valid model" in response.json()["error"]
+
+
+def test_a_text_dialect_model_is_tested_for_a_fence(
+    client: TestClient, token: str, provider: list[Any]
+) -> None:
+    answers, seen = provider
+    answers.append(recorded("openai_compatible", "text_dialect"))
+    model = add(client, token, model="qwen/qwen3.7-flash", base_url="https://router.example/v1")
+
+    body = client.post(f"{MODELS}/{model['id']}/test", headers=bearer(token)).json()
+
+    assert body["ok"] is True
+    assert "tools" not in json.loads(seen[0].content)
+
+
+def test_testing_someone_elses_model_is_not_found(client: TestClient, token: str) -> None:
+    rafaels = add(client, token)
+    ana = sign_up_and_in(client, ANA)
+
+    response = client.post(f"{MODELS}/{rafaels['id']}/test", headers=bearer(ana))
+
+    assert response.status_code == 404
+    assert response.json()["error"]["code"] == "MODEL_NOT_FOUND"
