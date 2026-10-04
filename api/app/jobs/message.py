@@ -20,6 +20,7 @@ from app.core.runs.turn_context import turn_context
 from app.db.messages import store_reply
 from app.db.runs import RunStatus
 from app.domain.agent import Emit
+from app.domain.messages import GroundingResult
 from app.jobs.kernels import ConversationKernels
 from app.jobs.notebook import StoredNotebook
 from app.jobs.run import RunJob, run_job
@@ -103,21 +104,40 @@ async def converse(
         stop,
     )
 
-    async with services.pool.connection() as conn:
-        message = await store_reply(
-            conn, run.conversation_row_id, run.run_row_id, run.run_id, outcome.text
-        )
-
-    shown = message.model_dump(mode="json")
-
     if outcome.kind == "question":
-        await emit("question", {"message": shown})
+        async with services.pool.connection() as conn:
+            question_asked = await store_reply(
+                conn,
+                run.conversation_row_id,
+                run.run_row_id,
+                run.run_id,
+                outcome.text,
+                "question",
+                None,
+            )
+
+        await emit("question", {"message": question_asked.model_dump(mode="json")})
         return "awaiting_user"
 
-    await emit("answer", {"message": shown})
-
+    # Checked before the answer is stored, so the answer keeps its check: a
+    # screen opened later shows the same badge the live one did.
     checked = grounding.check(outcome.text, outcome.produced)
-    grounded = {"numbers": checked.numbers, "found": checked.found, "unfound": checked.unfound}
-    await emit("grounding.checked", grounded)
+    grounded = GroundingResult(
+        numbers=checked.numbers, found=checked.found, unfound=checked.unfound
+    )
+
+    async with services.pool.connection() as conn:
+        answer = await store_reply(
+            conn,
+            run.conversation_row_id,
+            run.run_row_id,
+            run.run_id,
+            outcome.text,
+            "answer",
+            grounded,
+        )
+
+    await emit("answer", {"message": answer.model_dump(mode="json")})
+    await emit("grounding.checked", grounded.model_dump())
 
     return "succeeded"
