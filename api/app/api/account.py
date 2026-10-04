@@ -5,8 +5,8 @@ from __future__ import annotations
 from fastapi import APIRouter, Response, status
 
 from app.api.cookies import clear_refresh_cookie
-from app.core.change_password import change_password
-from app.core.get_account import get_account
+from app.core.account.change_password import change_password
+from app.core.account.get_account import get_account
 from app.dependencies import Caller, Db
 from app.domain.auth import Account, ChangePasswordRequest
 

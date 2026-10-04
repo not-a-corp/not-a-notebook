@@ -24,9 +24,10 @@ from collections.abc import Coroutine
 from dataclasses import dataclass, field
 from typing import Any, Literal
 
-from app.agent.outputs import as_text, fields_of, kind_of
+from app.agent.reading import as_text
 from app.domain.agent import CellRef, CellStatus, Emit, Kernels, Notebook
 from app.domain.llm import Item, Model, Reply, ToolResult, Usage
+from app.domain.outputs import fields_of, kind_of
 from app.domain.runtime import ExecutionResult, KernelDied, OnOutput, Output
 
 MAX_STEPS = 25

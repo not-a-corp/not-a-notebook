@@ -10,7 +10,7 @@ from app.domain.runtime import (
     TableOutput,
     TextOutput,
 )
-from app.runtime.outputs import PLOTLY_MIME, TABLE_MIME, from_message
+from app.runtime.jupyter_outputs import PLOTLY_MIME, TABLE_MIME, from_message
 
 
 def test_a_stream_keeps_its_name_and_text() -> None:

@@ -1,6 +1,6 @@
 """POST and DELETE /conversations/{id}/files — and the run that profiles each upload.
 
-Most tests swap in FakeKernels: they are about the route, and a real kernel's
+Most tests swap in FakeRegistry: they are about the route, and a real kernel's
 start would only make them slow. The tests under "profiled for real" run the
 whole path, in a real kernel, on real CSV, Excel and Parquet files.
 """
@@ -21,9 +21,9 @@ import pytest
 from app.config import get_settings
 from app.main import app
 from fastapi.testclient import TestClient
-from tests.auth_helpers import ANA, RAFAEL, bearer, sign_up_and_in
 from tests.conftest import Run
-from tests.fake_kernels import CANNED_PROFILE, FakeKernels
+from tests.support.auth import ANA, RAFAEL, bearer, sign_up_and_in
+from tests.support.kernels import CANNED_PROFILE, FakeKernel, FakeRegistry
 
 CONVERSATIONS = "/api/v1/conversations"
 CSV = b"region,sales\nN,10\nS,\nNE,7\n"
@@ -42,8 +42,8 @@ def conversation(client: TestClient, token: str) -> str:
 
 
 @pytest.fixture
-def fake_kernels(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> Iterator[FakeKernels]:
-    kernels = FakeKernels()
+def fake_registry(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> Iterator[FakeRegistry]:
+    kernels = FakeRegistry(FakeKernel)
     monkeypatch.setattr(app.state, "kernels", kernels)
     yield kernels
 
@@ -93,7 +93,7 @@ def stored_path(sql: Run, file_id: str) -> Path:
 
 
 def test_an_upload_is_accepted_with_the_run_that_profiles_it(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry
 ) -> None:
     response = upload(client, token, conversation)
 
@@ -107,7 +107,7 @@ def test_an_upload_is_accepted_with_the_run_that_profiles_it(
 
 
 def test_the_bytes_land_in_the_conversations_folder(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry, sql: Run
 ) -> None:
     file_id = upload(client, token, conversation).json()["file"]["id"]
 
@@ -118,7 +118,7 @@ def test_the_bytes_land_in_the_conversations_folder(
 
 
 def test_the_profile_is_written_when_the_run_finishes(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry, sql: Run
 ) -> None:
     run_id = upload(client, token, conversation).json()["run_id"]
 
@@ -137,7 +137,7 @@ def test_the_profile_is_written_when_the_run_finishes(
 
 
 def test_an_upload_counts_as_activity(
-    client: TestClient, token: str, fake_kernels: FakeKernels
+    client: TestClient, token: str, fake_registry: FakeRegistry
 ) -> None:
     older = client.post(CONVERSATIONS, headers=bearer(token), json={"title": "older"}).json()
     client.post(CONVERSATIONS, headers=bearer(token), json={"title": "newer"})
@@ -149,7 +149,7 @@ def test_an_upload_counts_as_activity(
 
 
 def test_the_same_name_twice_is_a_conflict(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry
 ) -> None:
     upload(client, token, conversation)
     settled(client, token, conversation)
@@ -161,7 +161,7 @@ def test_the_same_name_twice_is_a_conflict(
 
 
 def test_a_refused_upload_leaves_the_first_file_untouched(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry, sql: Run
 ) -> None:
     file_id = upload(client, token, conversation).json()["file"]["id"]
     settled(client, token, conversation)
@@ -172,7 +172,7 @@ def test_a_refused_upload_leaves_the_first_file_untouched(
 
 
 def test_an_upload_while_a_run_is_in_progress_is_busy(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry, sql: Run
 ) -> None:
     sql(
         """
@@ -253,7 +253,7 @@ def test_someone_elses_conversation_is_not_found(
 
 
 def test_deleting_a_file_removes_it_from_disk(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry, sql: Run
 ) -> None:
     file_id = upload(client, token, conversation).json()["file"]["id"]
     settled(client, token, conversation)
@@ -280,7 +280,7 @@ def test_deleting_an_unknown_file_is_not_found(
 
 
 def test_deleting_while_a_run_is_in_progress_is_busy(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry, sql: Run
 ) -> None:
     file_id = upload(client, token, conversation).json()["file"]["id"]
     settled(client, token, conversation)
@@ -303,7 +303,7 @@ def test_deleting_while_a_run_is_in_progress_is_busy(
 
 
 def test_someone_elses_file_is_not_found(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry
 ) -> None:
     file_id = upload(client, token, conversation).json()["file"]["id"]
     settled(client, token, conversation)
@@ -316,7 +316,7 @@ def test_someone_elses_file_is_not_found(
 
 
 def test_deleting_the_conversation_removes_its_folder(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry, sql: Run
 ) -> None:
     file_id = upload(client, token, conversation).json()["file"]["id"]
     settled(client, token, conversation)
@@ -325,7 +325,7 @@ def test_deleting_the_conversation_removes_its_folder(
     client.delete(f"{CONVERSATIONS}/{conversation}", headers=bearer(token))
 
     assert not folder.exists()
-    assert fake_kernels.running() == set()
+    assert fake_registry.running() == set()
 
 
 # ── abandoned runs ───────────────────────────────────────────────────────────
@@ -463,7 +463,7 @@ def test_profiling_does_not_touch_the_users_execution_count(
 
 
 def test_the_profile_run_streams_its_events(
-    client: TestClient, token: str, conversation: str, fake_kernels: FakeKernels, sql: Run
+    client: TestClient, token: str, conversation: str, fake_registry: FakeRegistry, sql: Run
 ) -> None:
     run_id = upload(client, token, conversation).json()["run_id"]
     settled(client, token, conversation)

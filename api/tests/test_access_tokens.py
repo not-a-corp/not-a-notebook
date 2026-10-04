@@ -10,7 +10,7 @@ import pytest
 from app.config import get_settings
 from app.security.access_tokens import issue_access_token
 from fastapi.testclient import TestClient
-from tests.auth_helpers import ACCOUNT, RAFAEL, bearer, sign_up_and_in
+from tests.support.auth import ACCOUNT, RAFAEL, bearer, sign_up_and_in
 
 
 def user_id_of(client: TestClient, token: str) -> UUID:

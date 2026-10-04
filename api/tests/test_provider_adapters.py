@@ -21,7 +21,7 @@ from app.domain.model_configs import Adapter
 from app.providers.dialect import NOT_RUN, extract_code
 from app.providers.endpoint import Endpoint
 from app.providers.factory import model_for
-from tests.record_provider_fixtures import (
+from tests.support.record_providers import (
     CODE_QUESTION,
     FENCE_QUESTION,
     SYSTEM,

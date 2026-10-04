@@ -6,8 +6,8 @@ import time
 from datetime import UTC, datetime, timedelta
 
 from fastapi.testclient import TestClient
-from tests.auth_helpers import COOKIE, LOGIN, RAFAEL, REGISTER
 from tests.conftest import Run
+from tests.support.auth import COOKIE, LOGIN, RAFAEL, REGISTER
 
 
 def test_returns_an_access_token_and_when_it_expires(client: TestClient) -> None:

@@ -1,5 +1,5 @@
 {
-  "note": "Recorded from a live API through openrouter.ai. Replayed by tests/test_provider_adapters.py; regenerate with tests/record_provider_fixtures.py.",
+  "note": "Recorded from a live API through openrouter.ai. Replayed by tests/test_provider_adapters.py; regenerate with tests/support/record_providers.py.",
   "recorded_at": "2026-10-04T03:49:16+00:00",
   "adapter": "openai_responses",
   "model": "openai/gpt-5-nano",

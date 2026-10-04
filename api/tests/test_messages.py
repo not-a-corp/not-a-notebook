@@ -11,10 +11,11 @@ import pytest
 from app.domain.llm import ProviderError, Reply, UserText
 from app.main import app
 from fastapi.testclient import TestClient
-from tests.agent_fakes import ScriptedKernel, ScriptedModel, answers, asks, prints, wants
-from tests.auth_helpers import ANA, RAFAEL, bearer, sign_up_and_in
 from tests.conftest import Run
-from tests.message_helpers import ScriptedRegistry, events_of, send, settled
+from tests.support.agent import ScriptedKernel, ScriptedModel, answers, asks, prints, wants
+from tests.support.auth import ANA, RAFAEL, bearer, sign_up_and_in
+from tests.support.kernels import FakeRegistry
+from tests.support.runs import events_of, send, settled
 
 CONVERSATIONS = "/api/v1/conversations"
 
@@ -48,8 +49,8 @@ def script(client: TestClient, monkeypatch: pytest.MonkeyPatch) -> Iterator[Any]
 
     def set_up(replies: list[Reply], runs: list[Any]) -> ScriptedModel:
         model = ScriptedModel(replies)
-        monkeypatch.setattr("app.runs.message.model_for", lambda endpoint, http: model)
-        monkeypatch.setattr(app.state, "kernels", ScriptedRegistry(ScriptedKernel(runs)))
+        monkeypatch.setattr("app.jobs.message.model_for", lambda endpoint, http: model)
+        monkeypatch.setattr(app.state, "kernels", FakeRegistry.scripted(ScriptedKernel(runs)))
         return model
 
     yield set_up

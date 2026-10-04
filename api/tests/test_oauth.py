@@ -13,9 +13,9 @@ from app.config import Settings, get_settings
 from app.main import app
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
-from tests.auth_helpers import ACCOUNT, OPTIONS, RAFAEL, REFRESH, REGISTER, bearer
 from tests.conftest import Run
-from tests.fake_providers import FakeProviders
+from tests.support.auth import ACCOUNT, OPTIONS, RAFAEL, REFRESH, REGISTER, bearer
+from tests.support.providers import FakeProviders
 
 PUBLIC_URL = "https://notebook.example"
 

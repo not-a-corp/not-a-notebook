@@ -6,7 +6,7 @@ from __future__ import annotations
 from uuid import UUID, uuid4
 
 from app.runtime.registry import KernelRegistry
-from tests.agent_fakes import ScriptedKernel
+from tests.support.agent import ScriptedKernel
 
 
 class Runtime:

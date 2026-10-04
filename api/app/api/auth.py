@@ -5,11 +5,11 @@ from __future__ import annotations
 from fastapi import APIRouter, Response, status
 
 from app.api.cookies import clear_refresh_cookie, set_refresh_cookie
-from app.core.get_auth_options import get_auth_options
-from app.core.login_user import login_user
-from app.core.logout_user import logout_user
-from app.core.refresh_session import refresh_session
-from app.core.register_user import register_user
+from app.core.auth.get_auth_options import get_auth_options
+from app.core.auth.login_user import login_user
+from app.core.auth.logout_user import logout_user
+from app.core.auth.refresh_session import refresh_session
+from app.core.auth.register_user import register_user
 from app.dependencies import Config, Db, RefreshToken
 from app.domain.auth import AccessToken, AuthOptions, LoginRequest, RegisterRequest, User
 

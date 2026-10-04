@@ -8,10 +8,10 @@ from uuid import UUID
 from fastapi import APIRouter, Header, Response, status
 from fastapi.responses import StreamingResponse
 
-from app.core.runs import find_run
+from app.core.runs.find_run import find_run
 from app.dependencies import Caller, Controls, Db, Kernels, Live, Pool
 from app.domain.runs import RunView
-from app.runs.stream import resume_after, stream
+from app.jobs.stream import resume_after, stream
 
 router = APIRouter(prefix="/runs", tags=["runs"])
 

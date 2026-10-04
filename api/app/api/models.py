@@ -6,12 +6,12 @@ from uuid import UUID
 
 from fastapi import APIRouter, Response, status
 
-from app.core.check_model import check_model
-from app.core.create_model import create_model
-from app.core.delete_model import delete_model
-from app.core.list_models import list_models
-from app.core.resolve_model import resolve_endpoint
-from app.core.update_model import update_model
+from app.core.models.check_model import check_model
+from app.core.models.create_model import create_model
+from app.core.models.delete_model import delete_model
+from app.core.models.list_models import list_models
+from app.core.models.resolve_model import resolve_endpoint
+from app.core.models.update_model import update_model
 from app.dependencies import Caller, Crypto, Db, EnvironmentKeys, Http
 from app.domain.model_configs import (
     CreateModelRequest,
