@@ -11,6 +11,10 @@ x-api: &api
     GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
     GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-}
     GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-}
+    SANDBOX_RUNTIME: ${SANDBOX_RUNTIME:-runc}
+    KERNEL_MEMORY_MB: ${KERNEL_MEMORY_MB:-2048}
+    KERNEL_CPUS: ${KERNEL_CPUS:-1.0}
+    EXECUTION_TIMEOUT_SECONDS: ${EXECUTION_TIMEOUT_SECONDS:-300}
 
 services:
   db:
@@ -57,6 +61,14 @@ services:
         condition: service_healthy
       migrate:
         condition: service_completed_successfully
+      # Kernels are started from this image; the API does not start until it
+      # exists and has passed its check.
+      sandbox:
+        condition: service_completed_successfully
+    volumes:
+      # The API starts a container per conversation. The socket is root on the
+      # host: accepted for self-host, and behind a socket proxy when hosted.
+      - /var/run/docker.sock:/var/run/docker.sock
     ports:
       - "8000:8000"
     healthcheck:

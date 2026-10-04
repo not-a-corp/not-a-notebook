@@ -36,6 +36,7 @@ PACKAGES = [
 ]
 
 PLOTLY_MIME = "application/vnd.plotly.v1+json"
+TABLE_MIME = "application/vnd.not-a-notebook.table+json"
 
 
 @dataclass(frozen=True)
@@ -146,12 +147,45 @@ def check_a_plotly_figure_arrives_as_a_spec(client: BlockingKernelClient) -> Non
 
 
 def check_a_dataframe_arrives_as_a_table(client: BlockingKernelClient) -> None:
-    code = "import pandas as pd\npd.DataFrame({'region': ['N', 'S'], 'sales': [1, 2]})"
+    code = "import pandas as pd\npd.DataFrame({'region': ['N', None], 'sales': [1.5, None]})"
     result = run(client, code)
     value = only(result.outputs, "execute_result")[0]["data"]
 
-    assert "text/html" in value, list(value)
-    assert "<table" in value["text/html"]
+    assert value[TABLE_MIME] == {
+        "columns": ["region", "sales"],
+        "rows": [["N", 1.5], [None, None]],
+        "total_rows": 2,
+    }
+
+
+def check_a_grouped_result_keeps_its_keys(client: BlockingKernelClient) -> None:
+    code = (
+        "import pandas as pd\n"
+        "df = pd.DataFrame({'region': ['N', 'S', 'N'], 'sales': [1, 2, 3]})\n"
+        "df.groupby('region')['sales'].sum()"
+    )
+    result = run(client, code)
+    table = only(result.outputs, "execute_result")[0]["data"][TABLE_MIME]
+
+    assert table["columns"] == ["region", "sales"]
+    assert table["rows"] == [["N", 4], ["S", 2]]
+
+
+def check_a_long_table_travels_cut_but_counted(client: BlockingKernelClient) -> None:
+    code = "import polars as pl\npl.DataFrame({'n': range(250)})"
+    result = run(client, code)
+    table = only(result.outputs, "execute_result")[0]["data"][TABLE_MIME]
+
+    assert len(table["rows"]) == 100
+    assert table["total_rows"] == 250
+
+
+def check_the_namespace_starts_clean(client: BlockingKernelClient) -> None:
+    """The display extension must leave nothing behind for the model to trip on."""
+    result = run(client, "print(sorted(n for n in dir() if not n.startswith('_')))")
+    names = only(result.outputs, "stream")[0]["text"].strip()
+
+    assert names == "['In', 'Out', 'exit', 'get_ipython', 'open', 'quit']", names
 
 
 def check_matplotlib_arrives_as_an_image(client: BlockingKernelClient) -> None:
@@ -164,6 +198,7 @@ def check_matplotlib_arrives_as_an_image(client: BlockingKernelClient) -> None:
 
 
 CHECKS: list[Callable[[BlockingKernelClient], None]] = [
+    check_the_namespace_starts_clean,
     check_runs_unprivileged,
     check_every_package_imports,
     check_state_survives_between_executions,
@@ -171,6 +206,8 @@ CHECKS: list[Callable[[BlockingKernelClient], None]] = [
     check_an_error_comes_back_structured,
     check_a_plotly_figure_arrives_as_a_spec,
     check_a_dataframe_arrives_as_a_table,
+    check_a_grouped_result_keeps_its_keys,
+    check_a_long_table_travels_cut_but_counted,
     check_matplotlib_arrives_as_an_image,
 ]
 
