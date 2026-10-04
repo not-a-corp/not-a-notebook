@@ -16,6 +16,7 @@ function conversation(id: string, updatedAt: string): ConversationSummary {
     title: id,
     modelId: null,
     kernel: "stopped",
+    activeRunId: null,
     createdAt: updatedAt,
     updatedAt,
   };

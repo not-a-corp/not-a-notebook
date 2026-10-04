@@ -10,6 +10,8 @@ export interface ConversationSummary {
   title: string;
   modelId: string | null;
   kernel: KernelState;
+  // The run in progress, if any: the sidebar marks a busy conversation.
+  activeRunId: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,6 +31,7 @@ export function decodeConversationSummary(value: unknown): ConversationSummary {
     title: string(json, "title"),
     modelId: nullableString(json, "model_id"),
     kernel: oneOf(json, "kernel", ["running", "stopped"]),
+    activeRunId: nullableString(json, "active_run_id"),
     createdAt: string(json, "created_at"),
     updatedAt: string(json, "updated_at"),
   };
