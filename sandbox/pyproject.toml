@@ -1,0 +1,26 @@
+[project]
+name = "not-a-notebook-sandbox"
+version = "0.1.0"
+requires-python = ">=3.14"
+# Everything the generated code can import. The container has no internet, so
+# what is not here does not exist for it — adding a package is a change to this
+# file and a new image, never a `pip install` at runtime.
+dependencies = [
+    "duckdb>=1.4",
+    "ipykernel>=7.0",
+    "matplotlib>=3.10",
+    # Not imported by anyone directly: plotly's plotly_mimetype renderer refuses
+    # to emit a figure without it, and fig.show() would fail in every conversation.
+    "nbformat>=5.10",
+    "numpy>=2.3",
+    "openpyxl>=3.1",
+    "pandas>=2.3",
+    "pdfplumber>=0.11",
+    "plotly>=6.3",
+    "polars>=1.34",
+    "pyarrow>=21.0",
+    "xlrd>=2.0",
+]
+
+[tool.uv]
+package = false
