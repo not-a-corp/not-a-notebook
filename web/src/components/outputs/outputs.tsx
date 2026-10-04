@@ -99,6 +99,14 @@ export function chartLabel(spec: Json): string {
 
 const TRACEBACK_TAIL = 6;
 
+// An interrupt has a name and no message: "KeyboardInterrupt", not "…Interrupt:".
+function errorTitle(output: ErrorOutput): string {
+  if (output.value === "") {
+    return output.name;
+  }
+  return `${output.name}: ${output.value}`;
+}
+
 // A red left rule; the exception in bold; the traceback cut to its last frames
 // until asked for (§3.4).
 function ErrorView({ output }: { output: ErrorOutput }) {
@@ -113,9 +121,7 @@ function ErrorView({ output }: { output: ErrorOutput }) {
 
   return (
     <div className="mx-3 flex flex-col gap-1 border-l-2 border-danger pl-3">
-      <p className="font-mono text-sm font-semibold text-danger">
-        {output.name}: {output.value}
-      </p>
+      <p className="font-mono text-sm font-semibold text-danger">{errorTitle(output)}</p>
       {lines.length > 0 && (
         <pre className="font-mono text-xs whitespace-pre-wrap text-text-muted">
           {shown.join("\n")}

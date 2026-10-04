@@ -1,14 +1,25 @@
 import { TriangleAlert } from "lucide-react";
+import { useRef } from "react";
 
 import type { Cell } from "@/api/conversation-detail";
 import { plural } from "@/lib/format";
+import { useStickToBottom } from "@/lib/use-stick-to-bottom";
 
+import type { LiveRun } from "../live/live-run";
 import { CellView } from "./cell-view";
+
+interface NotebookPaneProps {
+  cells: Cell[];
+  live: LiveRun | null;
+  onStop: () => void;
+}
 
 // design.md §2.5 — the notebook: a banner when something needs saying, then
 // the cells.
-export function NotebookPane({ cells }: { cells: Cell[] }) {
+export function NotebookPane({ cells, live, onStop }: NotebookPaneProps) {
   const stale = cells.filter((cell) => cell.stale).length;
+  const scroller = useRef<HTMLDivElement>(null);
+  useStickToBottom(scroller, cells);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -19,10 +30,16 @@ export function NotebookPane({ cells }: { cells: Cell[] }) {
         </div>
       )}
       {cells.length > 0 && (
-        <div className="min-h-0 flex-1 overflow-y-auto">
+        <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto">
           <div className="flex flex-col gap-6 py-6 pr-8 pl-2">
             {cells.map((cell) => (
-              <CellView key={cell.id} cell={cell} />
+              <CellView
+                key={cell.id}
+                cell={cell}
+                failedAttempts={live?.failedAttempts[cell.id] ?? []}
+                startedAt={live?.startedAt[cell.id] ?? null}
+                onStop={onStop}
+              />
             ))}
           </div>
         </div>

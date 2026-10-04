@@ -227,6 +227,13 @@ function ConversationList() {
                 activeProps={{ className: ROW_ACTIVE }}
               >
                 <span className="min-w-0 flex-1 truncate">{conversation.title}</span>
+                {conversation.activeRunId !== null && (
+                  <span
+                    role="img"
+                    aria-label="Running"
+                    className="size-1.5 flex-none rounded-full bg-accent"
+                  />
+                )}
               </Link>
             ))}
           </section>

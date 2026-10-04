@@ -9,7 +9,7 @@ function file(name: string, createdAt: string): FileInfo {
 }
 
 function message(text: string, createdAt: string): Message {
-  return { id: text, role: "user", runId: null, text, createdAt };
+  return { id: text, role: "user", runId: null, text, kind: null, grounding: null, createdAt };
 }
 
 describe("buildTimeline", () => {
