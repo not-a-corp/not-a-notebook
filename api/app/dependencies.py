@@ -18,6 +18,7 @@ from app.domain.files import FileStore
 from app.runs.background import Background
 from app.runtime.registry import KernelRegistry
 from app.security.access_tokens import read_access_token
+from app.security.secrets import Cipher
 
 REFRESH_COOKIE = "nan_refresh"
 OAUTH_COOKIE = "nan_oauth"
@@ -122,3 +123,26 @@ async def refresh_token(
 
 
 RefreshToken = Annotated[str, Depends(refresh_token)]
+
+
+async def cipher(request: Request) -> Cipher:
+    """The process-wide cipher, built once at startup from SECRETS_KEY."""
+    built: Cipher = request.app.state.cipher
+    return built
+
+
+Crypto = Annotated[Cipher, Depends(cipher)]
+
+
+async def environment_keys(settings: Config) -> dict[str, str | None]:
+    """Each .env model's key by env_name. Read from the settings on every call —
+    an environment model's key is never copied anywhere else."""
+    keys = {}
+
+    for model in settings.environment_models():
+        keys[model.env_name] = model.api_key
+
+    return keys
+
+
+EnvironmentKeys = Annotated[dict[str, str | None], Depends(environment_keys)]

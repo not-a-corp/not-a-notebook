@@ -117,3 +117,9 @@ class UnsupportedFileType(DomainError):
     code = "UNSUPPORTED_FILE_TYPE"
     status = 415
     message = "Only CSV, TSV, Excel and Parquet files are accepted."
+
+
+class ModelManagedByEnvironment(DomainError):
+    code = "MODEL_MANAGED_BY_ENVIRONMENT"
+    status = 409
+    message = "This model comes from the instance's environment and cannot be changed here."
