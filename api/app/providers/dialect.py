@@ -12,9 +12,12 @@ text, and how a turn or a result is shown to a model of the other dialect.
 from __future__ import annotations
 
 import re
+from dataclasses import dataclass
 from typing import Any
 
-from app.domain.llm import AssistantTurn, ToolResult
+from app.domain.llm import AssistantTurn, ProviderError, StopReason, ToolResult
+
+# ── the tools dialect's two tools ──────────────────────────────────────────────
 
 TOOL_NAME = "run_python"
 
@@ -36,6 +39,42 @@ TOOL_PARAMETERS: dict[str, Any] = {
     "required": ["code"],
     "additionalProperties": False,
 }
+
+ASK_NAME = "ask_user"
+
+ASK_DESCRIPTION = (
+    "Ask the user a question and stop. Use it when the question is ambiguous, or when "
+    "the data cannot answer it as asked — a period the file does not cover, a column "
+    "that could mean two things — instead of guessing."
+)
+
+ASK_PARAMETERS: dict[str, Any] = {
+    "type": "object",
+    "properties": {
+        "question": {
+            "type": "string",
+            "description": "The question, in the user's language.",
+        },
+    },
+    "required": ["question"],
+    "additionalProperties": False,
+}
+
+
+@dataclass(frozen=True)
+class ToolSpec:
+    name: str
+    description: str
+    parameters: dict[str, Any]
+
+
+TOOLS = [
+    ToolSpec(name=TOOL_NAME, description=TOOL_DESCRIPTION, parameters=TOOL_PARAMETERS),
+    ToolSpec(name=ASK_NAME, description=ASK_DESCRIPTION, parameters=ASK_PARAMETERS),
+]
+
+# The text dialect's way to ask: a reply that starts with this.
+QUESTION_MARKER = "QUESTION:"
 
 # The first ```python block. A bare ``` fence counts only when nothing else does:
 # models write ```text and ```json for things that are not code.
@@ -85,3 +124,91 @@ def result_as_text(result: ToolResult) -> str:
         heading = "Your code raised an error:"
 
     return f"{heading}\n\n{result.content}"
+
+
+# ── reading a reply ───────────────────────────────────────────────────────────
+
+
+@dataclass(frozen=True)
+class Call:
+    """A tool call in no provider's shape: what every adapter's calls become."""
+
+    id: str
+    name: str
+    arguments: dict[str, Any]
+
+
+@dataclass(frozen=True)
+class Reading:
+    code: str | None
+    question: str | None
+    # The call the next ToolResult answers; None in the text dialect.
+    call_id: str | None
+    extra_call_ids: tuple[str, ...]
+
+
+def read_reply(dialect: str, text: str, calls: list[Call]) -> Reading:
+    """What a reply asks for: code to run, a question for the user, or neither.
+
+    In the tools dialect only the first call counts — one kernel runs one cell at
+    a time — and the rest are answered as not run.
+    """
+    if dialect == "text":
+        code = extract_code(text)
+        question = None
+        if code is None:
+            question = question_in(text)
+
+        return Reading(code=code, question=question, call_id=None, extra_call_ids=())
+
+    if not calls:
+        return Reading(code=None, question=None, call_id=None, extra_call_ids=())
+
+    first = calls[0]
+    extra = tuple(call.id for call in calls[1:])
+
+    if first.name == ASK_NAME:
+        question = first.arguments.get("question")
+        if not isinstance(question, str):
+            raise ProviderError("protocol", "an ask_user call without a question string")
+
+        return Reading(code=None, question=question, call_id=first.id, extra_call_ids=extra)
+
+    if first.name != TOOL_NAME:
+        raise ProviderError("protocol", f"a call to a tool that does not exist: {first.name}")
+
+    code = first.arguments.get("code")
+    if not isinstance(code, str):
+        raise ProviderError("protocol", "a run_python call without a code string")
+
+    return Reading(code=code, question=None, call_id=first.id, extra_call_ids=extra)
+
+
+def question_in(text: str) -> str | None:
+    stripped = text.lstrip()
+    if not stripped.upper().startswith(QUESTION_MARKER):
+        return None
+
+    question = stripped[len(QUESTION_MARKER) :].strip()
+    if not question:
+        return None
+
+    return question
+
+
+def stop_of(reading: Reading, refused: bool, cut_off: bool) -> StopReason:
+    """The same order for every adapter: what the provider says first, then what
+    the reply asks for."""
+    if refused:
+        return "refusal"
+
+    if cut_off:
+        return "max_tokens"
+
+    if reading.code is not None:
+        return "code"
+
+    if reading.question is not None:
+        return "question"
+
+    return "answer"

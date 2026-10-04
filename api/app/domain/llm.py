@@ -66,10 +66,10 @@ class Usage:
     reasoning_tokens: int = 0
 
 
-# code: the model wants code run. answer: it is done. max_tokens: it was cut
-# off. refusal: a safety classifier declined (Anthropic's stop reason; OpenAI's
-# refusal content part).
-type StopReason = Literal["code", "answer", "max_tokens", "refusal"]
+# code: the model wants code run. answer: it is done. question: it asks the user
+# instead of guessing (ask_user). max_tokens: it was cut off. refusal: a safety
+# classifier declined (Anthropic's stop reason; OpenAI's refusal content part).
+type StopReason = Literal["code", "answer", "question", "max_tokens", "refusal"]
 
 
 @dataclass(frozen=True)
@@ -77,6 +77,8 @@ class Reply:
     turn: AssistantTurn
     usage: Usage
     stop: StopReason
+    # Set when stop is "question": what the model asks the user.
+    question: str | None = None
 
 
 type OnDelta = Callable[[str], Awaitable[None]]

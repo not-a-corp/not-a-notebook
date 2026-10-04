@@ -72,6 +72,7 @@ model's code is never a `run.error` — it is a `cell.output` of kind `error`.
 | `SANDBOX_UNAVAILABLE` | the kernel could not be started |
 | `MODEL_UNAVAILABLE` | the provider refused or failed, after retries; `message` carries its words |
 | `MODEL_REFUSED` | the model's safety system declined the request |
+| `STEP_LIMIT` | the model kept running code, step after step, without ever answering |
 | `INTERNAL_ERROR` | our bug. `message` says nothing about what broke; `error_id` is the id the traceback is logged under |
 
 Always followed by `run.finished` with `status: "failed"`.
@@ -117,7 +118,9 @@ seconds; this is what lets a client say so instead of looking stuck.
 
 The kernel this conversation had is gone, and with it every variable (decision 3).
 `reason` is `idle` (reaped for not being used) · `died` (out of memory, most often)
-· `requested` (the user restarted it) · `run_all` (Run all starts from nothing).
+· `requested` (the user restarted it) · `run_all` (Run all starts from nothing) ·
+`lost` (none was running when this run began, though cells had run before — the
+API restarted, and every kernel goes with it).
 
 The cells keep their outputs. The model is told too, before its next step, so it
 reloads instead of using a variable that no longer exists.

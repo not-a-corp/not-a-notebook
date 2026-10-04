@@ -123,3 +123,9 @@ class ModelManagedByEnvironment(DomainError):
     code = "MODEL_MANAGED_BY_ENVIRONMENT"
     status = 409
     message = "This model comes from the instance's environment and cannot be changed here."
+
+
+class NoModelSelected(DomainError):
+    code = "NO_MODEL_SELECTED"
+    status = 409
+    message = "The conversation has no model to answer with."

@@ -8,7 +8,9 @@ from uuid import UUID
 
 from psycopg import AsyncConnection
 
+from app.core.cells import conversation_cells
 from app.core.conversation_row import kernel_state
+from app.core.start_message_run import message_shape
 from app.domain.conversations import ConversationDetail
 from app.domain.errors import ConversationNotFound
 from app.domain.files import FileInfo
@@ -61,6 +63,20 @@ async def get_conversation(
                   f.id
     """
 
+    messages_sql = """
+        SELECT m.external_id AS id,
+               m.role,
+               r.external_id AS run_id,
+               m.text,
+               m.created_at
+          FROM messages m
+          LEFT JOIN runs r
+            ON r.id = m.run_id
+         WHERE m.conversation_id = %(conversation_row_id)s
+         ORDER BY m.created_at,
+                  m.id
+    """
+
     async with conn.cursor() as cur:
         await cur.execute(sql, params)
         row = await cur.fetchone()
@@ -71,6 +87,22 @@ async def get_conversation(
         files_params = {"conversation_row_id": row["row_id"]}
         await cur.execute(files_sql, files_params)
         file_rows = await cur.fetchall()
+
+        await cur.execute(messages_sql, files_params)
+        message_rows = await cur.fetchall()
+
+    cells = await conversation_cells(conn, row["row_id"])
+
+    messages = []
+    for message_row in message_rows:
+        message = message_shape(
+            message_row["id"],
+            message_row["role"],
+            message_row["run_id"],
+            message_row["text"],
+            message_row["created_at"],
+        )
+        messages.append(message)
 
     files = []
     for file_row in file_rows:
@@ -90,6 +122,6 @@ async def get_conversation(
         kernel=kernel_state(row["id"], running),
         active_run_id=row["active_run_id"],
         files=files,
-        messages=[],
-        cells=[],
+        messages=messages,
+        cells=cells,
     )

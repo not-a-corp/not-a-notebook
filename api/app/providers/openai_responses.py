@@ -22,18 +22,18 @@ from app.domain.llm import (
     OnDelta,
     ProviderError,
     Reply,
-    StopReason,
     ToolResult,
     Usage,
     UserText,
 )
 from app.providers.dialect import (
     NOT_RUN,
-    TOOL_DESCRIPTION,
     TOOL_NAME,
-    TOOL_PARAMETERS,
-    extract_code,
+    TOOLS,
+    Call,
+    read_reply,
     result_as_text,
+    stop_of,
     turn_as_text,
 )
 from app.providers.endpoint import Endpoint
@@ -77,13 +77,17 @@ class ResponsesModel:
         }
 
         if self.endpoint.dialect == "tools":
-            tool = {
-                "type": "function",
-                "name": TOOL_NAME,
-                "description": TOOL_DESCRIPTION,
-                "parameters": TOOL_PARAMETERS,
-            }
-            body["tools"] = [tool]
+            tools = []
+            for spec in TOOLS:
+                tool = {
+                    "type": "function",
+                    "name": spec.name,
+                    "description": spec.description,
+                    "parameters": spec.parameters,
+                }
+                tools.append(tool)
+
+            body["tools"] = tools
             body["tool_choice"] = "auto"
             body["parallel_tool_calls"] = False
 
@@ -190,18 +194,20 @@ class StreamedResponse:
                     elif part.get("type") == "refusal":
                         self.refused = True
             elif item.get("type") == "function_call":
-                calls.append(item)
+                arguments = parsed_arguments(item.get("arguments"))
+                call = Call(id=item["call_id"], name=item["name"], arguments=arguments)
+                calls.append(call)
 
         text = "".join(text_parts)
-        code, call_id, extra = code_of(endpoint, text, calls)
+        reading = read_reply(endpoint.dialect, text, calls)
 
         turn = AssistantTurn(
             text=text,
-            code=code,
-            call_id=call_id,
+            code=reading.code,
+            call_id=reading.call_id,
             source=endpoint.source,
             raw=self.items,
-            extra_call_ids=extra,
+            extra_call_ids=reading.extra_call_ids,
         )
 
         details = self.usage.get("output_tokens_details") or {}
@@ -211,19 +217,13 @@ class StreamedResponse:
             reasoning_tokens=details.get("reasoning_tokens", 0) or 0,
         )
 
-        return Reply(turn=turn, usage=usage, stop=self.stop(code))
+        stop = stop_of(
+            reading,
+            refused=self.refused,
+            cut_off=self.incomplete_reason == "max_output_tokens",
+        )
 
-    def stop(self, code: str | None) -> StopReason:
-        if self.refused:
-            return "refusal"
-
-        if self.incomplete_reason == "max_output_tokens":
-            return "max_tokens"
-
-        if code is not None:
-            return "code"
-
-        return "answer"
+        return Reply(turn=turn, usage=usage, stop=stop, question=reading.question)
 
 
 def failure_message(event: dict[str, Any]) -> str:
@@ -240,27 +240,14 @@ def failure_message(event: dict[str, Any]) -> str:
     return "the response failed"
 
 
-def code_of(
-    endpoint: Endpoint,
-    text: str,
-    calls: list[dict[str, Any]],
-) -> tuple[str | None, str | None, tuple[str, ...]]:
-    if endpoint.dialect == "text":
-        return extract_code(text), None, ()
-
-    if not calls:
-        return None, None, ()
-
-    first = calls[0]
+def parsed_arguments(text: str | None) -> dict[str, Any]:
+    """A function call's arguments: a JSON object sent as a string."""
     try:
-        arguments = json.loads(first.get("arguments") or "{}")
+        arguments = json.loads(text or "{}")
     except json.JSONDecodeError as exc:
         raise ProviderError("protocol", "a function call whose arguments are not JSON") from exc
 
-    code = arguments.get("code")
-    if not isinstance(code, str):
-        raise ProviderError("protocol", "a run_python call without a code string")
+    if not isinstance(arguments, dict):
+        raise ProviderError("protocol", "a function call whose arguments are not an object")
 
-    extra = tuple(call["call_id"] for call in calls[1:])
-
-    return code, first["call_id"], extra
+    return arguments

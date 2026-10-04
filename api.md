@@ -476,8 +476,15 @@ There is no trash.
 `VALIDATION_ERROR` · `CONVERSATION_NOT_FOUND` · `NO_MODEL_SELECTED` ·
 `CONVERSATION_BUSY` · `UNAUTHENTICATED`
 
+`text` is 1 to 20,000 characters.
+
 When the last run ended by asking a question, this is also how it gets answered —
 the reply is a message like any other, and a new run picks it up.
+
+What the model reads is rebuilt from the conversation at every message: the
+earlier messages, the files with their profiles, and the notebook as it is now —
+a cell you edited is shown as you left it. Nothing a model thought in an earlier
+run is sent again.
 
 ---
 

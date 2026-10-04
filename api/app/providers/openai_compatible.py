@@ -25,18 +25,18 @@ from app.domain.llm import (
     OnDelta,
     ProviderError,
     Reply,
-    StopReason,
     ToolResult,
     Usage,
     UserText,
 )
 from app.providers.dialect import (
     NOT_RUN,
-    TOOL_DESCRIPTION,
     TOOL_NAME,
-    TOOL_PARAMETERS,
-    extract_code,
+    TOOLS,
+    Call,
+    read_reply,
     result_as_text,
+    stop_of,
     turn_as_text,
 )
 from app.providers.endpoint import Endpoint
@@ -80,12 +80,16 @@ class ChatCompletionsModel:
         }
 
         if self.endpoint.dialect == "tools":
-            function = {
-                "name": TOOL_NAME,
-                "description": TOOL_DESCRIPTION,
-                "parameters": TOOL_PARAMETERS,
-            }
-            body["tools"] = [{"type": "function", "function": function}]
+            tools = []
+            for spec in TOOLS:
+                function = {
+                    "name": spec.name,
+                    "description": spec.description,
+                    "parameters": spec.parameters,
+                }
+                tools.append({"type": "function", "function": function})
+
+            body["tools"] = tools
             body["tool_choice"] = "auto"
             body["parallel_tool_calls"] = False
 
@@ -187,27 +191,33 @@ class StreamedCompletion:
             assembled["arguments"] += function["arguments"]
 
     def reply(self, endpoint: Endpoint) -> Reply:
-        calls = [self.calls[index] for index in sorted(self.calls)]
-        code, call_id, extra = code_of(endpoint, self.text, calls)
+        assembled = [self.calls[index] for index in sorted(self.calls)]
+
+        calls = []
+        tool_calls = []
+        for piece in assembled:
+            if piece["id"] is None or piece["name"] is None:
+                raise ProviderError("protocol", "a tool call without an id or a name")
+
+            arguments = parsed_arguments(piece["arguments"])
+            calls.append(Call(id=piece["id"], name=piece["name"], arguments=arguments))
+
+            function = {"name": piece["name"], "arguments": piece["arguments"]}
+            tool_calls.append({"id": piece["id"], "type": "function", "function": function})
+
+        reading = read_reply(endpoint.dialect, self.text, calls)
 
         raw: dict[str, Any] = {"role": "assistant", "content": self.text or None}
-        if calls:
-            raw["tool_calls"] = [
-                {
-                    "id": call["id"],
-                    "type": "function",
-                    "function": {"name": call["name"], "arguments": call["arguments"]},
-                }
-                for call in calls
-            ]
+        if tool_calls:
+            raw["tool_calls"] = tool_calls
 
         turn = AssistantTurn(
             text=self.text,
-            code=code,
-            call_id=call_id,
+            code=reading.code,
+            call_id=reading.call_id,
             source=endpoint.source,
             raw=raw,
-            extra_call_ids=extra,
+            extra_call_ids=reading.extra_call_ids,
         )
 
         details = self.usage.get("completion_tokens_details") or {}
@@ -216,43 +226,23 @@ class StreamedCompletion:
             output_tokens=self.usage.get("completion_tokens", 0) or 0,
             reasoning_tokens=details.get("reasoning_tokens", 0) or 0,
         )
+        stop = stop_of(
+            reading,
+            refused=self.refused,
+            cut_off=self.finish_reason == "length",
+        )
 
-        return Reply(turn=turn, usage=usage, stop=self.stop(code))
-
-    def stop(self, code: str | None) -> StopReason:
-        if self.refused:
-            return "refusal"
-
-        if self.finish_reason == "length":
-            return "max_tokens"
-
-        if code is not None:
-            return "code"
-
-        return "answer"
+        return Reply(turn=turn, usage=usage, stop=stop, question=reading.question)
 
 
-def code_of(
-    endpoint: Endpoint,
-    text: str,
-    calls: list[dict[str, Any]],
-) -> tuple[str | None, str | None, tuple[str, ...]]:
-    if endpoint.dialect == "text":
-        return extract_code(text), None, ()
-
-    if not calls:
-        return None, None, ()
-
-    first = calls[0]
+def parsed_arguments(text: str | None) -> dict[str, Any]:
+    """A tool call's arguments: a JSON object sent as a string."""
     try:
-        arguments = json.loads(first["arguments"] or "{}")
+        arguments = json.loads(text or "{}")
     except json.JSONDecodeError as exc:
         raise ProviderError("protocol", "a tool call whose arguments are not JSON") from exc
 
-    code = arguments.get("code")
-    if not isinstance(code, str) or first["id"] is None:
-        raise ProviderError("protocol", "a run_python call without a code string or an id")
+    if not isinstance(arguments, dict):
+        raise ProviderError("protocol", "a tool call whose arguments are not an object")
 
-    extra = tuple(call["id"] for call in calls[1:] if call["id"] is not None)
-
-    return code, first["id"], extra
+    return arguments
