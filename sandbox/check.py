@@ -12,6 +12,7 @@ a non-zero exit.
 
 from __future__ import annotations
 
+import json
 import os
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -188,6 +189,43 @@ def check_the_namespace_starts_clean(client: BlockingKernelClient) -> None:
     assert names == "['In', 'Out', 'exit', 'get_ipython', 'open', 'quit']", names
 
 
+def check_a_brazilian_csv_is_profiled(client: BlockingKernelClient) -> None:
+    """Semicolons and Latin-1: what a CSV saved by a Brazilian Excel looks like."""
+    content = "região;vendas\nSão Paulo;1.234,56\nNordeste;\n".encode("latin-1")
+    with open("/tmp/vendas.csv", "wb") as target:
+        target.write(content)
+
+    code = "__import__('not_a_notebook_profile').emit('/tmp/vendas.csv')"
+    result = run(client, code)
+    profile = json.loads(only(result.outputs, "stream")[0]["text"])
+
+    assert profile["readable"] is True, profile
+    assert profile["encoding"] == "latin-1"
+
+    table = profile["tables"][0]
+    assert table["rows"] == 2
+    assert [column["name"] for column in table["columns"]] == ["região", "vendas"]
+    assert table["columns"][1]["missing"] == 1
+
+
+def check_an_unreadable_file_is_still_a_profile(client: BlockingKernelClient) -> None:
+    with open("/tmp/broken.parquet", "wb") as target:
+        target.write(b"this is not parquet")
+
+    code = "__import__('not_a_notebook_profile').emit('/tmp/broken.parquet')"
+    result = run(client, code)
+    profile = json.loads(only(result.outputs, "stream")[0]["text"])
+
+    assert profile["readable"] is False
+    assert profile["error"]
+
+
+def check_profiling_leaves_the_namespace_clean(client: BlockingKernelClient) -> None:
+    result = run(client, "print('not_a_notebook_profile' in dir())")
+
+    assert only(result.outputs, "stream")[0]["text"] == "False\n"
+
+
 def check_matplotlib_arrives_as_an_image(client: BlockingKernelClient) -> None:
     code = "import matplotlib.pyplot as plt\nplt.plot([1, 2, 3])\nplt.show()"
     result = run(client, code)
@@ -209,6 +247,9 @@ CHECKS: list[Callable[[BlockingKernelClient], None]] = [
     check_a_grouped_result_keeps_its_keys,
     check_a_long_table_travels_cut_but_counted,
     check_matplotlib_arrives_as_an_image,
+    check_a_brazilian_csv_is_profiled,
+    check_an_unreadable_file_is_still_a_profile,
+    check_profiling_leaves_the_namespace_clean,
 ]
 
 

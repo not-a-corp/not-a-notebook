@@ -6,6 +6,7 @@ history and the same cells.
 
 from __future__ import annotations
 
+from collections.abc import Set
 from typing import Any, NoReturn
 from uuid import UUID
 
@@ -21,6 +22,7 @@ async def update_conversation(
     user_id: UUID,
     conversation_id: UUID,
     changes: UpdateConversationRequest,
+    running: Set[UUID],
 ) -> Conversation:
     # One statement for every combination of fields: a field not sent keeps its
     # value through the CASE, so the SQL never has to be assembled. The model
@@ -72,7 +74,7 @@ async def update_conversation(
     if row is None:
         await explain_nothing_updated(conn, user_id, conversation_id)
 
-    return to_conversation(row)
+    return to_conversation(row, running)
 
 
 async def explain_nothing_updated(

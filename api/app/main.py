@@ -30,12 +30,17 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import account, auth, conversations, health, oauth
+from app.api import account, auth, conversations, files, health, oauth
 from app.config import get_settings
+from app.core.close_abandoned_runs import close_abandoned_runs
 from app.db.pool import create_pool
 from app.domain.errors import DomainError
+from app.runs.background import Background
 from app.runtime.docker_engine import DockerEngine
+from app.runtime.docker_runtime import DockerRuntime, SandboxLimits
 from app.runtime.reaper import reap_orphans, reap_own
+from app.runtime.registry import KernelRegistry
+from app.storage.local import LocalFileStore
 
 API_PREFIX = "/api/v1"
 OUTBOUND_TIMEOUT_SECONDS = 10.0
@@ -62,16 +67,37 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await pool.open(wait=True)
 
     # Kernels left by a previous run of this API, or by one that died, are found
-    # and removed before anything new starts (decision 3).
+    # and removed before anything new starts (decision 3) — and so are the runs
+    # that were executing in it.
     docker = DockerEngine.over_socket()
     await reap_orphans(docker, settings.api_container)
+
+    async with pool.connection() as conn:
+        await close_abandoned_runs(conn)
+
+    limits = SandboxLimits(
+        image=settings.sandbox_image,
+        container_runtime=settings.sandbox_runtime,
+        memory_mb=settings.kernel_memory_mb,
+        cpus=settings.kernel_cpus,
+        pids=settings.kernel_pids,
+        execution_timeout_seconds=settings.execution_timeout_seconds,
+    )
+    runtime = DockerRuntime(docker, limits, settings.api_container, settings.files_volume)
+    kernels = KernelRegistry(runtime)
+    background = Background()
 
     app.state.pool = pool
     app.state.http = http
     app.state.docker = docker
+    app.state.store = LocalFileStore(settings.files_root)
+    app.state.kernels = kernels
+    app.state.background = background
     try:
         yield
     finally:
+        await background.cancel_all()
+        await kernels.stop_all()
         await reap_own(docker, settings.api_container)
         await docker.close()
         await http.aclose()
@@ -136,5 +162,6 @@ register_error_handlers(app)
 app.include_router(account.router, prefix=API_PREFIX)
 app.include_router(auth.router, prefix=API_PREFIX)
 app.include_router(conversations.router, prefix=API_PREFIX)
+app.include_router(files.router, prefix=API_PREFIX)
 app.include_router(health.router, prefix=API_PREFIX)
 app.include_router(oauth.router, prefix=API_PREFIX)

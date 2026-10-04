@@ -8,6 +8,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field, model_validator
 
+from app.domain.files import FileInfo
+
 # The conversations.title column.
 MAX_TITLE_LENGTH = 200
 
@@ -71,8 +73,8 @@ class ConversationDetail(BaseModel):
     model_id: UUID | None
     kernel: KernelState
     active_run_id: UUID | None
-    # Each list is filled by the branch that brings its rows: files with
-    # feat/files-upload, messages with feat/agent-loop, cells with feat/cells.
-    files: list[Any]
+    files: list[FileInfo]
+    # Each list is filled by the branch that brings its rows: messages with
+    # feat/agent-loop, cells with feat/cells.
     messages: list[Any]
     cells: list[Any]

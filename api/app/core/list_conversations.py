@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+from collections.abc import Set
 from typing import Any
 from uuid import UUID
 
@@ -28,6 +29,7 @@ async def list_conversations(
     page: int,
     per_page: int,
     query: str | None,
+    running: Set[UUID],
 ) -> ConversationPage:
     pattern = None
     if query is not None:
@@ -89,7 +91,7 @@ async def list_conversations(
 
     data = []
     for row in rows:
-        conversation = to_conversation(row)
+        conversation = to_conversation(row, running)
         data.append(conversation)
 
     meta = PageMeta(page=page, per_page=per_page, total=total, pages=pages)

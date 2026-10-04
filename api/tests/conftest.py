@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 from collections.abc import Callable, Iterator
 from pathlib import Path
@@ -110,7 +111,24 @@ def client(migrated_database: str, monkeypatch: pytest.MonkeyPatch) -> Iterator[
         with TestClient(app, base_url="https://testserver") as test_client:
             yield test_client
     finally:
+        remove_uploaded_files(migrated_database)
         get_settings.cache_clear()
+
+
+def remove_uploaded_files(dsn: str) -> None:
+    """Uploads land in the files volume the running service shares; the test
+    users' folders go when their test does."""
+    sql = """
+        SELECT u.external_id::text
+          FROM users u
+    """
+
+    with psycopg.connect(dsn) as conn:
+        rows = conn.execute(sql).fetchall()
+
+    root = Path(get_settings().files_root)
+    for row in rows:
+        shutil.rmtree(root / row[0], ignore_errors=True)
 
 
 @pytest.fixture

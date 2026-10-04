@@ -66,4 +66,7 @@ async def create_conversation(
     if row is None:
         raise Unauthenticated
 
-    return to_conversation(row)
+    # A conversation that did not exist a moment ago has no kernel.
+    no_kernels: set[UUID] = set()
+
+    return to_conversation(row, no_kernels)

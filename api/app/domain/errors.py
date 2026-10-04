@@ -79,3 +79,41 @@ class ConversationNotFound(DomainError):
     code = "CONVERSATION_NOT_FOUND"
     status = 404
     message = "No such conversation."
+
+
+# The same code the 422 handler uses for a malformed request, for input that is
+# well-formed JSON but still unacceptable — a file name with a slash in it.
+class InvalidInput(DomainError):
+    code = "VALIDATION_ERROR"
+    status = 422
+    message = "The request is missing or malformed."
+
+
+class ConversationBusy(DomainError):
+    code = "CONVERSATION_BUSY"
+    status = 409
+    message = "A run is already in progress in this conversation."
+
+
+class FileNotFound(DomainError):
+    code = "FILE_NOT_FOUND"
+    status = 404
+    message = "No such file."
+
+
+class FileAlreadyExists(DomainError):
+    code = "FILE_ALREADY_EXISTS"
+    status = 409
+    message = "The conversation already has a file with that name."
+
+
+class FileTooLarge(DomainError):
+    code = "FILE_TOO_LARGE"
+    status = 413
+    message = "The file is over this instance's upload limit."
+
+
+class UnsupportedFileType(DomainError):
+    code = "UNSUPPORTED_FILE_TYPE"
+    status = 415
+    message = "Only CSV, TSV, Excel and Parquet files are accepted."

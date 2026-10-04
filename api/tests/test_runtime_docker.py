@@ -30,6 +30,7 @@ from app.domain.runtime import (
 )
 from app.runtime.docker_engine import DockerEngine, DockerError
 from app.runtime.docker_runtime import PORTS, DockerKernel, DockerRuntime, SandboxLimits
+from app.storage.local import LocalFileStore
 
 pytestmark = pytest.mark.asyncio(loop_scope="module")
 
@@ -73,21 +74,39 @@ def default_limits() -> SandboxLimits:
     )
 
 
+def make_runtime(engine: DockerEngine, limits: SandboxLimits) -> DockerRuntime:
+    settings = get_settings()
+
+    return DockerRuntime(engine, limits, settings.api_container, settings.files_volume)
+
+
+async def start_kernel(runtime: DockerRuntime) -> DockerKernel:
+    """A kernel with an empty files folder of its own, as a new conversation has."""
+    session = uuid4()
+    folder = f"tests/{session}"
+    await LocalFileStore(get_settings().files_root).prepare_folder(folder)
+
+    return await runtime.start(session, folder)
+
+
 @pytest_asyncio.fixture(loop_scope="module", scope="module")
 async def engine() -> AsyncIterator[DockerEngine]:
     docker = DockerEngine.over_socket()
     yield docker
     await docker.close()
 
+    # The empty folders start_kernel made in the shared files volume.
+    await LocalFileStore(get_settings().files_root).delete_folder("tests")
+
 
 @pytest_asyncio.fixture(loop_scope="module", scope="module")
 async def runtime(engine: DockerEngine) -> DockerRuntime:
-    return DockerRuntime(engine, default_limits(), get_settings().api_container)
+    return make_runtime(engine, default_limits())
 
 
 @pytest_asyncio.fixture(loop_scope="module", scope="module")
 async def kernel(runtime: DockerRuntime) -> AsyncIterator[DockerKernel]:
-    started = await runtime.start(uuid4())
+    started = await start_kernel(runtime)
     yield started
     await started.shutdown()
 
@@ -229,7 +248,7 @@ async def test_one_kernel_cannot_reach_anothers(
 ) -> None:
     """The reason for a network per conversation: iopub is a PUB socket, and a
     kernel that could connect to another's could read its outputs."""
-    other = await runtime.start(uuid4())
+    other = await start_kernel(runtime)
     try:
         address = await address_of(engine, other)
         code = f"""
@@ -311,8 +330,8 @@ async def test_the_wall_time_limit_interrupts_and_keeps_the_state(
     engine: DockerEngine,
 ) -> None:
     limits = replace(default_limits(), execution_timeout_seconds=3)
-    runtime = DockerRuntime(engine, limits, get_settings().api_container)
-    kernel = await runtime.start(uuid4())
+    runtime = make_runtime(engine, limits)
+    kernel = await start_kernel(runtime)
     try:
         await run(kernel, "kept = 1")
 
@@ -327,8 +346,8 @@ async def test_the_wall_time_limit_interrupts_and_keeps_the_state(
 
 async def test_running_out_of_memory_kills_the_kernel_and_says_so(engine: DockerEngine) -> None:
     limits = replace(default_limits(), memory_mb=256)
-    runtime = DockerRuntime(engine, limits, get_settings().api_container)
-    kernel = await runtime.start(uuid4())
+    runtime = make_runtime(engine, limits)
+    kernel = await start_kernel(runtime)
     try:
         with pytest.raises(KernelDied):
             await asyncio.wait_for(run(kernel, "hog = b'x' * (1024 ** 3)"), timeout=60)
@@ -337,7 +356,7 @@ async def test_running_out_of_memory_kills_the_kernel_and_says_so(engine: Docker
 
 
 async def test_shutdown_leaves_nothing_behind(runtime: DockerRuntime, engine: DockerEngine) -> None:
-    kernel = await runtime.start(uuid4())
+    kernel = await start_kernel(runtime)
     inspected = await engine.inspect_container(kernel.container)
     network = inspected["HostConfig"]["NetworkMode"]
 
@@ -355,11 +374,11 @@ async def test_a_kernel_that_cannot_start_is_sandbox_unavailable_and_cleaned_up(
     engine: DockerEngine,
 ) -> None:
     limits = replace(default_limits(), image="not-a-notebook-sandbox:does-not-exist")
-    runtime = DockerRuntime(engine, limits, get_settings().api_container)
+    runtime = make_runtime(engine, limits)
     session = uuid4()
 
     with pytest.raises(SandboxUnavailable):
-        await runtime.start(session)
+        await runtime.start(session, f"tests/{session}")
 
     with pytest.raises(DockerError) as network_gone:
         await engine.inspect_network(f"nan-kernel-{session}")

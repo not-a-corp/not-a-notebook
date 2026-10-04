@@ -76,14 +76,23 @@ class SandboxLimits:
 
 
 class DockerRuntime:
-    def __init__(self, engine: DockerEngine, limits: SandboxLimits, api_container: str) -> None:
+    def __init__(
+        self,
+        engine: DockerEngine,
+        limits: SandboxLimits,
+        api_container: str,
+        files_volume: str,
+    ) -> None:
         self.engine = engine
         self.limits = limits
         # The container this API runs in. It joins each kernel's network, which is
         # the only way to reach a kernel that has no other network.
         self.api_container = api_container
+        # The Docker volume behind the FileStore; each kernel mounts its own
+        # conversation's folder of it.
+        self.files_volume = files_volume
 
-    async def start(self, session: UUID) -> DockerKernel:
+    async def start(self, session: UUID, files: str) -> DockerKernel:
         name = f"nan-kernel-{session}"
         labels = {
             KERNEL_LABEL: str(session),
@@ -97,7 +106,7 @@ class DockerRuntime:
         try:
             await self.engine.connect_network(network, self.api_container)
 
-            config = self.container_config(name, labels, key)
+            config = self.container_config(name, labels, key, files)
             container = await self.engine.create_container(name, config)
             await self.engine.start_container(container)
 
@@ -128,7 +137,13 @@ class DockerRuntime:
 
         return network
 
-    def container_config(self, name: str, labels: dict[str, str], key: str) -> dict[str, Any]:
+    def container_config(
+        self,
+        name: str,
+        labels: dict[str, str],
+        key: str,
+        files: str,
+    ) -> dict[str, Any]:
         connection = {
             "ip": "0.0.0.0",
             "transport": "tcp",
@@ -162,6 +177,17 @@ class DockerRuntime:
             },
             "CapDrop": ["ALL"],
             "SecurityOpt": ["no-new-privileges"],
+            # Only this conversation's folder, and read-only: the code reads the
+            # user's files and can neither change them nor see anyone else's.
+            "Mounts": [
+                {
+                    "Type": "volume",
+                    "Source": self.files_volume,
+                    "Target": "/data",
+                    "ReadOnly": True,
+                    "VolumeOptions": {"Subpath": files},
+                },
+            ],
         }
 
         return {
@@ -246,12 +272,17 @@ class DockerKernel:
         self.execution_timeout_seconds = execution_timeout_seconds
         self.interrupt_requested = False
 
-    async def execute(self, code: str, on_output: OnOutput) -> ExecutionResult:
+    async def execute(
+        self,
+        code: str,
+        on_output: OnOutput,
+        store_history: bool = True,
+    ) -> ExecutionResult:
         self.interrupt_requested = False
         started = time.monotonic()
         timed_out = False
 
-        msg_id = self.client.execute(code, store_history=True, allow_stdin=False)
+        msg_id = self.client.execute(code, store_history=store_history, allow_stdin=False)
 
         try:
             async with asyncio.timeout(self.execution_timeout_seconds):

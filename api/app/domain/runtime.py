@@ -85,7 +85,16 @@ class KernelDied(Exception):
 
 
 class Kernel(Protocol):
-    async def execute(self, code: str, on_output: OnOutput) -> ExecutionResult: ...
+    async def execute(
+        self,
+        code: str,
+        on_output: OnOutput,
+        store_history: bool = True,
+    ) -> ExecutionResult:
+        """store_history=False is for the API's own code — profiling a file —
+        which must not take an execution count or appear in In/Out, where the
+        model and the user would see it."""
+        ...
 
     async def interrupt(self) -> None: ...
 
@@ -93,4 +102,7 @@ class Kernel(Protocol):
 
 
 class Runtime(Protocol):
-    async def start(self, session: UUID) -> Kernel: ...
+    async def start(self, session: UUID, files: str) -> Kernel:
+        """files is the conversation's folder in the FileStore, mounted read-only
+        at /data."""
+        ...

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from collections.abc import Set
 from typing import Any
 from uuid import UUID
 
@@ -10,17 +11,20 @@ from psycopg import AsyncConnection
 from app.core.conversation_row import kernel_state
 from app.domain.conversations import ConversationDetail
 from app.domain.errors import ConversationNotFound
+from app.domain.files import FileInfo
 
 
 async def get_conversation(
     conn: AsyncConnection[Any],
     user_id: UUID,
     conversation_id: UUID,
+    running: Set[UUID],
 ) -> ConversationDetail:
     # At most one run is 'running' per conversation — a unique index says so —
     # so the subquery returns one row or none.
     sql = """
-        SELECT c.external_id AS id,
+        SELECT c.id AS row_id,
+               c.external_id AS id,
                c.title,
                m.external_id AS model_id,
                (
@@ -43,20 +47,49 @@ async def get_conversation(
         "conversation_id": conversation_id,
     }
 
+    # Already scoped by the query above: these only run once it found the
+    # conversation, and they ask by its internal id.
+    files_sql = """
+        SELECT f.external_id AS id,
+               f.name,
+               f.bytes,
+               f.profile,
+               f.created_at
+          FROM files f
+         WHERE f.conversation_id = %(conversation_row_id)s
+         ORDER BY f.created_at,
+                  f.id
+    """
+
     async with conn.cursor() as cur:
         await cur.execute(sql, params)
         row = await cur.fetchone()
 
-    if row is None:
-        raise ConversationNotFound
+        if row is None:
+            raise ConversationNotFound
+
+        files_params = {"conversation_row_id": row["row_id"]}
+        await cur.execute(files_sql, files_params)
+        file_rows = await cur.fetchall()
+
+    files = []
+    for file_row in file_rows:
+        file = FileInfo(
+            id=file_row["id"],
+            name=file_row["name"],
+            bytes=file_row["bytes"],
+            profile=file_row["profile"],
+            created_at=file_row["created_at"],
+        )
+        files.append(file)
 
     return ConversationDetail(
         id=row["id"],
         title=row["title"],
         model_id=row["model_id"],
-        kernel=kernel_state(),
+        kernel=kernel_state(row["id"], running),
         active_run_id=row["active_run_id"],
-        files=[],
+        files=files,
         messages=[],
         cells=[],
     )

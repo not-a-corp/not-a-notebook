@@ -10,9 +10,13 @@ import httpx2
 from fastapi import Cookie, Depends, Request
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from psycopg import AsyncConnection
+from psycopg_pool import AsyncConnectionPool
 
 from app.config import Settings, get_settings
 from app.domain.errors import Unauthenticated
+from app.domain.files import FileStore
+from app.runs.background import Background
+from app.runtime.registry import KernelRegistry
 from app.security.access_tokens import read_access_token
 
 REFRESH_COOKIE = "nan_refresh"
@@ -45,6 +49,44 @@ async def http(request: Request) -> httpx2.AsyncClient:
 
 
 Http = Annotated[httpx2.AsyncClient, Depends(http)]
+
+
+# The process-wide objects the lifespan builds. Typed one by one rather than
+# reached through request.app.state in each route, so a route's signature says
+# everything it touches.
+
+
+async def pool(request: Request) -> AsyncConnectionPool:
+    """For work that outlives the request and takes connections as it goes."""
+    found: AsyncConnectionPool = request.app.state.pool
+    return found
+
+
+Pool = Annotated[AsyncConnectionPool, Depends(pool)]
+
+
+async def store(request: Request) -> FileStore:
+    found: FileStore = request.app.state.store
+    return found
+
+
+Store = Annotated[FileStore, Depends(store)]
+
+
+async def kernels(request: Request) -> KernelRegistry:
+    found: KernelRegistry = request.app.state.kernels
+    return found
+
+
+Kernels = Annotated[KernelRegistry, Depends(kernels)]
+
+
+async def background(request: Request) -> Background:
+    found: Background = request.app.state.background
+    return found
+
+
+Jobs = Annotated[Background, Depends(background)]
 
 
 async def caller(
