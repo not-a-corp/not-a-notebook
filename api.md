@@ -340,7 +340,7 @@ GET /conversations?page=1&per_page=50&q=sales
 | --- | --- | --- |
 | `page` | 1 | >= 1 |
 | `per_page` | 50 | 1 to 200 |
-| `q` | — | searches `title` |
+| `q` | — | searches `title`, in any case; 1 to 200 characters, `%` and `_` taken literally |
 
 ```json
 // 200
@@ -442,6 +442,10 @@ the next one, and every attempt stays visible in the run's events.
 ```
 `200` with the conversation, as in the list. · `VALIDATION_ERROR` ·
 `CONVERSATION_NOT_FOUND` · `MODEL_NOT_FOUND` · `UNAUTHENTICATED`
+
+Only the fields you send change. `"model_id": null` takes the model away — the
+next message answers `NO_MODEL_SELECTED` until another is picked. A model that is
+not found changes nothing, the title included.
 
 Changing the model mid-conversation is allowed. The new model reads the same
 history and the same cells.
