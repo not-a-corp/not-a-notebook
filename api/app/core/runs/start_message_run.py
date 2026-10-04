@@ -111,7 +111,7 @@ async def start_message_run(
         await cur.execute(touch_sql, touch_params)
 
     message = message_shape(
-        stored["external_id"], "user", run["external_id"], text, stored["created_at"]
+        stored["external_id"], "user", run["external_id"], text, None, None, stored["created_at"]
     )
 
     return MessageRun(

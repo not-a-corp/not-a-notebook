@@ -10,7 +10,7 @@ from psycopg import AsyncConnection
 
 from app.db.cells import conversation_cells
 from app.db.conversations import kernel_state
-from app.db.messages import message_shape
+from app.db.messages import grounding_of, message_shape
 from app.domain.conversations import ConversationDetail
 from app.domain.errors import ConversationNotFound
 from app.domain.files import FileInfo
@@ -68,6 +68,8 @@ async def get_conversation(
                m.role,
                r.external_id AS run_id,
                m.text,
+               m.kind,
+               m.grounding,
                m.created_at
           FROM messages m
           LEFT JOIN runs r
@@ -100,6 +102,8 @@ async def get_conversation(
             message_row["role"],
             message_row["run_id"],
             message_row["text"],
+            message_row["kind"],
+            grounding_of(message_row["grounding"]),
             message_row["created_at"],
         )
         messages.append(message)
