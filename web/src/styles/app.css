@@ -1,0 +1,266 @@
+@import "tailwindcss";
+
+/*
+ * The visual system of design.md §5, as the only values the app can name.
+ *
+ * Every colour is a CSS variable redefined per theme under [data-theme], and
+ * Tailwind's own palette, type scale, radii and shadows are cleared first — so a
+ * component cannot reach for a colour or a size the design does not have, and a
+ * theme cannot be half-applied (§5.3).
+ */
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/inter/files/inter-latin-wght-normal.woff2")
+    format("woff2-variations");
+  unicode-range:
+    U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+    U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2")
+    format("woff2-variations");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("@fontsource/jetbrains-mono/files/jetbrains-mono-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("@fontsource/jetbrains-mono/files/jetbrains-mono-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-400-normal.woff2")
+    format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("@fontsource/jetbrains-mono/files/jetbrains-mono-latin-ext-600-normal.woff2")
+    format("woff2");
+  unicode-range:
+    U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+    U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+    U+A720-A7FF;
+}
+
+/* §5.3 — Light. Also what a page shows before the theme script has run. */
+:root,
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #ffffff;
+  --surface: #f7f7f8;
+  --surface-raised: #ffffff;
+  --border: #e4e4e7;
+  --text: #18181b;
+  --text-muted: #6b6b74;
+  --accent: #0e7490;
+  --accent-soft: #ecfeff;
+  --success: #15803d;
+  --warning: #b45309;
+  --danger: #b91c1c;
+  --on-accent: #ffffff;
+  --shadow: 0 12px 32px rgba(24, 24, 27, 0.12), 0 2px 6px rgba(24, 24, 27, 0.06);
+  --scrim: rgba(24, 24, 27, 0.14);
+  --syntax-keyword: #6d28d9;
+  --syntax-string: #a16207;
+  --syntax-number: #c2410c;
+  --syntax-function: #0e7490;
+  --syntax-comment: #6b6b74;
+  --chart-1: #0e7490;
+  --chart-2: #c2410c;
+  --chart-3: #6d28d9;
+  --chart-4: #15803d;
+  --chart-5: #b91c1c;
+  --chart-6: #a16207;
+  --chart-7: #be185d;
+  --chart-8: #475569;
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0b0d10;
+  --surface: #121418;
+  --surface-raised: #181b20;
+  --border: #26292f;
+  --text: #e7e7ea;
+  --text-muted: #9a9aa3;
+  --accent: #22b8cf;
+  --accent-soft: #0e2a30;
+  --success: #4ade80;
+  --warning: #fbbf24;
+  --danger: #f87171;
+  --on-accent: #0b0d10;
+  --shadow: 0 12px 32px rgba(0, 0, 0, 0.5), 0 2px 6px rgba(0, 0, 0, 0.3);
+  --scrim: rgba(0, 0, 0, 0.4);
+  --syntax-keyword: #c4b5fd;
+  --syntax-string: #e9c46a;
+  --syntax-number: #fb923c;
+  --syntax-function: #22b8cf;
+  --syntax-comment: #8a8e97;
+  --chart-1: #22b8cf;
+  --chart-2: #fb923c;
+  --chart-3: #a78bfa;
+  --chart-4: #4ade80;
+  --chart-5: #f87171;
+  --chart-6: #facc15;
+  --chart-7: #f472b6;
+  --chart-8: #94a3b8;
+}
+
+/* Catppuccin Mocha: the palette's named colours, never invented between them. */
+[data-theme="mocha"] {
+  color-scheme: dark;
+  --bg: #1e1e2e; /* base */
+  --surface: #181825; /* mantle */
+  --surface-raised: #1e1e2e; /* base — cells stand out by their border */
+  --border: #313244; /* surface0 */
+  --text: #cdd6f4; /* text */
+  --text-muted: #a6adc8; /* subtext0 */
+  --accent: #cba6f7; /* mauve */
+  --accent-soft: #332e46; /* mauve at 12% over base — the one blend */
+  --success: #a6e3a1; /* green */
+  --warning: #f9e2af; /* yellow */
+  --danger: #f38ba8; /* red */
+  --on-accent: #11111b; /* crust */
+  --shadow: 0 12px 32px rgba(17, 17, 27, 0.55), 0 2px 6px rgba(17, 17, 27, 0.35);
+  --scrim: rgba(17, 17, 27, 0.45);
+  --syntax-keyword: #cba6f7; /* mauve */
+  --syntax-string: #a6e3a1; /* green */
+  --syntax-number: #fab387; /* peach */
+  --syntax-function: #89b4fa; /* blue */
+  --syntax-comment: #9399b2; /* overlay2 */
+  --chart-1: #89b4fa; /* blue */
+  --chart-2: #fab387; /* peach */
+  --chart-3: #a6e3a1; /* green */
+  --chart-4: #f38ba8; /* red */
+  --chart-5: #cba6f7; /* mauve */
+  --chart-6: #f9e2af; /* yellow */
+  --chart-7: #94e2d5; /* teal */
+  --chart-8: #f5c2e7; /* pink */
+}
+
+@theme inline {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border);
+  --color-text: var(--text);
+  --color-text-muted: var(--text-muted);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-on-accent: var(--on-accent);
+  --color-scrim: var(--scrim);
+  --color-syntax-keyword: var(--syntax-keyword);
+  --color-syntax-string: var(--syntax-string);
+  --color-syntax-number: var(--syntax-number);
+  --color-syntax-function: var(--syntax-function);
+  --color-syntax-comment: var(--syntax-comment);
+
+  --shadow-*: initial;
+  --shadow-overlay: var(--shadow);
+}
+
+@theme {
+  --font-*: initial;
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* §5.1 — size / line height. */
+  --text-*: initial;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 13px;
+  --text-sm--line-height: 20px;
+  --text-base: 14px;
+  --text-base--line-height: 22px;
+  --text-md: 16px;
+  --text-md--line-height: 24px;
+  --text-lg: 20px;
+  --text-lg--line-height: 28px;
+  --text-xl: 24px;
+  --text-xl--line-height: 32px;
+
+  /* §5.2 — 4 badges · 6 buttons · 8 cells · 12 dialogs · 16 the home composer. */
+  --radius-*: initial;
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-2xl: 16px;
+  --radius-full: 9999px;
+
+  /* §5.5 */
+  --default-transition-duration: 120ms;
+}
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--text-base--line-height);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}

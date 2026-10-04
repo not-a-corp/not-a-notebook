@@ -1,0 +1,18 @@
+# The web app and the API behind one origin, so the refresh cookie — scoped to
+# /api/v1/auth, SameSite=Strict — rides along with no CORS at all.
+:3000 {
+	encode zstd gzip
+
+	# Server-Sent Events are flushed as they arrive: reverse_proxy does that on
+	# its own for text/event-stream.
+	handle /api/* {
+		reverse_proxy api:8000
+	}
+
+	# A single-page app: any path that is not a file is a route, served index.html.
+	handle {
+		root * /srv
+		try_files {path} /index.html
+		file_server
+	}
+}
