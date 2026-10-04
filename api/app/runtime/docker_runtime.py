@@ -39,9 +39,11 @@ from app.runtime.outputs import from_message
 
 log = logging.getLogger(__name__)
 
-# Every container and network this runtime creates carries this label, with the
-# session as its value: it is how the reaper finds them after a crash.
+# Every container and network this runtime creates carries both labels: the
+# session it belongs to, and the API container that created it. The reaper finds
+# kernels by the first and decides whose they are by the second.
 KERNEL_LABEL = "not-a-notebook.kernel"
+OWNER_LABEL = "not-a-notebook.owner"
 
 # Fixed, because each kernel has the container — and the network — to itself.
 PORTS = {
@@ -83,7 +85,10 @@ class DockerRuntime:
 
     async def start(self, session: UUID) -> DockerKernel:
         name = f"nan-kernel-{session}"
-        labels = {KERNEL_LABEL: str(session)}
+        labels = {
+            KERNEL_LABEL: str(session),
+            OWNER_LABEL: self.api_container,
+        }
         key = secrets.token_hex(32)
 
         network = await self.create_network(name, labels)

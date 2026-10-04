@@ -13,6 +13,7 @@ this file calls (decision 2).
 
 from __future__ import annotations
 
+import json
 from typing import Any
 
 import httpx2
@@ -90,6 +91,19 @@ class DockerEngine:
     async def inspect_network(self, network: str) -> dict[str, Any]:
         return await self.request("GET", f"/networks/{network}")
 
+    async def list_containers(self, label: str) -> list[dict[str, Any]]:
+        """Every container carrying the label, running or not."""
+        params = {"all": "true", "filters": label_filter(label)}
+        found: list[dict[str, Any]] = await self.request_json("GET", "/containers/json", params)
+
+        return found
+
+    async def list_networks(self, label: str) -> list[dict[str, Any]]:
+        params = {"filters": label_filter(label)}
+        found: list[dict[str, Any]] = await self.request_json("GET", "/networks", params)
+
+        return found
+
     async def request(
         self,
         method: str,
@@ -97,6 +111,17 @@ class DockerEngine:
         params: dict[str, str] | None = None,
         json: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
+        body: dict[str, Any] = await self.request_json(method, path, params, json)
+
+        return body
+
+    async def request_json(
+        self,
+        method: str,
+        path: str,
+        params: dict[str, str] | None = None,
+        json: dict[str, Any] | None = None,
+    ) -> Any:
         response = await self.http.request(method, path, params=params, json=json)
 
         if response.status_code >= 400:
@@ -107,5 +132,11 @@ class DockerEngine:
         if not response.content:
             return {}
 
-        body: dict[str, Any] = response.json()
-        return body
+        return response.json()
+
+
+def label_filter(label: str) -> str:
+    """Docker's filter syntax: a JSON object of lists, passed as a query string."""
+    filters = {"label": [label]}
+
+    return json.dumps(filters)

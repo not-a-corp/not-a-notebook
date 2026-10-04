@@ -10,6 +10,9 @@ Nothing else may reach the client: an unhandled exception becomes a generic
 INTERNAL_ERROR with a ``request_id``, and the traceback goes to the log under that
 id, never into the response.
 
+Owns the kernels' lifecycle at the edges too: orphans are reaped on startup and
+this API's own kernels on shutdown.
+
 Migrations are *not* run here. ``alembic upgrade head`` is a separate command, so
 two instances starting at once cannot race each other through the same revisions.
 """
@@ -31,6 +34,8 @@ from app.api import account, auth, health, oauth
 from app.config import get_settings
 from app.db.pool import create_pool
 from app.domain.errors import DomainError
+from app.runtime.docker_engine import DockerEngine
+from app.runtime.reaper import reap_orphans, reap_own
 
 API_PREFIX = "/api/v1"
 OUTBOUND_TIMEOUT_SECONDS = 10.0
@@ -56,11 +61,19 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     await pool.open(wait=True)
 
+    # Kernels left by a previous run of this API, or by one that died, are found
+    # and removed before anything new starts (decision 3).
+    docker = DockerEngine.over_socket()
+    await reap_orphans(docker, settings.api_container)
+
     app.state.pool = pool
     app.state.http = http
+    app.state.docker = docker
     try:
         yield
     finally:
+        await reap_own(docker, settings.api_container)
+        await docker.close()
         await http.aclose()
         await pool.close()
 
