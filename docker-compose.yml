@@ -107,6 +107,27 @@ services:
       timeout: 5s
       retries: 10
 
+  # The web app, built and served by Caddy, with the API behind it on /api: one
+  # origin for the browser. PUBLIC_URL points here.
+  web:
+    build:
+      context: web
+      target: runtime
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+
+  # The web app's gate: tsc, eslint, prettier and vitest. Not started by `up`;
+  # run it with `docker compose run --rm --build web-test`.
+  web-test:
+    build:
+      context: web
+      target: test
+    profiles: ["test"]
+    network_mode: none
+
 volumes:
   db-data:
   files:
