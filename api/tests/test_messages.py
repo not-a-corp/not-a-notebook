@@ -5,6 +5,7 @@ from __future__ import annotations
 
 from collections.abc import Iterator
 from typing import Any
+from uuid import UUID
 
 import pytest
 from app.domain.llm import ProviderError, Reply, UserText
@@ -254,4 +255,24 @@ def test_a_kernel_lost_since_the_cells_ran_is_announced(
     assert {"reason": "lost"} in [
         {"reason": e["reason"]} for e in events_of(sql, run_id) if e["type"] == "kernel.restarted"
     ]
+    assert "The kernel was restarted" in second.seen[0][-1].text  # type: ignore[union-attr]
+
+
+def test_a_kernel_reaped_for_idleness_comes_back_empty_and_the_model_knows(
+    client: TestClient, token: str, conversation: str, script: Any, sql: Run
+) -> None:
+    script([wants("x = 41"), answers("Set.")], [prints("")])
+    settled(sql, send(client, token, conversation, "Set x.").json()["run_id"])
+
+    # A fresh registry, as the scripted runs need — then the idle reaper's stop
+    # on it, as after KERNEL_IDLE_MINUTES.
+    second = script([answers("It is gone.")], [])
+    registry = app.state.kernels
+    client.portal.call(registry.stop, UUID(conversation), "idle")  # type: ignore[attr-defined]
+
+    run_id = send(client, token, conversation, "What is x?").json()["run_id"]
+    settled(sql, run_id)
+
+    restarted = [e["reason"] for e in events_of(sql, run_id) if e["type"] == "kernel.restarted"]
+    assert restarted == ["idle"]
     assert "The kernel was restarted" in second.seen[0][-1].text  # type: ignore[union-attr]

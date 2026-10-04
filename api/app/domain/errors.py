@@ -135,3 +135,9 @@ class RunNotFound(DomainError):
     code = "RUN_NOT_FOUND"
     status = 404
     message = "No such run."
+
+
+class CellNotFound(DomainError):
+    code = "CELL_NOT_FOUND"
+    status = 404
+    message = "No such cell."

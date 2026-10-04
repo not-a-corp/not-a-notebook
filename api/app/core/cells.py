@@ -91,6 +91,29 @@ async def rewrite_cell(
         await conn.execute(clear_sql, clear_params)
 
 
+async def begin_execution(conn: AsyncConnection[Any], cell: CellRef) -> None:
+    """A cell you run: running, and its old outputs gone — they belong to the
+    execution before (schema.sql)."""
+    update_sql = """
+        UPDATE cells c
+           SET status = 'running'
+         WHERE c.external_id = %(cell_id)s
+    """
+
+    clear_sql = """
+        DELETE FROM cell_outputs o
+         USING cells c
+         WHERE c.id = o.cell_id
+           AND c.external_id = %(cell_id)s
+    """
+
+    params = {"cell_id": cell.id}
+
+    async with conn.transaction():
+        await conn.execute(update_sql, params)
+        await conn.execute(clear_sql, params)
+
+
 async def finish_attempt(
     conn: AsyncConnection[Any],
     cell: CellRef,

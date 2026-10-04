@@ -17,9 +17,12 @@ and owns none of them.
 
 from __future__ import annotations
 
+import asyncio
+import contextlib
 import time
+from collections.abc import Coroutine
 from dataclasses import dataclass, field
-from typing import Literal
+from typing import Any, Literal
 
 from app.agent.outputs import as_text, fields_of, kind_of
 from app.domain.agent import CellRef, CellStatus, Emit, Kernels, Notebook
@@ -41,6 +44,10 @@ class ModelRefused(Exception):
 
 class StepLimit(Exception):
     """The model kept running code without ever answering."""
+
+
+class RunCancelled(Exception):
+    """Stopped on request, between steps or in the middle of one."""
 
 
 @dataclass
@@ -75,6 +82,7 @@ class Turn:
     notebook: Notebook
     emit: Emit
     history: list[Item]
+    stop: asyncio.Event
     produced: list[str] = field(default_factory=list)
 
 
@@ -94,12 +102,16 @@ async def run_turn(
     notebook: Notebook,
     emit: Emit,
     meter: Meter,
+    stop: asyncio.Event,
 ) -> Outcome:
-    turn = Turn(kernels=kernels, notebook=notebook, emit=emit, history=history)
+    turn = Turn(kernels=kernels, notebook=notebook, emit=emit, history=history, stop=stop)
     retry: Retry | None = None
 
     for step in range(1, MAX_STEPS + 1):
-        reply = await ask(model, system, history, step, emit)
+        if stop.is_set():
+            raise RunCancelled
+
+        reply = await ask(model, system, history, step, emit, stop)
         meter.add(reply.usage)
         history.append(reply.turn)
 
@@ -115,17 +127,27 @@ async def run_turn(
 
         retry = await attempt(turn, code, reply, step, retry)
 
+        if stop.is_set():
+            raise RunCancelled
+
     raise StepLimit
 
 
-async def ask(model: Model, system: str, history: list[Item], step: int, emit: Emit) -> Reply:
+async def ask(
+    model: Model,
+    system: str,
+    history: list[Item],
+    step: int,
+    emit: Emit,
+    stop: asyncio.Event,
+) -> Reply:
     await emit("llm.started", {"step": step})
     started = time.monotonic()
 
     async def delta(text: str) -> None:
         await emit("llm.delta", {"step": step, "text": text})
 
-    reply = await model.complete(system, history, delta)
+    reply = await unless_stopped(model.complete(system, history, delta), stop)
 
     finished = {
         "step": step,
@@ -196,8 +218,11 @@ async def attempt(
     result_item = ToolResult(call_id=reply.turn.call_id, content=read_back, is_error=is_error)
     turn.history.append(result_item)
 
-    # A dead kernel is not retried in place: what the cell needed is gone with it.
-    open_again = is_error and number < MAX_ATTEMPTS and result is not None
+    # Retried in place: an error, or code that ran out of time. Not a dead kernel
+    # — what the cell needed is gone with it — and not a cancelled attempt: the
+    # user stopped it, and the run is ending.
+    retryable = status in ("error", "timed_out") and result is not None
+    open_again = retryable and number < MAX_ATTEMPTS
     cell_status = cell_status_of(status)
 
     await turn.notebook.finish_attempt(
@@ -219,9 +244,10 @@ async def attempt(
     return None
 
 
-def output_event(cell: CellRef, attempt: int, output: Output) -> dict[str, object]:
-    """cell.output: the cell and attempt, then the output's own fields flattened
-    after its kind, as events.md lays them out."""
+def output_event(cell: CellRef, attempt: int | None, output: Output) -> dict[str, object]:
+    """cell.output: the cell and attempt — null for a cell you run, which has no
+    attempts — then the output's own fields flattened after its kind, as
+    events.md lays them out."""
     event: dict[str, object] = {
         "cell_id": str(cell.id),
         "attempt": attempt,
@@ -250,6 +276,25 @@ async def run(
         await emit("kernel.restarted", {"reason": "died"})
         await kernels.replace()
         return None
+
+
+async def unless_stopped(call: Coroutine[Any, Any, Reply], stop: asyncio.Event) -> Reply:
+    """The model's reply — or RunCancelled the moment the run is stopped, with
+    the request abandoned: a model can think for minutes."""
+    request = asyncio.ensure_future(call)
+    stopped = asyncio.ensure_future(stop.wait())
+
+    done, _ = await asyncio.wait({request, stopped}, return_when=asyncio.FIRST_COMPLETED)
+
+    if request in done:
+        stopped.cancel()
+        return request.result()
+
+    request.cancel()
+    with contextlib.suppress(asyncio.CancelledError):
+        await request
+
+    raise RunCancelled
 
 
 def attempt_status(result: ExecutionResult | None) -> str:

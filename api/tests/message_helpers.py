@@ -4,6 +4,8 @@ registry swapped for one that hands out a scripted kernel."""
 from __future__ import annotations
 
 import time
+from collections.abc import AsyncIterator
+from contextlib import asynccontextmanager
 from typing import Any
 from uuid import UUID
 
@@ -21,6 +23,8 @@ class ScriptedRegistry:
     def __init__(self, kernel: ScriptedKernel) -> None:
         self.kernel = kernel
         self.started: set[UUID] = set()
+        self.reasons: dict[UUID, str] = {}
+        self.interrupted: list[UUID] = []
 
     async def kernel_for(self, session: UUID, files: str) -> ScriptedKernel:
         self.started.add(session)
@@ -29,8 +33,21 @@ class ScriptedRegistry:
     def running(self) -> set[UUID]:
         return set(self.started)
 
-    async def stop(self, session: UUID) -> None:
+    async def stop(self, session: UUID, reason: str | None = None) -> None:
         self.started.discard(session)
+        if reason is not None:
+            self.reasons[session] = reason
+
+    @asynccontextmanager
+    async def hold(self, session: UUID) -> AsyncIterator[None]:
+        yield
+
+    def take_reason(self, session: UUID) -> str | None:
+        return self.reasons.pop(session, None)
+
+    async def interrupt(self, session: UUID) -> None:
+        self.interrupted.append(session)
+        await self.kernel.interrupt()
 
     async def stop_all(self) -> None:
         self.started.clear()

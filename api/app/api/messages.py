@@ -7,20 +7,10 @@ from uuid import UUID
 from fastapi import APIRouter, status
 
 from app.core.start_message_run import start_message_run
-from app.dependencies import (
-    Caller,
-    Crypto,
-    Db,
-    EnvironmentKeys,
-    Http,
-    Jobs,
-    Kernels,
-    Live,
-    Pool,
-)
+from app.dependencies import Caller, Db, Jobs, Work
 from app.domain.files import conversation_folder
 from app.domain.messages import MessageAccepted, MessageRequest
-from app.runs.message import Question, Services, answer_in_background
+from app.runs.message import Question, answer_in_background
 
 router = APIRouter(prefix="/conversations", tags=["messages"])
 
@@ -31,24 +21,11 @@ async def send(
     payload: MessageRequest,
     caller: Caller,
     conn: Db,
-    pool: Pool,
-    kernels: Kernels,
-    live: Live,
-    http: Http,
-    cipher: Crypto,
-    keys: EnvironmentKeys,
+    work: Work,
     jobs: Jobs,
 ) -> MessageAccepted:
     run = await start_message_run(conn, caller, conversation_id, payload.text)
 
-    services = Services(
-        pool=pool,
-        broadcast=live,
-        kernels=kernels,
-        http=http,
-        cipher=cipher,
-        environment_keys=keys,
-    )
     question = Question(
         user_id=caller,
         conversation_id=conversation_id,
@@ -57,6 +34,6 @@ async def send(
     )
 
     # The answer goes out now; the run streams at GET /runs/{id}/events.
-    jobs.spawn(answer_in_background(services, question, run))
+    jobs.spawn(answer_in_background(work, question, run))
 
     return MessageAccepted(message=run.message, run_id=run.run_id)

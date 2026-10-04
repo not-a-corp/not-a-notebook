@@ -13,19 +13,16 @@ emits nothing more, and is closed as failed on the next startup.
 
 from __future__ import annotations
 
+import asyncio
 import logging
 import uuid
-from collections.abc import Mapping
 from dataclasses import dataclass
 from typing import Any
 from uuid import UUID
 
-import httpx2
-from psycopg_pool import AsyncConnectionPool
-
 from app.agent import grounding
 from app.agent.context import history_for
-from app.agent.loop import Meter, ModelRefused, StepLimit, run_turn
+from app.agent.loop import Meter, ModelRefused, RunCancelled, StepLimit, run_turn
 from app.agent.prompt import system_prompt
 from app.core.resolve_model import resolve_endpoint
 from app.core.run_records import RunStatus, finish_run, store_reply
@@ -35,26 +32,12 @@ from app.domain.agent import Emit
 from app.domain.errors import ModelNotFound, SandboxUnavailable
 from app.domain.llm import ProviderError
 from app.providers.factory import model_for
-from app.runs.broadcast import Broadcast
 from app.runs.events import RunEvents
 from app.runs.kernels import ConversationKernels
 from app.runs.notebook import StoredNotebook
-from app.runtime.registry import KernelRegistry
-from app.security.secrets import Cipher
+from app.runs.services import Services
 
 log = logging.getLogger(__name__)
-
-
-@dataclass(frozen=True)
-class Services:
-    """What a run takes from the process, as the lifespan built it."""
-
-    pool: AsyncConnectionPool
-    broadcast: Broadcast
-    kernels: KernelRegistry
-    http: httpx2.AsyncClient
-    cipher: Cipher
-    environment_keys: Mapping[str, str | None]
 
 
 @dataclass(frozen=True)
@@ -68,8 +51,13 @@ class Question:
 async def answer_in_background(services: Services, question: Question, run: MessageRun) -> None:
     emit = RunEvents(services.pool, services.broadcast, run.run_row_id)
     meter = Meter()
+    control = services.controls.open(run.run_id, question.conversation_id)
 
-    status = await answer(services, question, run, emit, meter)
+    try:
+        async with services.kernels.hold(question.conversation_id):
+            status = await answer(services, question, run, emit, meter, control.stop)
+    finally:
+        services.controls.close(run.run_id)
 
     async with services.pool.connection() as conn:
         finished = await finish_run(conn, run.run_row_id, status, meter.usage)
@@ -90,6 +78,7 @@ async def answer(
     run: MessageRun,
     emit: Emit,
     meter: Meter,
+    stop: asyncio.Event,
 ) -> RunStatus:
     """The run's status, once everything it emits before run.finished is out."""
     details = {"run_id": run.run_id}
@@ -104,7 +93,9 @@ async def answer(
     await emit("run.started", started)
 
     try:
-        return await converse(services, question, run, emit, meter)
+        return await converse(services, question, run, emit, meter, stop)
+    except RunCancelled:
+        return "cancelled"
     except ProviderError as exc:
         log.warning("run %(run_id)s: the provider failed", details)
         await run_error(emit, "MODEL_UNAVAILABLE", f"The provider answered: {exc}")
@@ -132,6 +123,7 @@ async def converse(
     run: MessageRun,
     emit: Emit,
     meter: Meter,
+    stop: asyncio.Event,
 ) -> RunStatus:
     async with services.pool.connection() as conn:
         endpoint = await resolve_endpoint(
@@ -145,6 +137,7 @@ async def converse(
 
     kernels = ConversationKernels(
         services.kernels,
+        services.store,
         question.conversation_id,
         question.folder,
         emit,
@@ -172,6 +165,7 @@ async def converse(
         notebook,
         emit,
         meter,
+        stop,
     )
 
     async with services.pool.connection() as conn:
