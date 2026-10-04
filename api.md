@@ -539,7 +539,27 @@ so running it elsewhere means putting the files there or changing one line.
 
 The file is stored, then **profiled inside the sandbox** — that is the run. `profile`
 is `null` until the run's `file.profiled` event; the profile is what the model sees
-of the file, never the raw rows.
+of the file, never the raw rows. Until the event stream exists, the profile shows
+up in [`GET /conversations/{id}`](#get-conversationsid) when the run ends.
+
+```json
+{ "format": "csv", "readable": true, "encoding": "latin-1", "sheets": null,
+  "tables": [
+    { "sheet": null, "rows": 3, "column_count": 2,
+      "columns": [
+        { "name": "região", "dtype": "str", "missing": 0, "distinct": 3,
+          "samples": ["Sudeste", "Nordeste", "TOTAL"] } ] } ] }
+```
+
+`format` is `csv` · `tsv` · `excel` · `parquet`. `encoding` is set for CSV and TSV;
+`sheets` lists an Excel workbook's sheets in its own order, with one entry in
+`tables` per sheet. A file that cannot be read is still a profile —
+`{"format": …, "readable": false, "error": "…"}` — and its run still succeeds:
+"this is not a valid Parquet file" is the answer, not a failure.
+
+The name is what the code sees at `/data/<name>`, so it is kept as given: one path
+component, at most 255 characters, not starting with a dot. A name that cannot be
+a file there is `VALIDATION_ERROR`; so is an empty file.
 
 Accepted: `.csv`, `.tsv`, `.xlsx`, `.xls`, `.xlsm`, `.parquet`. The size limit is
 `MAX_UPLOAD_MB` on the instance.

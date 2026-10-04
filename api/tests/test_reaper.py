@@ -19,6 +19,7 @@ from app.config import get_settings
 from app.runtime.docker_engine import DockerEngine, DockerError
 from app.runtime.docker_runtime import KERNEL_LABEL, OWNER_LABEL, DockerRuntime, SandboxLimits
 from app.runtime.reaper import reap_orphans, reap_own
+from app.storage.local import LocalFileStore
 
 pytestmark = pytest.mark.asyncio(loop_scope="module")
 
@@ -165,13 +166,17 @@ async def test_a_real_kernel_abandoned_by_a_crash_is_reaped(engine: DockerEngine
         pids=settings.kernel_pids,
         execution_timeout_seconds=settings.execution_timeout_seconds,
     )
-    runtime = DockerRuntime(engine, limits, me())
-    kernel = await runtime.start(uuid4())
+    runtime = DockerRuntime(engine, limits, me(), settings.files_volume)
+    session = uuid4()
+    folder = f"tests/{session}"
+    await LocalFileStore(settings.files_root).prepare_folder(folder)
+    kernel = await runtime.start(session, folder)
 
     # No shutdown: the process "died" with the kernel running.
     kernel.client.stop_channels()
 
     removed = await reap_orphans(engine, me())
+    await LocalFileStore(settings.files_root).delete_folder(folder)
 
     assert removed >= 1
     assert not await container_exists(engine, kernel.container)

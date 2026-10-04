@@ -35,7 +35,7 @@ RUN useradd --uid 1000 --create-home analyst \
  && mkdir /data /run/kernel \
  && chown analyst:analyst /run/kernel
 
-COPY kernel/not_a_notebook_display.py /opt/sandbox/kernel/
+COPY kernel/not_a_notebook_display.py kernel/not_a_notebook_profile.py /opt/sandbox/kernel/
 COPY kernel/ipython_kernel_config.py /opt/venv/etc/ipython/
 COPY check.py /opt/sandbox/check.py
 

@@ -15,6 +15,7 @@ x-api: &api
     KERNEL_MEMORY_MB: ${KERNEL_MEMORY_MB:-2048}
     KERNEL_CPUS: ${KERNEL_CPUS:-1.0}
     EXECUTION_TIMEOUT_SECONDS: ${EXECUTION_TIMEOUT_SECONDS:-300}
+    MAX_UPLOAD_MB: ${MAX_UPLOAD_MB:-100}
 
 services:
   db:
@@ -69,6 +70,9 @@ services:
       # The API starts a container per conversation. The socket is root on the
       # host: accepted for self-host, and behind a socket proxy when hosted.
       - /var/run/docker.sock:/var/run/docker.sock
+      # Uploaded files, one directory per user per conversation. Each kernel gets
+      # its conversation's directory from this same volume, read-only, at /data.
+      - files:/var/lib/not-a-notebook/files
     ports:
       - "8000:8000"
     healthcheck:
@@ -84,3 +88,7 @@ services:
 
 volumes:
   db-data:
+  files:
+    # A fixed name rather than one prefixed by the compose project: the API
+    # names this volume when it mounts a conversation's files into a kernel.
+    name: not-a-notebook-files

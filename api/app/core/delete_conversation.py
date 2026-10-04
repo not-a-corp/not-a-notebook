@@ -1,8 +1,9 @@
 """Deleting a conversation. There is no trash.
 
-Its files, runs, events, messages and cells go with it, by ON DELETE CASCADE.
-Stopping its kernel and removing its files from disk join this use case when the
-kernel registry and the FileStore exist.
+Its runs, events, messages, cells and file rows go with it, by ON DELETE CASCADE;
+its kernel is shut down and its folder removed from disk. Cancelling a run in
+progress arrives with the agent's runs — the profiling run left behind finds its
+rows gone and its kernel stopped, and ends there.
 """
 
 from __future__ import annotations
@@ -13,10 +14,14 @@ from uuid import UUID
 from psycopg import AsyncConnection
 
 from app.domain.errors import ConversationNotFound
+from app.domain.files import FileStore, conversation_folder
+from app.runtime.registry import KernelRegistry
 
 
 async def delete_conversation(
     conn: AsyncConnection[Any],
+    store: FileStore,
+    kernels: KernelRegistry,
     user_id: UUID,
     conversation_id: UUID,
 ) -> None:
@@ -40,3 +45,8 @@ async def delete_conversation(
 
     if row is None:
         raise ConversationNotFound
+
+    await kernels.stop(conversation_id)
+
+    folder = conversation_folder(user_id, conversation_id)
+    await store.delete_folder(folder)

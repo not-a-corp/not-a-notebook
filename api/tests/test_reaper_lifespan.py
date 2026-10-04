@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import asyncio
 
+import pytest
+from app.config import get_settings
 from app.main import app
 from app.runtime.docker_engine import DockerEngine
 from fastapi.testclient import TestClient
@@ -36,12 +38,21 @@ def exists(stand_in: StandIn) -> bool:
     return asyncio.run(check())
 
 
-def test_the_api_reaps_on_startup_and_on_shutdown() -> None:
+def test_the_api_reaps_on_startup_and_on_shutdown(
+    migrated_database: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    # The test database: starting the API closes abandoned runs, and must not
+    # do it to the real service's.
+    monkeypatch.setenv("DATABASE_URL", migrated_database)
+    get_settings.cache_clear()
     left_by_a_crash = make_stand_in()
 
-    with TestClient(app):
-        assert not exists(left_by_a_crash)
+    try:
+        with TestClient(app):
+            assert not exists(left_by_a_crash)
 
-        started_while_up = make_stand_in()
+            started_while_up = make_stand_in()
+    finally:
+        get_settings.cache_clear()
 
     assert not exists(started_while_up)

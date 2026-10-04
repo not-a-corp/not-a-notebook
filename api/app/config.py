@@ -47,6 +47,12 @@ class Settings(BaseSettings):
     kernel_pids: int = 256
     execution_timeout_seconds: float = 300
 
+    # Uploaded files: where the API keeps them, and the Docker volume that holds
+    # that directory — kernels mount their conversation's part of it at /data.
+    files_root: str = "/var/lib/not-a-notebook/files"
+    files_volume: str = "not-a-notebook-files"
+    max_upload_mb: int = 100
+
     # The container this API runs in, which joins each kernel's network. Inside
     # a container the hostname is its id, so this only needs setting when the
     # hostname has been changed.
