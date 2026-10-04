@@ -87,29 +87,3 @@ export async function updateConversation(
 export async function deleteConversation(id: string): Promise<void> {
   await request(`/conversations/${id}`, { method: "DELETE" });
 }
-
-// GET /conversations/{id}: one call paints the screen (decision 19). The header
-// reads only these fields; the panes read the rest.
-export interface Conversation {
-  id: string;
-  title: string;
-  modelId: string | null;
-  kernel: KernelState;
-  activeRunId: string | null;
-}
-
-export function decodeConversation(value: unknown): Conversation {
-  const json = asRecord(value, "conversation");
-
-  return {
-    id: string(json, "id"),
-    title: string(json, "title"),
-    modelId: nullableString(json, "model_id"),
-    kernel: oneOf(json, "kernel", ["running", "stopped"]),
-    activeRunId: nullableString(json, "active_run_id"),
-  };
-}
-
-export async function getConversation(id: string): Promise<Conversation> {
-  return decodeConversation(await requestJson(`/conversations/${id}`));
-}
