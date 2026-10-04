@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Response, status
 
-from app.api.refresh_cookie import clear_refresh_cookie
+from app.api.cookies import clear_refresh_cookie
 from app.core.change_password import change_password
 from app.core.get_account import get_account
 from app.dependencies import Caller, Db

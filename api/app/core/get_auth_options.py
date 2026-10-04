@@ -9,7 +9,11 @@ from psycopg import AsyncConnection
 from app.domain.auth import AuthOptions
 
 
-async def get_auth_options(conn: AsyncConnection[Any], registration_open: bool) -> AuthOptions:
+async def get_auth_options(
+    conn: AsyncConnection[Any],
+    registration_open: bool,
+    oauth_providers: list[str],
+) -> AuthOptions:
     # A closed instance with no accounts yet still lets the first one in, so the
     # screen has to offer it.
     sql = """
@@ -27,5 +31,4 @@ async def get_auth_options(conn: AsyncConnection[Any], registration_open: bool) 
 
     can_register = registration_open or row["empty"]
 
-    # No OAuth provider is wired in yet.
-    return AuthOptions(registration_open=can_register, oauth=[])
+    return AuthOptions(registration_open=can_register, oauth=oauth_providers)

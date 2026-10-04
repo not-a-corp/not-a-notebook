@@ -47,3 +47,17 @@ class EmailAlreadyRegistered(DomainError):
     code = "EMAIL_ALREADY_REGISTERED"
     status = 409
     message = "That email already has an account."
+
+
+class OAuthProviderNotEnabled(DomainError):
+    code = "OAUTH_PROVIDER_NOT_ENABLED"
+    status = 404
+    message = "That sign-in provider is not configured on this instance."
+
+
+# Never leaves as JSON: the OAuth callback answers with a redirect carrying the
+# code. The message is the reason, for the log.
+class OAuthFailed(DomainError):
+    code = "OAUTH_FAILED"
+    status = 400
+    message = "The sign-in with the provider did not complete."
