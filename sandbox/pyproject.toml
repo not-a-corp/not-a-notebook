@@ -24,3 +24,15 @@ dependencies = [
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+# Only in the image's test stage; the image that runs kernels has none of it.
+dev = [
+    "pytest>=8.4",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# No cache: the image is read-only to the user the tests run as.
+addopts = "-ra -q -p no:cacheprovider"
+# The modules live at /opt/sandbox/kernel in the image, on PYTHONPATH already.

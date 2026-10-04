@@ -50,9 +50,20 @@ services:
   # the way: the check starts a kernel and exits. No network at all — the check
   # needs none, and neither does anything the image is for.
   sandbox:
-    build: sandbox
+    build:
+      context: sandbox
+      target: runtime
     image: not-a-notebook-sandbox
     command: ["python", "/opt/sandbox/check.py"]
+    network_mode: none
+
+  # The profiler's detectors under pytest, in the sandbox image plus pytest. Not
+  # started by `up`; run it with `docker compose run --rm --build sandbox-test`.
+  sandbox-test:
+    build:
+      context: sandbox
+      target: test
+    profiles: ["test"]
     network_mode: none
 
   api:

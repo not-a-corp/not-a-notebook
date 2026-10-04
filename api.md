@@ -544,11 +544,16 @@ up in [`GET /conversations/{id}`](#get-conversationsid) when the run ends.
 
 ```json
 { "format": "csv", "readable": true, "encoding": "latin-1", "sheets": null,
+  "findings": [],
   "tables": [
     { "sheet": null, "rows": 3, "column_count": 2,
       "columns": [
         { "name": "região", "dtype": "str", "missing": 0, "distinct": 3,
-          "samples": ["Sudeste", "Nordeste", "TOTAL"] } ] } ] }
+          "samples": ["Sudeste", "Nordeste", "TOTAL"] } ],
+      "findings": [
+        { "kind": "subtotal_rows", "rows": [4], "count": 1,
+          "sums_checked": [{ "row": 4, "column": "vendas" }],
+          "message": "1 row(s) look like totals mixed in with the records (rows [4]). …" } ] } ] }
 ```
 
 `format` is `csv` · `tsv` · `excel` · `parquet`. `encoding` is set for CSV and TSV;
@@ -556,6 +561,24 @@ up in [`GET /conversations/{id}`](#get-conversationsid) when the run ends.
 `tables` per sheet. A file that cannot be read is still a profile —
 `{"format": …, "readable": false, "error": "…"}` — and its run still succeeds:
 "this is not a valid Parquet file" is the answer, not a failure.
+
+**Findings** are what a careful analyst would catch, before any question. Every
+one has a `kind` and a `message`; `rows` are numbered as in the file (a header on
+line 4 makes the first record row 5), at most ten listed beside a `count`.
+Suspicious values are shown both ways, never fixed.
+
+| `kind` | Where | Says |
+| --- | --- | --- |
+| `data_not_on_first_sheet` | file | the workbook's data is on `largest`, not on `first` |
+| `header_not_on_first_row` | table | the header is on `header_row`; `above` holds what came before. The table is described from the header down. |
+| `subtotal_rows` | table | rows labelled as totals; `sums_checked` lists those that equal the sum of the rows above them |
+| `exact_duplicates` | table | rows that copy an earlier row |
+| `number_formats` | column | numbers stored as text, the `formats` they use, whether they are `mixed`, and `ambiguous` values with every `readings` (`"1.234"` → `plain` 1.234, `brazilian` 1234) |
+| `date_formats` | column | dates stored as text, their `formats`, and `ambiguous` values as both `as_dd_mm` and `as_mm_dd` |
+| `inconsistent_labels` | column | `variants`: one label spelled several ways (`Sudeste`, `sudeste`, `Sudeste `) |
+| `contradicting_columns` | table | `columns[0]` equals `columns[1]` × `columns[2]` on most rows, but not on `rows` |
+| `dominating_value` | column | one value is `share` of the column's total |
+| `missing_values` | column | `count` missing, and the `placeholders` typed in their place (`-`, `n/d`) |
 
 The name is what the code sees at `/data/<name>`, so it is kept as given: one path
 component, at most 255 characters, not starting with a dot. A name that cannot be

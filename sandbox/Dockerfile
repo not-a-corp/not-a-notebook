@@ -13,12 +13,12 @@ ENV UV_COMPILE_BYTECODE=1 \
 
 WORKDIR /src
 COPY pyproject.toml uv.lock ./
-RUN uv sync --frozen --no-install-project
+RUN uv sync --frozen --no-install-project --no-dev
 
 
 # uv stays behind in the build stage: nothing in the running image installs
 # anything.
-FROM python:3.14-slim
+FROM python:3.14-slim AS runtime
 
 COPY --from=build /opt/venv /opt/venv
 
@@ -35,7 +35,8 @@ RUN useradd --uid 1000 --create-home analyst \
  && mkdir /data /run/kernel \
  && chown analyst:analyst /run/kernel
 
-COPY kernel/not_a_notebook_display.py kernel/not_a_notebook_profile.py /opt/sandbox/kernel/
+COPY kernel/not_a_notebook_display.py kernel/not_a_notebook_profile.py \
+     kernel/not_a_notebook_findings.py /opt/sandbox/kernel/
 COPY kernel/ipython_kernel_config.py /opt/venv/etc/ipython/
 COPY check.py /opt/sandbox/check.py
 
@@ -47,3 +48,16 @@ WORKDIR /home/analyst
 # filesystem is read-only) and the variable is dropped before the kernel starts,
 # so it does not sit in the environment the generated code can read.
 CMD ["sh", "-c", "printf '%s' \"$KERNEL_CONNECTION\" > /run/kernel/connection.json && unset KERNEL_CONNECTION && exec python -m ipykernel_launcher -f /run/kernel/connection.json"]
+
+
+# The detectors' tests, run against the very image above plus pytest:
+#   docker compose run --rm --build sandbox-test
+FROM build AS test-dependencies
+RUN uv sync --frozen --no-install-project
+
+FROM runtime AS test
+COPY --from=test-dependencies /opt/venv /opt/venv
+COPY --chown=analyst:analyst pyproject.toml /opt/sandbox/pyproject.toml
+COPY --chown=analyst:analyst tests /opt/sandbox/tests
+WORKDIR /opt/sandbox
+CMD ["python", "-m", "pytest"]
