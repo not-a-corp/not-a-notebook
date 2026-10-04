@@ -427,7 +427,7 @@ the next one, and every attempt stays visible in the run's events.
 | kind | Fields |
 | --- | --- |
 | `stream` | `name` (`stdout` · `stderr`), `text` |
-| `error` | `name`, `value`, `traceback` |
+| `error` | `name`, `value`, `traceback` — a list of lines, without terminal colour codes |
 | `plotly` | `spec` — rendered by the client, in the client's theme |
 | `table` | `columns`, `rows`, `total_rows` — at most 100 rows travel |
 | `text` | `text` — the plain value of the last expression |

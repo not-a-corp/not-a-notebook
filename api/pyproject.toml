@@ -8,6 +8,7 @@ dependencies = [
     "email-validator>=2.3",
     "fastapi>=0.118",
     "httpx2>=2.13",
+    "jupyter-client>=8.6",
     "psycopg[binary,pool]>=3.2.10",
     "pydantic-settings>=2.11",
     "pyjwt>=2.10",
@@ -18,6 +19,7 @@ dependencies = [
 dev = [
     "mypy>=1.18",
     "pytest>=8.4",
+    "pytest-asyncio>=1.2",
     "ruff>=0.14",
 ]
 
@@ -45,6 +47,7 @@ warn_unused_ignores = true
 warn_redundant_casts = true
 
 [tool.pytest.ini_options]
+asyncio_mode = "auto"
 testpaths = ["tests"]
 addopts = "-ra -q"
 # The image installs dependencies without installing the project, so pytest needs

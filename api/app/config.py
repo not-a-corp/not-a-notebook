@@ -8,10 +8,11 @@ button that fails every time.
 
 from __future__ import annotations
 
+import socket
 from functools import lru_cache
 from typing import Self
 
-from pydantic import field_validator, model_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 from app.oauth.providers import OAuthApp
@@ -36,6 +37,20 @@ class Settings(BaseSettings):
     google_client_secret: str | None = None
     github_client_id: str | None = None
     github_client_secret: str | None = None
+
+    # The kernels: the image they run, the container runtime (runsc for gVisor),
+    # and what each one may use. The wall time is per execution, not per kernel.
+    sandbox_image: str = "not-a-notebook-sandbox"
+    sandbox_runtime: str = "runc"
+    kernel_memory_mb: int = 2048
+    kernel_cpus: float = 1.0
+    kernel_pids: int = 256
+    execution_timeout_seconds: float = 300
+
+    # The container this API runs in, which joins each kernel's network. Inside
+    # a container the hostname is its id, so this only needs setting when the
+    # hostname has been changed.
+    api_container: str = Field(default_factory=socket.gethostname)
 
     @field_validator("jwt_secret")
     @classmethod

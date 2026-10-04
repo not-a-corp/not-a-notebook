@@ -61,3 +61,9 @@ class OAuthFailed(DomainError):
     code = "OAUTH_FAILED"
     status = 400
     message = "The sign-in with the provider did not complete."
+
+
+class SandboxUnavailable(DomainError):
+    code = "SANDBOX_UNAVAILABLE"
+    status = 503
+    message = "A kernel could not be started."
