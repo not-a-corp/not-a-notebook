@@ -77,6 +77,11 @@ model's code is never a `run.error` — it is a `cell.output` of kind `error`.
 
 Always followed by `run.finished` with `status: "failed"`.
 
+A run whose API process died gets these two from the next process, when it
+starts: `INTERNAL_ERROR`, "The API stopped while this run was in progress.", then
+`run.finished`, numbered after the last event the dead process stored — so a
+stream reconnecting after a restart still ends.
+
 ### `run.finished`
 
 ```json

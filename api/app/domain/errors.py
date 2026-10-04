@@ -129,3 +129,9 @@ class NoModelSelected(DomainError):
     code = "NO_MODEL_SELECTED"
     status = 409
     message = "The conversation has no model to answer with."
+
+
+class RunNotFound(DomainError):
+    code = "RUN_NOT_FOUND"
+    status = 404
+    message = "No such run."

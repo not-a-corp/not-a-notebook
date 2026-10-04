@@ -15,6 +15,7 @@ from app.dependencies import (
     Http,
     Jobs,
     Kernels,
+    Live,
     Pool,
 )
 from app.domain.files import conversation_folder
@@ -32,6 +33,7 @@ async def send(
     conn: Db,
     pool: Pool,
     kernels: Kernels,
+    live: Live,
     http: Http,
     cipher: Crypto,
     keys: EnvironmentKeys,
@@ -41,6 +43,7 @@ async def send(
 
     services = Services(
         pool=pool,
+        broadcast=live,
         kernels=kernels,
         http=http,
         cipher=cipher,

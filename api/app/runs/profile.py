@@ -21,6 +21,7 @@ from app.domain.agent import Emit
 from app.domain.errors import SandboxUnavailable
 from app.domain.llm import Usage
 from app.domain.runtime import KernelDied
+from app.runs.broadcast import Broadcast
 from app.runs.events import RunEvents
 from app.runs.kernels import ConversationKernels
 from app.runtime.registry import KernelRegistry
@@ -30,10 +31,11 @@ log = logging.getLogger(__name__)
 
 async def profile_in_background(
     pool: AsyncConnectionPool,
+    broadcast: Broadcast,
     kernels: KernelRegistry,
     job: ProfileJob,
 ) -> None:
-    emit = RunEvents(pool, job.run_id)
+    emit = RunEvents(pool, broadcast, job.run_id)
 
     status = await profile(pool, kernels, job, emit)
 
