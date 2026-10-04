@@ -30,9 +30,10 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import account, auth, conversations, files, health, oauth
+from app.api import account, auth, conversations, files, health, models, oauth
 from app.config import get_settings
 from app.core.close_abandoned_runs import close_abandoned_runs
+from app.core.sync_environment_models import sync_environment_models
 from app.db.pool import create_pool
 from app.domain.errors import DomainError
 from app.runs.background import Background
@@ -40,6 +41,7 @@ from app.runtime.docker_engine import DockerEngine
 from app.runtime.docker_runtime import DockerRuntime, SandboxLimits
 from app.runtime.reaper import reap_orphans, reap_own
 from app.runtime.registry import KernelRegistry
+from app.security.secrets import Cipher, decode_key
 from app.storage.local import LocalFileStore
 
 API_PREFIX = "/api/v1"
@@ -74,6 +76,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
 
     async with pool.connection() as conn:
         await close_abandoned_runs(conn)
+        await sync_environment_models(conn, settings.environment_models())
 
     limits = SandboxLimits(
         image=settings.sandbox_image,
@@ -93,6 +96,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     app.state.store = LocalFileStore(settings.files_root)
     app.state.kernels = kernels
     app.state.background = background
+    app.state.cipher = Cipher(decode_key(settings.secrets_key))
     try:
         yield
     finally:
@@ -164,4 +168,5 @@ app.include_router(auth.router, prefix=API_PREFIX)
 app.include_router(conversations.router, prefix=API_PREFIX)
 app.include_router(files.router, prefix=API_PREFIX)
 app.include_router(health.router, prefix=API_PREFIX)
+app.include_router(models.router, prefix=API_PREFIX)
 app.include_router(oauth.router, prefix=API_PREFIX)
