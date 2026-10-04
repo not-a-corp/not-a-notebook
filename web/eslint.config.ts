@@ -20,6 +20,12 @@ const conventions: Linter.RulesRecord = {
     "error",
     { considerDefaultExhaustiveForUnions: false, requireDefaultForNonUnion: true },
   ],
+  // TanStack Router's guards throw `redirect()` by design; that is the one
+  // non-Error a throw may carry.
+  "@typescript-eslint/only-throw-error": [
+    "error",
+    { allow: [{ from: "package", package: "@tanstack/router-core", name: "Redirect" }] },
+  ],
   "no-nested-ternary": "error",
   "no-restricted-syntax": [
     "error",
@@ -61,5 +67,20 @@ export default defineConfig([
       },
     },
     rules: conventions,
+  },
+  {
+    // The shadcn/ui primitives wrap a DOM element or a Radix part, and passing
+    // through whatever props the caller gives is their whole job — the one place
+    // a spread is the point rather than a hiding place.
+    files: ["src/components/ui/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "ReturnStatement > ConditionalExpression",
+          message: "Code reads as steps: branch with a real `if`, return at the end.",
+        },
+      ],
+    },
   },
 ]);
