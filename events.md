@@ -289,11 +289,13 @@ they show may no longer follow from the code above (decision 10).
 ```json
 { "type": "answer",
   "message": { "id": "019b2a95-…", "role": "assistant", "run_id": "019b2a92-…",
-               "text": "Sudeste, with R$ 1.84M — 41% of the total.",
+               "text": "Sudeste, with R$ 1.84M — 41% of the total.", "kind": "answer",
+               "grounding": { "numbers": 2, "found": 1, "unfound": ["41%"] },
                "created_at": "2026-10-03T14:06:24.004817Z" } }
 ```
 
-The model's final words, as the message now stored in the conversation. The
+The model's final words, as the message now stored in the conversation — its
+grounding check included, the same one `grounding.checked` sends next. The
 same text arrived as `llm.delta`s; this is the settled version.
 
 ### `grounding.checked`
@@ -315,6 +317,7 @@ sufficient.
 { "type": "question",
   "message": { "id": "019b2a96-…", "role": "assistant", "run_id": "019b2a92-…",
                "text": "The file ends in March 2025 — do you mean 2025 so far, or 2024?",
+               "kind": "question", "grounding": null,
                "created_at": "2026-10-03T14:06:24.004817Z" } }
 ```
 
