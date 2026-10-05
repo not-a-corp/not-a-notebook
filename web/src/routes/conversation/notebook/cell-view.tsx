@@ -1,11 +1,12 @@
-import { LoaderCircle, TriangleAlert } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
-import { Tooltip } from "@/components/ui/tooltip";
+import { LoaderCircle, Play, Plus, Trash, TriangleAlert } from "lucide-react";
+import type { ReactNode } from "react";
 
 import type { Cell } from "@/api/conversation-detail";
+import { CellEditor } from "@/components/cell-editor";
 import { PythonCode } from "@/components/code";
 import { Outputs } from "@/components/outputs/outputs";
+import { Button } from "@/components/ui/button";
+import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/cn";
 import { formatClock, formatCount, formatDuration } from "@/lib/format";
 import { useElapsed } from "@/lib/use-elapsed";
@@ -54,38 +55,50 @@ function footerNote(cell: Cell): string | null {
   return null;
 }
 
-function footerFacts(cell: Cell): string {
-  const facts: string[] = [];
-  if (cell.attempts > 1) {
-    facts.push(`${String(cell.attempts)} attempts`);
+function originLabel(cell: Cell): string {
+  if (cell.origin === "agent") {
+    return "agent";
   }
-  if (cell.durationMs !== null) {
-    facts.push(formatDuration(cell.durationMs));
-  }
-  if (cell.executedAt !== null) {
-    facts.push(formatClock(cell.executedAt));
-  }
-  return facts.join(" · ");
+  return "you";
 }
 
-interface CellViewProps {
+export interface CellViewProps {
   cell: Cell;
   failedAttempts: FailedAttempt[];
   startedAt: string | null;
+  focused: boolean;
+  editing: boolean;
+  draft: string;
+  // A run is in progress in the conversation: nothing else can run now.
+  busy: boolean;
+  onFocus: () => void;
+  onEdit: () => void;
+  onDraft: (source: string) => void;
+  onLeave: () => void;
+  onRun: () => void;
+  onRunAndNext: () => void;
+  onDelete: () => void;
+  onAddBelow: () => void;
   onStop: () => void;
+  onShowAttempts: () => void;
 }
 
-export function CellView({ cell, failedAttempts, startedAt, onStop }: CellViewProps) {
+export function CellView(props: CellViewProps) {
+  const { cell, focused, editing } = props;
   const bar = statusBar(cell);
   const running = cell.status === "running";
   const note = footerNote(cell);
-  const facts = footerFacts(cell);
+  const showHeader = focused || running;
 
   return (
     <article
       id={`cell-${cell.id}`}
+      tabIndex={-1}
       aria-label={`Cell ${executionLabel(cell)}`}
-      className="group grid scroll-mt-6 grid-cols-[48px_minmax(0,1fr)]"
+      data-cell-id={cell.id}
+      className="group grid scroll-mt-6 grid-cols-[48px_minmax(0,1fr)] outline-none"
+      onFocus={props.onFocus}
+      onMouseDown={props.onFocus}
     >
       <div
         className={cn(
@@ -99,30 +112,47 @@ export function CellView({ cell, failedAttempts, startedAt, onStop }: CellViewPr
       </div>
 
       <div className="flex min-w-0 flex-col gap-2">
-        {running && <RunningHeader cell={cell} startedAt={startedAt} onStop={onStop} />}
-        {cell.stale && (
-          <div className="flex h-5 items-center gap-2 text-xs font-medium text-warning">
-            <TriangleAlert className="size-3.5" />
-            <span>stale — a cell above changed</span>
-            <div className="flex-1" />
-            <span className="font-normal text-text-muted">{originLabel(cell)}</span>
-          </div>
-        )}
+        {showHeader && <CellHeader actions={headerProps(props)} />}
+        {cell.stale && !showHeader && <StaleLabel cell={cell} />}
 
-        {failedAttempts.map((attempt) => (
+        {props.failedAttempts.map((attempt) => (
           <FailedAttemptRow key={attempt.attempt} attempt={attempt} />
         ))}
 
         <div
           className={cn(
             "relative overflow-x-auto rounded-lg border border-border bg-surface px-3 py-2",
+            focused && "border-[color-mix(in_oklab,var(--accent)_55%,var(--border))]",
             running && "border-accent/45 bg-accent-soft",
           )}
+          // On press, not on click: focusing the cell brings its header in above
+          // the code, and the code would move out from under the release.
+          onMouseDown={(event) => {
+            if (!editing && event.button === 0) {
+              // The browser would move focus to the cell after this; the
+              // editor takes it instead.
+              event.preventDefault();
+              props.onEdit();
+            }
+          }}
         >
           {running && (
             <span className="absolute inset-x-0 top-0 h-0.5 animate-pulse bg-gradient-to-r from-transparent via-accent to-transparent" />
           )}
-          <PythonCode source={cell.source} />
+          {editing && (
+            <CellEditor
+              source={props.draft}
+              onChange={props.onDraft}
+              onLeave={props.onLeave}
+              onRun={props.onRun}
+              onRunAndNext={props.onRunAndNext}
+            />
+          )}
+          {!editing && cell.source !== "" && <PythonCode source={props.draft} />}
+          {!editing && cell.source === "" && (
+            <span className="font-mono text-sm text-text-muted">Empty cell — Enter to edit</span>
+          )}
+          {!showHeader && !editing && <HoverActions actions={headerProps(props)} />}
         </div>
 
         <div className={cn("flex flex-col gap-2", cell.stale && "opacity-45")}>
@@ -133,56 +163,197 @@ export function CellView({ cell, failedAttempts, startedAt, onStop }: CellViewPr
               Waiting for output…
             </div>
           )}
-          {(note !== null || facts !== "") && (
-            <div className="flex justify-between gap-2 pl-3 text-xs whitespace-nowrap text-text-muted">
-              <span>{note}</span>
-              <span>{facts}</span>
-            </div>
-          )}
+          <Footer
+            cell={cell}
+            note={note}
+            showAttempts={props.failedAttempts.length === 0 ? props.onShowAttempts : null}
+          />
         </div>
       </div>
     </article>
   );
 }
 
-function originLabel(cell: Cell): string {
-  if (cell.origin === "agent") {
-    return "agent";
-  }
-  return "you";
-}
-
-// Shown while the cell runs (design.md §2.5): who wrote it, which attempt, the
-// running clock, and Stop.
-function RunningHeader({
-  cell,
-  startedAt,
-  onStop,
-}: {
+interface HeaderProps {
   cell: Cell;
   startedAt: string | null;
+  busy: boolean;
+  onRun: () => void;
+  onDelete: () => void;
+  onAddBelow: () => void;
   onStop: () => void;
+}
+
+function headerProps(props: CellViewProps): HeaderProps {
+  return {
+    cell: props.cell,
+    startedAt: props.startedAt,
+    busy: props.busy,
+    onRun: props.onRun,
+    onDelete: props.onDelete,
+    onAddBelow: props.onAddBelow,
+    onStop: props.onStop,
+  };
+}
+
+function ActionButton({
+  label,
+  disabled,
+  onClick,
+  children,
+}: {
+  label: string;
+  disabled: boolean;
+  onClick: () => void;
+  children: ReactNode;
 }) {
-  const elapsed = useElapsed(startedAt);
+  return (
+    <Tooltip label={label}>
+      <Button
+        variant="ghost"
+        size="icon-compact"
+        aria-label={label}
+        disabled={disabled}
+        onClick={(event) => {
+          event.stopPropagation();
+          onClick();
+        }}
+      >
+        {children}
+      </Button>
+    </Tooltip>
+  );
+}
+
+function Actions({ actions }: { actions: HeaderProps }) {
+  const { cell, busy, onRun, onDelete, onAddBelow, onStop } = actions;
+  const running = cell.status === "running";
+
+  return (
+    <>
+      {running && (
+        <ActionButton label="Stop" disabled={false} onClick={onStop}>
+          <span className="size-2.5 rounded-xs bg-text" />
+        </ActionButton>
+      )}
+      {!running && (
+        <ActionButton label="Run cell (Ctrl+Enter)" disabled={busy} onClick={onRun}>
+          <Play className="size-4" />
+        </ActionButton>
+      )}
+      <ActionButton label="Delete cell" disabled={busy} onClick={onDelete}>
+        <Trash className="size-4" />
+      </ActionButton>
+      <ActionButton label="Add cell below" disabled={false} onClick={onAddBelow}>
+        <Plus className="size-4" />
+      </ActionButton>
+    </>
+  );
+}
+
+// Shown on the focused cell and while it runs (design.md §2.5): who wrote it,
+// which attempt, the running clock, and the actions.
+function CellHeader({ actions }: { actions: HeaderProps }) {
+  const { cell, startedAt } = actions;
+  const running = cell.status === "running";
+  const elapsed = useElapsed(running ? startedAt : null);
 
   return (
     <div className="flex h-7 items-center gap-2 text-xs text-text-muted">
+      {cell.stale && (
+        <span className="flex items-center gap-1 font-medium text-warning">
+          <TriangleAlert className="size-3.5" />
+          stale — a cell above changed
+        </span>
+      )}
       <span className="font-medium text-text">{originLabel(cell)}</span>
-      {cell.origin === "agent" && cell.attempts > 1 && (
+      {running && cell.origin === "agent" && cell.attempts > 1 && (
         <>
           <span>·</span>
           <span className="whitespace-nowrap">attempt {cell.attempts}</span>
         </>
       )}
       <div className="flex-1" />
-      <span className="font-medium whitespace-nowrap text-accent">
-        Running · {formatDuration(elapsed)}
+      {running && (
+        <span className="font-medium whitespace-nowrap text-accent">
+          Running · {formatDuration(elapsed)}
+        </span>
+      )}
+      <Actions actions={actions} />
+    </div>
+  );
+}
+
+// On hover, the actions float in the code's corner, so hovering never moves
+// the list (the header row would).
+function HoverActions({ actions }: { actions: HeaderProps }) {
+  return (
+    <div className="absolute top-1 right-1 hidden items-center rounded-md bg-surface group-hover:flex">
+      <Actions actions={actions} />
+    </div>
+  );
+}
+
+function StaleLabel({ cell }: { cell: Cell }) {
+  return (
+    <div className="flex h-5 items-center gap-2 text-xs font-medium text-warning">
+      <TriangleAlert className="size-3.5" />
+      <span>stale — a cell above changed</span>
+      <div className="flex-1" />
+      <span className="font-normal text-text-muted">{originLabel(cell)}</span>
+    </div>
+  );
+}
+
+function Footer({
+  cell,
+  note,
+  showAttempts,
+}: {
+  cell: Cell;
+  note: string | null;
+  showAttempts: (() => void) | null;
+}) {
+  const facts: ReactNode[] = [];
+  if (cell.attempts > 1) {
+    const label = `${String(cell.attempts)} attempts`;
+    if (showAttempts !== null && cell.runId !== null) {
+      facts.push(
+        <button
+          key="attempts"
+          type="button"
+          className="text-accent hover:underline"
+          onClick={showAttempts}
+        >
+          {label}
+        </button>,
+      );
+    } else {
+      facts.push(label);
+    }
+  }
+  if (cell.durationMs !== null) {
+    facts.push(formatDuration(cell.durationMs));
+  }
+  if (cell.executedAt !== null) {
+    facts.push(formatClock(cell.executedAt));
+  }
+
+  if (note === null && facts.length === 0) {
+    return null;
+  }
+
+  return (
+    <div className="flex justify-between gap-2 pl-3 text-xs whitespace-nowrap text-text-muted">
+      <span>{note}</span>
+      <span>
+        {facts.map((fact, index) => (
+          <span key={index}>
+            {index > 0 && " · "}
+            {fact}
+          </span>
+        ))}
       </span>
-      <Tooltip label="Stop">
-        <Button variant="ghost" size="icon-compact" aria-label="Stop" onClick={onStop}>
-          <span className="size-2.5 rounded-xs bg-text" />
-        </Button>
-      </Tooltip>
     </div>
   );
 }
