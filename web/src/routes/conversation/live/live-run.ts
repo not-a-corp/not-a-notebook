@@ -320,6 +320,21 @@ export function applyEvent(state: ScreenState, event: RunEvent, now: string): Sc
       break;
     }
 
+    case "cell.started": {
+      // A cell you run, or one of Run all's: running now, its outputs replaced.
+      detail = changeCell(detail, event.cellId, (cell) =>
+        updatedCell(cell, { status: "running", outputs: [], stale: false }),
+      );
+      const startedAt = structuredClone(live.startedAt);
+      startedAt[event.cellId] = now;
+      live = updatedLive(live, {
+        activity: { kind: "running", cell: cellNumber(detail, event.cellId), cellId: event.cellId },
+        resetCells: [...live.resetCells, event.cellId],
+        startedAt,
+      });
+      break;
+    }
+
     case "cell.output": {
       const reset = !live.resetCells.includes(event.cellId);
       detail = changeCell(detail, event.cellId, (cell) => {

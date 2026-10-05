@@ -70,6 +70,7 @@ export type RunEvent = Envelope &
         durationMs: number;
       }
     | { type: "cell.created"; cell: Cell }
+    | { type: "cell.started"; cellId: string }
     | { type: "cell.output"; cellId: string; attempt: number | null; output: Output }
     | {
         type: "cell.finished";
@@ -101,6 +102,7 @@ export const EVENT_TYPES = [
   "attempt.started",
   "attempt.finished",
   "cell.created",
+  "cell.started",
   "cell.output",
   "cell.finished",
   "cells.stale",
@@ -189,6 +191,8 @@ export function decodeRunEvent(value: unknown): RunEvent {
       };
     case "cell.created":
       return { seq, t, type, cell: decodeCell(json.cell) };
+    case "cell.started":
+      return { seq, t, type, cellId: string(json, "cell_id") };
     case "cell.output":
       return {
         seq,

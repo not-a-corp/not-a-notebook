@@ -35,7 +35,7 @@ absent.
   breaks. Nothing comes after `run.finished`; the stream closes.
 - A cell's `cell.output` events come after its `attempt.started` and before that
   attempt's `attempt.finished` — or, for a cell you run, which has no attempts,
-  before its `cell.finished`.
+  after its `cell.started` and before its `cell.finished`.
 - `llm.delta` for a step comes between that step's `llm.started` and
   `llm.finished`.
 
@@ -239,6 +239,16 @@ gets the traceback and the next step may be another attempt at the same cell.
 
 The cell as [`GET /conversations/{id}`](api.md#get-conversationsid) shows it.
 Only for a cell the model creates — a cell you run already exists.
+
+### `cell.started`
+
+```json
+{ "type": "cell.started", "cell_id": "019b2a93-…" }
+```
+
+A cell you run, or one of Run all's, starts executing: its old outputs are about
+to be replaced, even if it prints nothing. A cell the model writes announces
+`attempt.started` instead, once per attempt.
 
 ### `cell.output`
 
