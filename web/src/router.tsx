@@ -4,7 +4,7 @@ import { ensureSession } from "@/api/session";
 import { AppLayout } from "@/routes/app-layout";
 import { AuthPage } from "@/routes/auth/auth-page";
 import { ConversationScreen } from "@/routes/conversation/conversation-screen";
-import { Home } from "@/routes/home";
+import { Home } from "@/routes/home/home";
 import { Root } from "@/routes/root";
 
 // Routes are declared in code, not generated from the file tree: the route

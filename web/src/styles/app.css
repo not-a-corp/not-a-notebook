@@ -107,6 +107,7 @@
   --chart-6: #a16207;
   --chart-7: #be185d;
   --chart-8: #475569;
+  --glow: #c2410c;
 }
 
 [data-theme="dark"] {
@@ -138,6 +139,7 @@
   --chart-6: #facc15;
   --chart-7: #f472b6;
   --chart-8: #94a3b8;
+  --glow: #fb923c;
 }
 
 /* Catppuccin Mocha: the palette's named colours, never invented between them. */
@@ -170,6 +172,7 @@
   --chart-6: #f9e2af; /* yellow */
   --chart-7: #94e2d5; /* teal */
   --chart-8: #f5c2e7; /* pink */
+  --glow: #89b4fa; /* blue — the home's second colour, not the chart's (peach) */
 }
 
 @theme inline {
@@ -343,5 +346,36 @@
 
   .answer a {
     color: var(--accent);
+  }
+}
+
+/* The home background (design.md §2.3). The grid is 1 px `border` lines every
+   96 px, masked so it fades out where the composer sits. */
+@layer components {
+  .home-grid {
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 96px 96px;
+    background-position: center center;
+    mask-image: radial-gradient(ellipse 58% 62% at 50% 46%, transparent 25%, #000 90%);
+  }
+
+  /* Slow enough not to be noticed. */
+  .home-drift {
+    animation: home-drift 60s ease-in-out infinite alternate;
+  }
+
+  .home-drift-slow {
+    animation: home-drift 80s ease-in-out infinite alternate-reverse;
+  }
+
+  @keyframes home-drift {
+    from {
+      transform: translate(0, 0);
+    }
+    to {
+      transform: translate(80px, 60px);
+    }
   }
 }

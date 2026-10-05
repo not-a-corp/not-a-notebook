@@ -90,3 +90,16 @@ export async function updateConversation(
 export async function deleteConversation(id: string): Promise<void> {
   await request(`/conversations/${id}`, { method: "DELETE" });
 }
+
+export interface NewConversation {
+  title: string;
+  modelId: string | null;
+}
+
+export async function createConversation(start: NewConversation): Promise<ConversationSummary> {
+  const created = await requestJson("/conversations", {
+    method: "POST",
+    json: { title: start.title, model_id: start.modelId },
+  });
+  return decodeConversationSummary(created);
+}
