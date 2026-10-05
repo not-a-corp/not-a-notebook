@@ -3,6 +3,8 @@ import { useNavigate } from "@tanstack/react-router";
 import {
   ArrowLeftRight,
   ChevronDown,
+  Download,
+  FileCode,
   Ellipsis,
   Pencil,
   Play,
@@ -17,7 +19,9 @@ import {
   updateConversation,
   type ConversationChanges,
 } from "@/api/conversations";
+import { downloadExport, type ExportFormat } from "@/api/export";
 import { listModels } from "@/api/models";
+import { toast } from "@/components/toaster";
 import { KernelIndicator, type KernelStatus } from "@/components/kernel-indicator";
 import { ConfirmDialog } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
@@ -32,6 +36,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip } from "@/components/ui/tooltip";
+import { sentenceForError } from "@/lib/words";
 
 import type { LiveRun } from "./live/live-run";
 import { conversationKey } from "./live/use-live-run";
@@ -63,6 +68,14 @@ export function ConversationHeader({
   onSwapPanes: () => void;
 }) {
   const busy = conversation.activeRunId !== null;
+
+  async function exportAs(format: ExportFormat) {
+    try {
+      await downloadExport(conversation.id, format);
+    } catch (error) {
+      toast(sentenceForError(error));
+    }
+  }
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -142,6 +155,26 @@ export function ConversationHeader({
             <RotateCcw />
             Restart kernel
           </DropdownMenuItem>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem
+            onSelect={() => {
+              void exportAs("ipynb");
+            }}
+          >
+            <Download />
+            Export notebook
+            <span className="ml-auto font-mono text-xs text-text-muted">.ipynb</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onSelect={() => {
+              void exportAs("py");
+            }}
+          >
+            <FileCode />
+            Export script
+            <span className="ml-auto font-mono text-xs text-text-muted">.py</span>
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem onSelect={onSwapPanes}>
             <ArrowLeftRight />
             Swap panes
