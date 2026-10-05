@@ -3,12 +3,12 @@ import { ArrowUp, Upload } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import type { ConversationDetail } from "@/api/conversation-detail";
-import { cancelRun, sendMessage } from "@/api/runs";
+import { cancelRun } from "@/api/runs";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { sentenceForError } from "@/lib/words";
 
-import { conversationKey } from "../live/use-live-run";
+import { ask } from "../ask";
 
 const MAX_HEIGHT = 240;
 
@@ -69,23 +69,8 @@ export function Composer({ conversation, uploadDisabled, onUpload }: ComposerPro
     setSending(true);
     setError(null);
     try {
-      const accepted = await sendMessage(conversation.id, question);
+      await ask(queryClient, conversation.id, question);
       setText("");
-      queryClient.setQueryData<ConversationDetail>(conversationKey(conversation.id), (current) => {
-        if (current === undefined) {
-          return current;
-        }
-        return {
-          id: current.id,
-          title: current.title,
-          modelId: current.modelId,
-          kernel: current.kernel,
-          activeRunId: accepted.runId,
-          files: current.files,
-          messages: [...current.messages, accepted.message],
-          cells: current.cells,
-        };
-      });
     } catch (failure) {
       setError(sentenceForError(failure));
     } finally {

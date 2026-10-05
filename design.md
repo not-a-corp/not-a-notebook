@@ -160,8 +160,9 @@ screen one composer, centred, on a background of its own.
 
 - **The background** is the one place the interface is decorative, and it stays
   quiet: three large, blurred patches of colour at the edges — `accent` at 12%
-  (620 px, off the top-left corner), the chart palette's second colour at 10%
-  (680 px, off the bottom-right), `accent` again at 8% (420 px, off the top
+  (620 px, off the top-left corner), a second colour at 10% (680 px, off the
+  bottom-right: the chart palette's second in Light and Dark, blue in Mocha,
+  whose second is peach), `accent` again at 8% (420 px, off the top
   right), all blurred 120 px — over a grid of 1 px `border` lines every 96 px,
   masked by a radial gradient so it fades out towards the centre and the
   composer sits on calm ground. It follows the theme — teal and orange in Light
