@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronDown, Ellipsis, Pencil, Trash } from "lucide-react";
+import { ChevronDown, Ellipsis, Pencil, Play, RotateCcw, Trash } from "lucide-react";
 import { useState } from "react";
 
 import type { ConversationDetail } from "@/api/conversation-detail";
@@ -20,12 +20,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Tooltip } from "@/components/ui/tooltip";
 
 import type { LiveRun } from "./live/live-run";
 import { conversationKey } from "./live/use-live-run";
+import type { NotebookActions } from "./notebook/use-notebook-actions";
 
 function kernelStatus(conversation: ConversationDetail, live: LiveRun | null): KernelStatus {
   if (live?.activity?.kind === "starting-kernel") {
@@ -44,10 +46,13 @@ function kernelStatus(conversation: ConversationDetail, live: LiveRun | null): K
 export function ConversationHeader({
   conversation,
   live,
+  actions,
 }: {
   conversation: ConversationDetail;
   live: LiveRun | null;
+  actions: NotebookActions;
 }) {
+  const busy = conversation.activeRunId !== null;
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const [confirmDelete, setConfirmDelete] = useState(false);
@@ -107,7 +112,27 @@ export function ConversationHeader({
             </Button>
           </DropdownMenuTrigger>
         </Tooltip>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="w-56">
+          <DropdownMenuItem
+            disabled={busy || conversation.cells.length === 0}
+            onSelect={() => {
+              void actions.runAll();
+            }}
+          >
+            <Play />
+            Run all
+            <span className="ml-auto font-mono text-xs text-text-muted">⌘⇧↵</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            disabled={busy}
+            onSelect={() => {
+              void actions.restart();
+            }}
+          >
+            <RotateCcw />
+            Restart kernel
+          </DropdownMenuItem>
+          <DropdownMenuSeparator />
           <DropdownMenuItem
             className="text-danger"
             onSelect={() => {

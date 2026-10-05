@@ -12,6 +12,11 @@
     "check": "tsc --noEmit && eslint . && prettier --check . && vitest run && vite build"
   },
   "dependencies": {
+    "@codemirror/commands": "6.11.1",
+    "@codemirror/lang-python": "6.2.1",
+    "@codemirror/language": "6.12.4",
+    "@codemirror/state": "6.7.6",
+    "@codemirror/view": "6.43.13",
     "@fontsource-variable/inter": "5.3.0",
     "@fontsource/jetbrains-mono": "5.3.0",
     "@lezer/highlight": "1.2.5",

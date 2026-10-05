@@ -7,6 +7,7 @@ import { ApiError } from "@/api/errors";
 import { cancelRun } from "@/api/runs";
 import { toast } from "@/components/toaster";
 import { plural } from "@/lib/format";
+import { useHotkey } from "@/lib/use-hotkey";
 import { sentenceForError } from "@/lib/words";
 
 import { ask } from "./ask";
@@ -16,6 +17,7 @@ import { ProfileDrawer } from "./files/profile-drawer";
 import { useUpload } from "./files/use-upload";
 import { conversationKey, useLiveRun } from "./live/use-live-run";
 import { NotebookPane } from "./notebook/notebook-pane";
+import { useNotebookActions } from "./notebook/use-notebook-actions";
 import { Pane } from "./panes";
 import { takePendingStart } from "./pending";
 
@@ -36,6 +38,14 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
   const [notebookPane, setNotebookPane] = useState<HTMLElement | null>(null);
   const queryClient = useQueryClient();
   const loaded = conversation.data !== undefined;
+  const actions = useNotebookActions(conversationId);
+
+  // Ctrl/Cmd+Shift+Enter — Run all (design.md §7).
+  useHotkey({ key: "Enter", mod: true, shift: true }, () => {
+    if (activeRunId === null) {
+      void actions.runAll();
+    }
+  });
 
   // A conversation started on the home screen: its files go up first, each
   // profiled, then its question is asked (design.md §2.3).
@@ -82,7 +92,7 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
 
   return (
     <div className="flex min-w-0 flex-1 flex-col">
-      <ConversationHeader conversation={detail} live={live} />
+      <ConversationHeader conversation={detail} live={live} actions={actions} />
       <div className="flex min-h-0 flex-1">
         <Pane icon={MessageSquare} label="Chat" className="flex w-2/5 flex-none flex-col">
           <ChatPane
@@ -103,7 +113,7 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
           className="relative flex min-w-0 flex-1 flex-col"
           ref={setNotebookPane}
         >
-          <NotebookPane cells={detail.cells} live={live} onStop={stop} />
+          <NotebookPane conversation={detail} live={live} actions={actions} onStop={stop} />
           <ProfileDrawer
             conversationId={detail.id}
             file={openFile}
