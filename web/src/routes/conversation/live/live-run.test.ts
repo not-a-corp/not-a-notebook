@@ -215,6 +215,23 @@ describe("applyEvent", () => {
     expect(replayed?.detail.messages).toEqual([ANSWER]);
   });
 
+  it("runs a cell you started, replacing its outputs even when it prints nothing", () => {
+    const ran = Object.assign(structuredClone(CREATED), {
+      origin: "user",
+      status: "ok",
+      outputs: [{ kind: "text", text: "old" }],
+    });
+    const cellRun = numbered([
+      { type: "run.started", runId: RUN, kind: "cell", model: null },
+      { type: "cell.started", cellId: CELL },
+    ]);
+
+    const started = play({ detail: conversation([ran]), live: null }, cellRun).at(-1);
+
+    expect(started?.detail.cells[0]).toMatchObject({ status: "running", outputs: [] });
+    expect(started?.live?.startedAt[CELL]).toBe(NOW);
+  });
+
   it("notices a gap in seq", () => {
     const skipped = EVENTS.filter((event) => event.seq !== 3);
 

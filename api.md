@@ -725,7 +725,7 @@ The events, by group. Their payloads are the contract in **[events.md](events.md
 | Files | `file.uploaded` · `file.profiled` |
 | Model | `llm.started` · `llm.delta` · `llm.finished` |
 | Attempts | `attempt.started` · `code.proposed` · `attempt.finished` |
-| Cells | `cell.created` · `cell.output` · `cell.finished` · `cells.stale` |
+| Cells | `cell.created` · `cell.started` · `cell.output` · `cell.finished` · `cells.stale` |
 | Ending | `answer` · `grounding.checked` · `question` |
 
 ---
