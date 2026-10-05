@@ -155,13 +155,15 @@ def test_running_a_cell_streams_its_outputs_and_keeps_them(
         "run.started",
         "kernel.starting",
         "kernel.ready",
+        "cell.started",
         "cell.output",
         "cell.finished",
         "run.finished",
     ]
     assert events[0]["kind"] == "cell"
-    assert events[3]["attempt"] is None
-    assert events[3]["text"] == "42\n"
+    assert events[3]["cell_id"] == cell["id"]
+    assert events[4]["attempt"] is None
+    assert events[4]["text"] == "42\n"
     assert events[-1]["status"] == "succeeded"
 
     shown = cells(client, token, conversation)[0]
@@ -278,6 +280,8 @@ def test_run_all_restarts_and_runs_everything_in_order_clearing_stale(
     restarted = [e["reason"] for e in events if e["type"] == "kernel.restarted"]
     assert restarted == ["run_all"]
     assert registry.kernel.executed[-3:] == ["a", "b", "c"]
+    started = [e["cell_id"] for e in events if e["type"] == "cell.started"]
+    assert started == [c["id"] for c in cells(client, token, conversation)]
     assert [c["stale"] for c in cells(client, token, conversation)] == [False, False, False]
     assert [c["status"] for c in cells(client, token, conversation)] == ["ok", "ok", "ok"]
 

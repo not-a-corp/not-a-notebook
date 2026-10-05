@@ -147,6 +147,11 @@ async def execute(
     async with services.pool.connection() as conn:
         await begin_execution(conn, cell)
 
+    # A cell you run — or one of Run all's — has no attempt.started; this is
+    # what tells a screen which cell is running now, and that its old outputs
+    # are about to be replaced, even when it prints nothing.
+    await emit("cell.started", {"cell_id": str(cell.id)})
+
     outputs: list[Output] = []
 
     async def collect(output: Output) -> None:
