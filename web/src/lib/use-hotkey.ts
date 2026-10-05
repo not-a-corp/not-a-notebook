@@ -38,6 +38,11 @@ export function useHotkey(hotkey: Hotkey, handler: (event: KeyboardEvent) => voi
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
+      // A key something else already handled — Escape closing a dialog or a
+      // menu — is not also a shortcut.
+      if (event.defaultPrevented) {
+        return;
+      }
       if (matchesHotkey(event, latest.current.hotkey)) {
         event.preventDefault();
         latest.current.handler(event);
