@@ -2,6 +2,9 @@ import { useEffect, useRef } from "react";
 
 export interface Hotkey {
   key: string;
+  // The physical key, for combinations where the character changes — on macOS,
+  // Option+\ types «, not \.
+  code?: string;
   // Ctrl on Linux and Windows, Cmd on macOS — design.md §7 writes it Ctrl/Cmd.
   mod?: boolean;
   shift?: boolean;
@@ -20,6 +23,9 @@ export function matchesHotkey(event: KeyboardEvent, hotkey: Hotkey): boolean {
     return false;
   }
 
+  if (hotkey.code !== undefined && event.code === hotkey.code) {
+    return true;
+  }
   return event.key.toLowerCase() === hotkey.key.toLowerCase();
 }
 

@@ -1,6 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { ChevronDown, Ellipsis, Pencil, Play, RotateCcw, Trash } from "lucide-react";
+import {
+  ArrowLeftRight,
+  ChevronDown,
+  Ellipsis,
+  Pencil,
+  Play,
+  RotateCcw,
+  Trash,
+} from "lucide-react";
 import { useState } from "react";
 
 import type { ConversationDetail } from "@/api/conversation-detail";
@@ -47,10 +55,12 @@ export function ConversationHeader({
   conversation,
   live,
   actions,
+  onSwapPanes,
 }: {
   conversation: ConversationDetail;
   live: LiveRun | null;
   actions: NotebookActions;
+  onSwapPanes: () => void;
 }) {
   const busy = conversation.activeRunId !== null;
   const queryClient = useQueryClient();
@@ -131,6 +141,11 @@ export function ConversationHeader({
           >
             <RotateCcw />
             Restart kernel
+          </DropdownMenuItem>
+          <DropdownMenuItem onSelect={onSwapPanes}>
+            <ArrowLeftRight />
+            Swap panes
+            <span className="ml-auto font-mono text-xs text-text-muted">⌘⌥\</span>
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
