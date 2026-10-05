@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { MessageSquare, NotebookText } from "lucide-react";
 
 import { getConversationDetail } from "@/api/conversation-detail";
@@ -10,6 +11,8 @@ import { cancelRun } from "@/api/runs";
 
 import { ChatPane } from "./chat/chat-pane";
 import { ConversationHeader } from "./conversation-header";
+import { ProfileDrawer } from "./files/profile-drawer";
+import { useUpload } from "./files/use-upload";
 import { conversationKey, useLiveRun } from "./live/use-live-run";
 import { NotebookPane } from "./notebook/notebook-pane";
 import { Pane } from "./panes";
@@ -25,6 +28,10 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
   });
   const activeRunId = conversation.data?.activeRunId ?? null;
   const { live, connection } = useLiveRun(conversationId, activeRunId);
+  const { upload, uploading } = useUpload(conversationId);
+  const [openFileId, setOpenFileId] = useState<string | null>(null);
+  // The drawer slides over the notebook pane, inside it (design.md §3.6).
+  const [notebookPane, setNotebookPane] = useState<HTMLElement | null>(null);
 
   function stop() {
     if (activeRunId !== null) {
@@ -41,6 +48,7 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
   }
 
   const detail = conversation.data;
+  const openFile = detail.files.find((file) => file.id === openFileId) ?? null;
 
   return (
     <div className="flex min-w-0 flex-1 flex-col">
@@ -51,7 +59,10 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
             conversation={detail}
             live={live}
             connection={connection}
+            uploading={uploading}
             onShowCell={showCell}
+            onOpenFile={setOpenFileId}
+            onUpload={(files) => void upload(files)}
           />
         </Pane>
         <div className="w-px flex-none bg-border" />
@@ -59,9 +70,19 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
           icon={NotebookText}
           label="Notebook"
           detail={plural(detail.cells.length, "cell", "cells")}
-          className="flex min-w-0 flex-1 flex-col"
+          className="relative flex min-w-0 flex-1 flex-col"
+          ref={setNotebookPane}
         >
           <NotebookPane cells={detail.cells} live={live} onStop={stop} />
+          <ProfileDrawer
+            conversationId={detail.id}
+            file={openFile}
+            container={notebookPane}
+            busy={detail.activeRunId !== null}
+            onClose={() => {
+              setOpenFileId(null);
+            }}
+          />
         </Pane>
       </div>
     </div>

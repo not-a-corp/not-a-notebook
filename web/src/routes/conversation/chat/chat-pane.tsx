@@ -1,4 +1,4 @@
-import { FileSpreadsheet, TriangleAlert } from "lucide-react";
+import { FileSpreadsheet, Plus, TriangleAlert } from "lucide-react";
 import { useRef } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -11,7 +11,9 @@ import {
   type Message,
 } from "@/api/conversation-detail";
 import type { RestartReason } from "@/api/events";
+import { ACCEPTED_EXTENSIONS } from "@/api/files";
 import type { Connection } from "@/api/runs";
+import { Tooltip } from "@/components/ui/tooltip";
 import { formatBytes, formatClock, formatCount, plural } from "@/lib/format";
 import { restartReason } from "@/lib/kernel-words";
 import { useStickToBottom } from "@/lib/use-stick-to-bottom";
@@ -28,11 +30,29 @@ interface ChatPaneProps {
   conversation: ConversationDetail;
   live: LiveRun | null;
   connection: Connection;
+  uploading: boolean;
   onShowCell: (cellId: string) => void;
+  onOpenFile: (fileId: string) => void;
+  onUpload: (files: File[]) => void;
 }
 
 // design.md §2.4 — the chat pane: files bar, the timeline, the composer.
-export function ChatPane({ conversation, live, connection, onShowCell }: ChatPaneProps) {
+export function ChatPane({
+  conversation,
+  live,
+  connection,
+  uploading,
+  onShowCell,
+  onOpenFile,
+  onUpload,
+}: ChatPaneProps) {
+  const picker = useRef<HTMLInputElement>(null);
+  const busy = conversation.activeRunId !== null || uploading;
+
+  function pickFiles() {
+    picker.current?.click();
+  }
+
   const restarts: Restart[] = [];
   if (live?.restarted != null) {
     restarts.push(live.restarted);
@@ -44,13 +64,36 @@ export function ChatPane({ conversation, live, connection, onShowCell }: ChatPan
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      {conversation.files.length > 0 && <FilesBar files={conversation.files} />}
+      <input
+        ref={picker}
+        type="file"
+        multiple
+        accept={ACCEPTED_EXTENSIONS.join(",")}
+        className="hidden"
+        onChange={(event) => {
+          const files = Array.from(event.target.files ?? []);
+          event.target.value = "";
+          if (files.length > 0) {
+            onUpload(files);
+          }
+        }}
+      />
+      {conversation.files.length > 0 && (
+        <FilesBar
+          files={conversation.files}
+          busy={busy}
+          onOpenFile={onOpenFile}
+          onAdd={pickFiles}
+        />
+      )}
       <div ref={scroller} className="flex min-h-0 flex-1 flex-col overflow-y-auto">
         {/* Anchored to the bottom: a short conversation sits by the composer. */}
         <div className="mt-auto flex flex-col gap-6 p-6">
           {timeline.map((item) => {
             if (item.kind === "file") {
-              return <FileArrived key={`file-${item.file.id}`} file={item.file} />;
+              return (
+                <FileArrived key={`file-${item.file.id}`} file={item.file} onOpen={onOpenFile} />
+              );
             }
             if (item.kind === "restart") {
               return (
@@ -72,7 +115,7 @@ export function ChatPane({ conversation, live, connection, onShowCell }: ChatPan
           {live !== null && <RunEnding live={live} />}
         </div>
       </div>
-      <Composer conversation={conversation} />
+      <Composer conversation={conversation} uploadDisabled={busy} onUpload={pickFiles} />
     </div>
   );
 }
@@ -151,24 +194,52 @@ function RestartDivider({ at, reason }: { at: string; reason: RestartReason }) {
   );
 }
 
-function FilesBar({ files }: { files: FileInfo[] }) {
+function FilesBar({
+  files,
+  busy,
+  onOpenFile,
+  onAdd,
+}: {
+  files: FileInfo[];
+  busy: boolean;
+  onOpenFile: (fileId: string) => void;
+  onAdd: () => void;
+}) {
   return (
     <div className="flex flex-none flex-wrap items-center gap-2 border-b border-border px-4 py-2">
       {files.map((file) => (
-        <FileChip key={file.id} file={file} />
+        <FileChip key={file.id} file={file} onOpen={onOpenFile} />
       ))}
+      <Tooltip label="Add a file">
+        <button
+          type="button"
+          aria-label="Add a file"
+          disabled={busy}
+          className="flex size-7 items-center justify-center rounded-md border border-dashed border-text/25 text-text-muted hover:bg-text/8 disabled:opacity-50"
+          onClick={onAdd}
+        >
+          <Plus className="size-3.5" />
+        </button>
+      </Tooltip>
     </div>
   );
 }
 
-function FileChip({ file }: { file: FileInfo }) {
+function FileChip({ file, onOpen }: { file: FileInfo; onOpen: (fileId: string) => void }) {
   return (
-    <div className="flex h-7 items-center gap-2 rounded-md border border-border bg-surface-raised pr-1 pl-2">
+    <button
+      type="button"
+      aria-label={`Profile of ${file.name}`}
+      className="flex h-7 items-center gap-2 rounded-md border border-border bg-surface-raised pr-1 pl-2 hover:bg-text/8"
+      onClick={() => {
+        onOpen(file.id);
+      }}
+    >
       <FileSpreadsheet className="size-3.5 text-text-muted" />
       <span className="text-sm font-medium">{file.name}</span>
       <span className="text-xs text-text-muted">{formatBytes(file.bytes)}</span>
       <FindingsBadge file={file} />
-    </div>
+    </button>
   );
 }
 
@@ -207,7 +278,7 @@ function FindingsBadge({ file }: { file: FileInfo }) {
   );
 }
 
-function FileArrived({ file }: { file: FileInfo }) {
+function FileArrived({ file, onOpen }: { file: FileInfo; onOpen: (fileId: string) => void }) {
   const facts = [`${file.name} added`];
   if (file.profile !== null) {
     const summary = summarizeProfile(file.profile);
@@ -223,6 +294,17 @@ function FileArrived({ file }: { file: FileInfo }) {
     <div className="flex items-center gap-2 text-xs text-text-muted">
       <FileSpreadsheet className="size-3.5" />
       <span className="flex-1">{facts.join(" · ")}</span>
+      {file.profile !== null && (
+        <button
+          type="button"
+          className="font-medium text-accent"
+          onClick={() => {
+            onOpen(file.id);
+          }}
+        >
+          Open profile
+        </button>
+      )}
     </div>
   );
 }
