@@ -6,7 +6,10 @@ import { Tooltip } from "@/components/ui/tooltip";
 import { lastConversation } from "@/lib/last-conversation";
 import { useHotkey } from "@/lib/use-hotkey";
 
-const SECTIONS = [{ to: "/settings/general", label: "General" }] as const;
+const SECTIONS = [
+  { to: "/settings/general", label: "General" },
+  { to: "/settings/account", label: "Account" },
+] as const;
 
 // design.md §2.6 — a page of its own: a 48 px header with the way back, a
 // 200 px nav, and the section at most 760 px wide.

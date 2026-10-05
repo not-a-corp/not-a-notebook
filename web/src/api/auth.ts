@@ -80,6 +80,16 @@ export async function logout(): Promise<void> {
   }
 }
 
+// Requires the current password when the account has one; an account made
+// through OAuth has none, and sets one by leaving it out (api.md).
+export async function changePassword(current: string | null, next: string): Promise<void> {
+  const body: Record<string, string> = { new_password: next };
+  if (current !== null) {
+    body.current_password = current;
+  }
+  await request("/account/password", { method: "PUT", json: body });
+}
+
 export async function getAccount(): Promise<Account> {
   return decodeAccount(await requestJson("/account"));
 }
