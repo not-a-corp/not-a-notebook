@@ -8,6 +8,7 @@ import { Home } from "@/routes/home/home";
 import { Root } from "@/routes/root";
 import { AccountSettings } from "@/routes/settings/account";
 import { GeneralSettings } from "@/routes/settings/general";
+import { ModelsSettings } from "@/routes/settings/models/models-settings";
 import { SettingsLayout } from "@/routes/settings/settings-layout";
 
 // Routes are declared in code, not generated from the file tree: the route
@@ -110,13 +111,19 @@ const accountRoute = createRoute({
   component: AccountSettings,
 });
 
+const modelsRoute = createRoute({
+  getParentRoute: () => settingsRoute,
+  path: "/models",
+  component: ModelsSettings,
+});
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
   appRoute.addChildren([
     homeRoute,
     conversationRoute,
-    settingsRoute.addChildren([settingsIndexRoute, generalRoute, accountRoute]),
+    settingsRoute.addChildren([settingsIndexRoute, generalRoute, accountRoute, modelsRoute]),
   ]),
 ]);
 
