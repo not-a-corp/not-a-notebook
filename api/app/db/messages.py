@@ -20,11 +20,13 @@ async def store_reply(
     text: str,
     kind: MessageKind,
     grounding: GroundingResult | None,
+    options: list[str] | None,
 ) -> Message:
     """The answer, or the question, as the conversation's next message."""
     sql = """
-        INSERT INTO messages AS m (conversation_id, run_id, role, text, kind, grounding)
-        VALUES (%(conversation_id)s, %(run_id)s, 'assistant', %(text)s, %(kind)s, %(grounding)s)
+        INSERT INTO messages AS m (conversation_id, run_id, role, text, kind, grounding, options)
+        VALUES (%(conversation_id)s, %(run_id)s, 'assistant', %(text)s, %(kind)s,
+                %(grounding)s, %(options)s)
         RETURNING m.external_id,
                   m.created_at
     """
@@ -35,6 +37,7 @@ async def store_reply(
         "text": text,
         "kind": kind,
         "grounding": stored_grounding(grounding),
+        "options": stored_options(options),
     }
 
     async with conn.cursor() as cur:
@@ -44,7 +47,7 @@ async def store_reply(
     assert row is not None  # RETURNING on a successful INSERT
 
     return message_shape(
-        row["external_id"], "assistant", run_id, text, kind, grounding, row["created_at"]
+        row["external_id"], "assistant", run_id, text, kind, grounding, options, row["created_at"]
     )
 
 
@@ -53,6 +56,13 @@ def stored_grounding(grounding: GroundingResult | None) -> Jsonb | None:
         return None
 
     return Jsonb(grounding.model_dump())
+
+
+def stored_options(options: list[str] | None) -> Jsonb | None:
+    if options is None:
+        return None
+
+    return Jsonb(options)
 
 
 def grounding_of(stored: dict[str, Any] | None) -> GroundingResult | None:
@@ -69,6 +79,7 @@ def message_shape(
     text: str,
     kind: MessageKind | None,
     grounding: GroundingResult | None,
+    options: list[str] | None,
     created_at: datetime,
 ) -> Message:
     return Message(
@@ -78,5 +89,6 @@ def message_shape(
         text=text,
         kind=kind,
         grounding=grounding,
+        options=options,
         created_at=created_at,
     )

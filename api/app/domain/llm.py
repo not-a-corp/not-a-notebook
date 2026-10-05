@@ -77,8 +77,10 @@ class Reply:
     turn: AssistantTurn
     usage: Usage
     stop: StopReason
-    # Set when stop is "question": what the model asks the user.
+    # Set when stop is "question": what the model asks the user, and the replies it
+    # suggests — none, or a few.
     question: str | None = None
+    options: tuple[str, ...] = ()
 
 
 type OnDelta = Callable[[str], Awaitable[None]]

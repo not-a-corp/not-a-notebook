@@ -18,7 +18,7 @@ import httpx2
 import pytest
 from app.domain.llm import AssistantTurn, Item, ProviderError, Reply, ToolResult, UserText
 from app.domain.model_configs import Adapter
-from app.providers.dialect import NOT_RUN, extract_code
+from app.providers.dialect import MAX_OPTIONS, NOT_RUN, clean_options, extract_code
 from app.providers.endpoint import Endpoint
 from app.providers.factory import model_for
 from tests.support.record_providers import (
@@ -439,6 +439,61 @@ async def test_the_text_dialect_asks_with_a_marker() -> None:
 
     assert reply.stop == "question"
     assert reply.question == "Do you mean 2024 or 2025?"
+
+
+async def test_an_ask_user_call_carries_its_options() -> None:
+    arguments = '{"question": "Which year?", "options": ["2024", "2025", "both"]}'
+    chunks = [
+        {
+            "choices": [
+                {
+                    "delta": {
+                        "tool_calls": [
+                            {
+                                "index": 0,
+                                "id": "call_1",
+                                "function": {"name": "ask_user", "arguments": arguments},
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        {"choices": [{"delta": {}, "finish_reason": "tool_calls"}]},
+    ]
+    body = "".join(f"data: {json.dumps(chunk)}\n\n" for chunk in chunks) + "data: [DONE]\n\n"
+
+    reply, _ = await complete(
+        endpoint("openai_compatible"), [UserText("hi")], lambda r: sse(200, body)
+    )
+
+    assert reply.stop == "question"
+    assert reply.options == ("2024", "2025", "both")
+
+
+async def test_the_text_dialect_reads_options_from_the_lines_under_the_question() -> None:
+    text = "QUESTION: Which year do you mean?\n- 2024\n- 2025\n- Both, side by side"
+    chunk = {"choices": [{"delta": {"content": text}}]}
+    body = f"data: {json.dumps(chunk)}\n\ndata: [DONE]\n\n"
+
+    reply, _ = await complete(
+        endpoint("openai_compatible", "text"), [UserText("hi")], lambda r: sse(200, body)
+    )
+
+    assert reply.question == "Which year do you mean?"
+    assert reply.options == ("2024", "2025", "Both, side by side")
+
+
+def test_options_are_cleaned_before_they_are_shown() -> None:
+    offered = ["  2024 ", "- 2025", "", "2024", 7, None, "a", "b", "c"]
+
+    assert clean_options(offered) == ("2024", "2025", "a", "b")
+    assert len(clean_options(offered)) == MAX_OPTIONS
+
+
+def test_options_that_are_not_a_list_are_none() -> None:
+    assert clean_options("2024 or 2025") == ()
+    assert clean_options(None) == ()
 
 
 async def test_a_call_to_a_tool_that_does_not_exist_is_a_protocol_error() -> None:

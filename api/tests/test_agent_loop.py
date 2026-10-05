@@ -182,6 +182,13 @@ async def test_a_question_ends_the_turn_waiting_for_the_user() -> None:
     assert kernel.executed == []
 
 
+async def test_a_question_keeps_its_options() -> None:
+    outcome, _, _, _, _, _ = await turn([asks("Which year?", ("2024", "2025"))], [])
+
+    assert outcome.kind == "question"  # type: ignore[attr-defined]
+    assert outcome.options == ("2024", "2025")  # type: ignore[attr-defined]
+
+
 async def test_a_refusal_raises() -> None:
     refused = Reply(
         turn=AssistantTurn(text="", code=None, call_id=None, source="x", raw=None),

@@ -39,9 +39,11 @@ def answers(text: str) -> Reply:
     return Reply(turn=turn, usage=Usage(100, 30, 0), stop="answer")
 
 
-def asks(question: str) -> Reply:
+def asks(question: str, options: tuple[str, ...] = ()) -> Reply:
     turn = AssistantTurn(text="", code=None, call_id="call_ask", source=SOURCE, raw=None)
-    return Reply(turn=turn, usage=Usage(100, 10, 0), stop="question", question=question)
+    return Reply(
+        turn=turn, usage=Usage(100, 10, 0), stop="question", question=question, options=options
+    )
 
 
 class ScriptedModel:

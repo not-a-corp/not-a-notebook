@@ -301,7 +301,7 @@ they show may no longer follow from the code above (decision 10).
   "message": { "id": "019b2a95-…", "role": "assistant", "run_id": "019b2a92-…",
                "text": "Sudeste, with R$ 1.84M — 41% of the total.", "kind": "answer",
                "grounding": { "numbers": 2, "found": 1, "unfound": ["41%"] },
-               "created_at": "2026-10-03T14:06:24.004817Z" } }
+               "options": null, "created_at": "2026-10-03T14:06:24.004817Z" } }
 ```
 
 The model's final words, as the message now stored in the conversation — its
@@ -328,11 +328,14 @@ sufficient.
   "message": { "id": "019b2a96-…", "role": "assistant", "run_id": "019b2a92-…",
                "text": "The file ends in March 2025 — do you mean 2025 so far, or 2024?",
                "kind": "question", "grounding": null,
+               "options": ["2025 so far", "2024"],
                "created_at": "2026-10-03T14:06:24.004817Z" } }
 ```
 
 The model asks instead of guessing. The run ends `awaiting_user`; the answer is an
-ordinary message, which starts a new run.
+ordinary message, which starts a new run. `options` are the replies it suggests —
+at most four, the one it would pick first — or `[]` when the question is open; a
+client shows them as buttons, and a click is an ordinary message with that text.
 
 ---
 

@@ -39,6 +39,9 @@ class Message(BaseModel):
     kind: MessageKind | None
     # An answer's grounding check, kept with it; null for anything else.
     grounding: GroundingResult | None
+    # A question's suggested replies, to click or to ignore; [] when it offered none,
+    # null for anything that is not a question.
+    options: list[str] | None
     created_at: datetime
 
 

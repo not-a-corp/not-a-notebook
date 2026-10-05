@@ -44,6 +44,7 @@ const ANSWER: Message = {
   text: "Sudeste, with R$ 1.84M.",
   kind: "answer",
   grounding: { numbers: 1, found: 1, unfound: [] },
+  options: null,
   createdAt: NOW,
 };
 

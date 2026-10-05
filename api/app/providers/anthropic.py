@@ -288,4 +288,6 @@ class StreamedMessage:
             cut_off=self.stop_reason == "max_tokens",
         )
 
-        return Reply(turn=turn, usage=usage, stop=stop, question=reading.question)
+        return Reply(
+            turn=turn, usage=usage, stop=stop, question=reading.question, options=reading.options
+        )

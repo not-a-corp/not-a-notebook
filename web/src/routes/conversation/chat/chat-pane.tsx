@@ -1,5 +1,6 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { FileSpreadsheet, Plus, TriangleAlert } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -13,12 +14,14 @@ import {
 import type { RestartReason } from "@/api/events";
 import { ACCEPTED_EXTENSIONS } from "@/api/files";
 import type { Connection } from "@/api/runs";
+import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { formatBytes, formatClock, formatCount, plural } from "@/lib/format";
 import { restartReason } from "@/lib/kernel-words";
 import { useStickToBottom } from "@/lib/use-stick-to-bottom";
-import { sentenceFor } from "@/lib/words";
+import { sentenceFor, sentenceForError } from "@/lib/words";
 
+import { ask } from "../ask";
 import type { LiveRun } from "../live/live-run";
 import { ActivityLine } from "./activity";
 import { Composer } from "./composer";
@@ -59,6 +62,7 @@ export function ChatPane({
   }
   const timeline = buildTimeline(conversation.files, conversation.messages, restarts);
   const running = conversation.activeRunId !== null;
+  const lastMessageId = conversation.messages.at(-1)?.id;
   const scroller = useRef<HTMLDivElement>(null);
   useStickToBottom(scroller, [timeline.length, live?.steps, live?.activity]);
 
@@ -100,11 +104,17 @@ export function ChatPane({
                 <RestartDivider key={`restart-${item.at}`} at={item.at} reason={item.reason} />
               );
             }
+            // Options are buttons only while the question is the last word and
+            // nothing is running: an old question's choices are history.
+            const answerable =
+              item.message.id === lastMessageId && !busy && conversation.modelId !== null;
             return (
               <MessageView
                 key={item.message.id}
                 message={item.message}
                 cells={conversation.cells}
+                conversationId={conversation.id}
+                answerable={answerable}
                 onShowCell={onShowCell}
               />
             );
@@ -312,10 +322,14 @@ function FileArrived({ file, onOpen }: { file: FileInfo; onOpen: (fileId: string
 function MessageView({
   message,
   cells,
+  conversationId,
+  answerable,
   onShowCell,
 }: {
   message: Message;
   cells: Cell[];
+  conversationId: string;
+  answerable: boolean;
   onShowCell: (cellId: string) => void;
 }) {
   if (message.role === "user") {
@@ -332,6 +346,9 @@ function MessageView({
       <div className="flex flex-col gap-3 border-l-2 border-accent pl-3">
         <div className="text-xs font-medium text-text-muted">The analyst asks</div>
         <AnswerText text={message.text} />
+        {answerable && message.options !== null && message.options.length > 0 && (
+          <OptionButtons options={message.options} conversationId={conversationId} />
+        )}
       </div>
     );
   }
@@ -347,6 +364,52 @@ function MessageView({
           cells={cells}
           onShowCell={onShowCell}
         />
+      )}
+    </div>
+  );
+}
+
+// The analyst's suggested replies. A click is an ordinary message with that text;
+// the composer below still takes the user's own words.
+function OptionButtons({ options, conversationId }: { options: string[]; conversationId: string }) {
+  const queryClient = useQueryClient();
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function pick(option: string) {
+    if (sending) {
+      return;
+    }
+    setSending(true);
+    setError(null);
+    try {
+      await ask(queryClient, conversationId, option);
+    } catch (failure) {
+      setError(sentenceForError(failure));
+    } finally {
+      setSending(false);
+    }
+  }
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div role="group" aria-label="Suggested replies" className="flex flex-wrap gap-2">
+        {options.map((option) => (
+          <Button
+            key={option}
+            variant="secondary"
+            size="compact"
+            disabled={sending}
+            onClick={() => void pick(option)}
+          >
+            {option}
+          </Button>
+        ))}
+      </div>
+      {error !== null && (
+        <p role="alert" className="text-sm text-danger">
+          {error}
+        </p>
       )}
     </div>
   );

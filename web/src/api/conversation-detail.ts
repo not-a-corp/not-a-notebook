@@ -33,6 +33,9 @@ export interface Message {
   kind: "answer" | "question" | null;
   // An answer's grounding check, kept with it (api.md).
   grounding: Grounding | null;
+  // A question's suggested replies, to click or to ignore; empty when it offered
+  // none. Null for anything that is not a question (api.md).
+  options: string[] | null;
   createdAt: string;
 }
 
@@ -88,6 +91,20 @@ function decodeUnfound(value: unknown): string {
   return value;
 }
 
+function decodeOption(value: unknown): string {
+  if (typeof value !== "string") {
+    throw new TypeError("an option is not a string");
+  }
+  return value;
+}
+
+function decodeOptions(json: Json): string[] | null {
+  if (json.options === null) {
+    return null;
+  }
+  return array(json, "options", decodeOption);
+}
+
 function decodeGrounding(value: unknown): Grounding | null {
   if (value === null) {
     return null;
@@ -111,6 +128,7 @@ export function decodeMessage(value: unknown): Message {
     text: string(json, "text"),
     kind: nullableOneOf(json, "kind", ["answer", "question"]),
     grounding: decodeGrounding(json.grounding),
+    options: decodeOptions(json),
     createdAt: string(json, "created_at"),
   };
 }

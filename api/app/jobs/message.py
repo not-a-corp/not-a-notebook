@@ -114,6 +114,7 @@ async def converse(
                 outcome.text,
                 "question",
                 None,
+                list(outcome.options),
             )
 
         await emit("question", {"message": question_asked.model_dump(mode="json")})
@@ -142,6 +143,7 @@ async def converse(
             outcome.text,
             "answer",
             grounded,
+            None,
         )
 
     await emit("answer", {"message": answer.model_dump(mode="json")})
