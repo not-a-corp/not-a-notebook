@@ -18,7 +18,8 @@ import { useUpload } from "./files/use-upload";
 import { conversationKey, useLiveRun } from "./live/use-live-run";
 import { NotebookPane } from "./notebook/notebook-pane";
 import { useNotebookActions } from "./notebook/use-notebook-actions";
-import { Pane } from "./panes";
+import { usePaneLayout } from "./pane-layout";
+import { SplitPanes } from "./panes";
 import { takePendingStart } from "./pending";
 
 function showCell(cellId: string) {
@@ -39,6 +40,12 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
   const queryClient = useQueryClient();
   const loaded = conversation.data !== undefined;
   const actions = useNotebookActions(conversationId);
+  const layout = usePaneLayout();
+
+  // Ctrl/Cmd+Alt+\ — swap the chat and notebook panes (design.md §7).
+  useHotkey({ key: "\\", code: "Backslash", mod: true, alt: true }, () => {
+    layout.swap();
+  });
 
   // Ctrl/Cmd+Shift+Enter — Run all (design.md §7).
   useHotkey({ key: "Enter", mod: true, shift: true }, () => {
@@ -92,39 +99,52 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
 
   return (
     <div className="flex min-w-0 flex-1 flex-col">
-      <ConversationHeader conversation={detail} live={live} actions={actions} />
-      <div className="flex min-h-0 flex-1">
-        <Pane icon={MessageSquare} label="Chat" className="flex w-2/5 flex-none flex-col">
-          <ChatPane
-            conversation={detail}
-            live={live}
-            connection={connection}
-            uploading={uploading}
-            onShowCell={showCell}
-            onOpenFile={setOpenFileId}
-            onUpload={(files) => void upload(files)}
-          />
-        </Pane>
-        <div className="w-px flex-none bg-border" />
-        <Pane
-          icon={NotebookText}
-          label="Notebook"
-          detail={plural(detail.cells.length, "cell", "cells")}
-          className="relative flex min-w-0 flex-1 flex-col"
-          ref={setNotebookPane}
-        >
-          <NotebookPane conversation={detail} live={live} actions={actions} onStop={stop} />
-          <ProfileDrawer
-            conversationId={detail.id}
-            file={openFile}
-            container={notebookPane}
-            busy={detail.activeRunId !== null}
-            onClose={() => {
-              setOpenFileId(null);
-            }}
-          />
-        </Pane>
-      </div>
+      <ConversationHeader
+        conversation={detail}
+        live={live}
+        actions={actions}
+        onSwapPanes={layout.swap}
+      />
+      <SplitPanes
+        layout={layout}
+        chat={{
+          name: "chat",
+          icon: MessageSquare,
+          label: "Chat",
+          children: (
+            <ChatPane
+              conversation={detail}
+              live={live}
+              connection={connection}
+              uploading={uploading}
+              onShowCell={showCell}
+              onOpenFile={setOpenFileId}
+              onUpload={(files) => void upload(files)}
+            />
+          ),
+        }}
+        notebook={{
+          name: "notebook",
+          icon: NotebookText,
+          label: "Notebook",
+          detail: plural(detail.cells.length, "cell", "cells"),
+          onElement: setNotebookPane,
+          children: (
+            <>
+              <NotebookPane conversation={detail} live={live} actions={actions} onStop={stop} />
+              <ProfileDrawer
+                conversationId={detail.id}
+                file={openFile}
+                container={notebookPane}
+                busy={detail.activeRunId !== null}
+                onClose={() => {
+                  setOpenFileId(null);
+                }}
+              />
+            </>
+          ),
+        }}
+      />
     </div>
   );
 }
