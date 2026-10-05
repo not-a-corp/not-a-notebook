@@ -524,14 +524,22 @@ GET /conversations/{id}/export?format=ipynb
 
 | `format` | |
 | --- | --- |
-| `ipynb` | a Jupyter notebook — the cells, their outputs, and the chat as markdown cells |
-| `py` | a plain script — the cells in order, the chat as comments |
+| `ipynb` | a Jupyter notebook (nbformat 4.5) — the cells, their outputs, and the chat as markdown cells |
+| `py` | a plain script — the cells in order as `# %%` blocks, which editors run one by one, the chat as comments |
 
-`200` with the file, `Content-Disposition: attachment`. ·
-`VALIDATION_ERROR` · `CONVERSATION_NOT_FOUND` · `UNAUTHENTICATED`
+`200` with the file, `Content-Disposition: attachment`, named after the title
+(`Sales-2025-by-region.ipynb`). · `VALIDATION_ERROR` · `CONVERSATION_NOT_FOUND` ·
+`UNAUTHENTICATED`
+
+The cells keep the notebook's order. Each question goes just before the first cell
+its run wrote and the analyst's reply just after the last one; a question whose run
+wrote no cell goes before the next one asked; what is left goes last. Outputs are
+Jupyter's own again — a chart as `application/vnd.plotly.v1+json`, a table as HTML.
 
 File paths in the code point at `/data/<name>`. The export notes that at the top,
-so running it elsewhere means putting the files there or changing one line.
+so running it elsewhere means putting the files there or changing one line. An
+exported notebook runs top to bottom with `nbclient` in a fresh sandbox, with no
+edits — a test holds it to that.
 
 ---
 

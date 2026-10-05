@@ -26,6 +26,7 @@ TIMEOUT_SECONDS = 60
 PACKAGES = [
     "duckdb",
     "matplotlib",
+    "nbclient",
     "numpy",
     "openpyxl",
     "pandas",
