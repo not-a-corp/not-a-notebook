@@ -9,6 +9,9 @@ dependencies = [
     "duckdb>=1.4",
     "ipykernel>=7.0",
     "matplotlib>=3.10",
+    # Runs an exported notebook top to bottom: the export's promise is that it
+    # runs with no edits, and this is what checks it, inside this same image.
+    "nbclient>=0.10",
     # Not imported by anyone directly: plotly's plotly_mimetype renderer refuses
     # to emit a figure without it, and fig.show() would fail in every conversation.
     "nbformat>=5.10",
