@@ -30,8 +30,12 @@ from app.domain.llm import Item, Model, Reply, ToolResult, Usage
 from app.domain.outputs import fields_of, kind_of
 from app.domain.runtime import ExecutionResult, KernelDied, OnOutput, Output
 
-MAX_STEPS = 25
+MAX_STEPS = 12
 MAX_ATTEMPTS = 3
+
+# From this many steps left, every result the model reads says how few remain —
+# a model that is never told runs until the limit and then has no answer to give.
+STEPS_LEFT_WARNING = 3
 
 DIED = (
     "The kernel died while running this — out of memory, most likely. Everything it "
@@ -126,7 +130,8 @@ async def run_turn(
         if code is None:
             return Outcome(kind="answer", text=reply.turn.text, produced=turn.produced)
 
-        retry = await attempt(turn, code, reply, step, retry)
+        note = budget_note(MAX_STEPS - step)
+        retry = await attempt(turn, code, reply, step, retry, note)
 
         if stop.is_set():
             raise RunCancelled
@@ -163,15 +168,35 @@ async def ask(
     return reply
 
 
+def budget_note(steps_left: int) -> str | None:
+    """What the model is told once its steps run low, after the result it just read.
+    The last one is firm: the next reply is the last the loop will take."""
+    if steps_left > STEPS_LEFT_WARNING:
+        return None
+
+    if steps_left <= 1:
+        return (
+            "[Your next reply is the last allowed. Answer now, in plain text, with what "
+            "you have, and say what you could not check.]"
+        )
+
+    return (
+        f"[{steps_left} steps left. Answer as soon as you can; run more code only if "
+        "the answer cannot be given without it.]"
+    )
+
+
 async def attempt(
     turn: Turn,
     code: str,
     reply: Reply,
     step: int,
     retry: Retry | None,
+    note: str | None,
 ) -> Retry | None:
     """Runs the code in a new cell, or in the failed one; returns the cell left
-    open for a retry, if this attempt failed and has tries left."""
+    open for a retry, if this attempt failed and has tries left. The note, if any,
+    is for the model only: it is read after the result and never stored."""
     emit = turn.emit
 
     if retry is not None:
@@ -214,6 +239,9 @@ async def attempt(
     turn.produced.append(read_back)
     if result is None:
         read_back = DIED
+
+    if note is not None:
+        read_back = f"{read_back}\n\n{note}"
 
     is_error = status != "ok"
     result_item = ToolResult(call_id=reply.turn.call_id, content=read_back, is_error=is_error)
