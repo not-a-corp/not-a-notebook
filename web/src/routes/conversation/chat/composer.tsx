@@ -1,5 +1,5 @@
 import { useQueryClient } from "@tanstack/react-query";
-import { ArrowUp } from "lucide-react";
+import { ArrowUp, Upload } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent } from "react";
 
 import type { ConversationDetail } from "@/api/conversation-detail";
@@ -13,7 +13,13 @@ import { conversationKey } from "../live/use-live-run";
 const MAX_HEIGHT = 240;
 
 // design.md §2.4 — the composer at the bottom of the chat.
-export function Composer({ conversation }: { conversation: ConversationDetail }) {
+interface ComposerProps {
+  conversation: ConversationDetail;
+  uploadDisabled: boolean;
+  onUpload: () => void;
+}
+
+export function Composer({ conversation, uploadDisabled, onUpload }: ComposerProps) {
   const queryClient = useQueryClient();
   const [text, setText] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -138,6 +144,17 @@ export function Composer({ conversation }: { conversation: ConversationDetail })
           onKeyDown={onKeyDown}
         />
         <div className="flex items-center gap-2">
+          <Tooltip label="Add a file">
+            <Button
+              variant="ghost"
+              size="icon-compact"
+              aria-label="Add a file"
+              disabled={uploadDisabled}
+              onClick={onUpload}
+            >
+              <Upload className="size-4" />
+            </Button>
+          </Tooltip>
           <div className="flex-1" />
           {live && (
             <Button variant="secondary" className="pr-2 pl-3" onClick={() => void stop()}>
