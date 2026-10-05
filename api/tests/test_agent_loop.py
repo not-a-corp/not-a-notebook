@@ -6,7 +6,16 @@ from __future__ import annotations
 import asyncio
 
 import pytest
-from app.agent.loop import MAX_ATTEMPTS, MAX_STEPS, Meter, ModelRefused, StepLimit, run_turn
+from app.agent.loop import (
+    MAX_ATTEMPTS,
+    MAX_STEPS,
+    STEPS_LEFT_WARNING,
+    Meter,
+    ModelRefused,
+    StepLimit,
+    budget_note,
+    run_turn,
+)
 from app.domain.llm import AssistantTurn, Reply, ToolResult, Usage, UserText
 from tests.support.agent import (
     Events,
@@ -202,6 +211,39 @@ async def test_a_model_that_never_answers_hits_the_step_limit_and_its_tokens_sti
         )
 
     assert meter.usage.input_tokens == 100 * MAX_STEPS
+
+
+def test_the_model_is_told_nothing_while_it_has_steps_to_spare() -> None:
+    assert budget_note(STEPS_LEFT_WARNING + 1) is None
+
+
+def test_the_model_is_warned_when_steps_run_low_and_told_firmly_on_the_last() -> None:
+    warning = budget_note(STEPS_LEFT_WARNING)
+    last = budget_note(1)
+
+    assert warning is not None
+    assert str(STEPS_LEFT_WARNING) in warning
+    assert last is not None
+    assert "last" in last
+
+
+async def test_the_warning_is_read_by_the_model_and_kept_out_of_the_notebook() -> None:
+    replies = [wants(f"print({n})", call_id=f"call_{n}") for n in range(MAX_STEPS - 1)]
+    replies.append(answers("Done."))
+    runs = [prints(f"{n}\n") for n in range(MAX_STEPS - 1)]
+
+    outcome, model, _, notebook, _, _ = await turn(replies, runs)
+
+    assert outcome.kind == "answer"  # type: ignore[attr-defined]
+
+    first_result = model.seen[1][-1]
+    assert isinstance(first_result, ToolResult)
+    assert first_result.content == "0"
+
+    last_result = model.seen[-1][-1]
+    assert isinstance(last_result, ToolResult)
+    assert "last allowed" in last_result.content
+    assert "last allowed" not in str(notebook.cells[-1].outputs)
 
 
 async def test_tokens_add_up_across_steps() -> None:

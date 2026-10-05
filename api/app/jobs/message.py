@@ -121,7 +121,14 @@ async def converse(
 
     # Checked before the answer is stored, so the answer keeps its check: a
     # screen opened later shows the same badge the live one did.
-    checked = grounding.check(outcome.text, outcome.produced)
+    # Against the notebook too, not only this turn's code: an answer taken from a
+    # cell that ran earlier is grounded in that cell's output.
+    earlier = []
+    for cell in context.cells:
+        if cell.outputs_text:
+            earlier.append(cell.outputs_text)
+
+    checked = grounding.check(outcome.text, earlier + outcome.produced)
     grounded = GroundingResult(
         numbers=checked.numbers, found=checked.found, unfound=checked.unfound
     )
