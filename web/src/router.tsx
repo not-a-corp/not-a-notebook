@@ -6,6 +6,7 @@ import { AuthPage } from "@/routes/auth/auth-page";
 import { ConversationScreen } from "@/routes/conversation/conversation-screen";
 import { Home } from "@/routes/home/home";
 import { Root } from "@/routes/root";
+import { AccountSettings } from "@/routes/settings/account";
 import { GeneralSettings } from "@/routes/settings/general";
 import { SettingsLayout } from "@/routes/settings/settings-layout";
 
@@ -103,13 +104,19 @@ const generalRoute = createRoute({
   component: GeneralSettings,
 });
 
+const accountRoute = createRoute({
+  getParentRoute: () => settingsRoute,
+  path: "/account",
+  component: AccountSettings,
+});
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
   appRoute.addChildren([
     homeRoute,
     conversationRoute,
-    settingsRoute.addChildren([settingsIndexRoute, generalRoute]),
+    settingsRoute.addChildren([settingsIndexRoute, generalRoute, accountRoute]),
   ]),
 ]);
 
