@@ -7,6 +7,7 @@ import { ApiError } from "@/api/errors";
 import { cancelRun } from "@/api/runs";
 import { toast } from "@/components/toaster";
 import { plural } from "@/lib/format";
+import { rememberConversation } from "@/lib/last-conversation";
 import { useHotkey } from "@/lib/use-hotkey";
 import { sentenceForError } from "@/lib/words";
 
@@ -32,6 +33,10 @@ export function ConversationScreen({ conversationId }: { conversationId: string 
     queryFn: () => getConversationDetail(conversationId),
   });
   const activeRunId = conversation.data?.activeRunId ?? null;
+
+  useEffect(() => {
+    rememberConversation(conversationId);
+  }, [conversationId]);
   const { live, connection } = useLiveRun(conversationId, activeRunId);
   const { upload, uploading } = useUpload(conversationId);
   const [openFileId, setOpenFileId] = useState<string | null>(null);
