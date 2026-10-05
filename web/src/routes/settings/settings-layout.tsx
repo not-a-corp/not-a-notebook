@@ -9,6 +9,7 @@ import { useHotkey } from "@/lib/use-hotkey";
 const SECTIONS = [
   { to: "/settings/general", label: "General" },
   { to: "/settings/account", label: "Account" },
+  { to: "/settings/models", label: "Models" },
 ] as const;
 
 // design.md §2.6 — a page of its own: a 48 px header with the way back, a
