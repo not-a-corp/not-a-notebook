@@ -1,6 +1,6 @@
 import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Ellipsis, LogOut, PanelLeft, Search, SquarePen, X } from "lucide-react";
+import { Ellipsis, LogOut, PanelLeft, Search, Settings, SquarePen, X } from "lucide-react";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 
 import { getAccount, logout } from "@/api/auth";
@@ -86,6 +86,7 @@ function CollapsedSidebar({ onExpand }: { onExpand: () => void }) {
         </Link>
       </Tooltip>
       <div className="flex-1" />
+      <SettingsRow collapsed />
       <AccountRow collapsed />
     </aside>
   );
@@ -244,6 +245,44 @@ function ConversationList() {
   );
 }
 
+// The gear, labelled (design.md §2.1), with its shortcut shown while Settings is open.
+function SettingsRow({ collapsed }: { collapsed: boolean }) {
+  const navigate = useNavigate();
+  useHotkey({ key: ",", mod: true }, () => {
+    void navigate({ to: "/settings/general" });
+  });
+
+  if (collapsed) {
+    return (
+      <Tooltip label="Settings" side="right">
+        <Link
+          to="/settings/general"
+          aria-label="Settings"
+          className="flex size-8 items-center justify-center rounded-md text-text-muted hover:bg-text/8"
+        >
+          <Settings className="size-4" />
+        </Link>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <Link
+      to="/settings"
+      className={cn(ROW, "text-text-muted hover:bg-text/8")}
+      activeProps={{ className: ROW_ACTIVE }}
+    >
+      {({ isActive }) => (
+        <>
+          <Settings className="size-4" />
+          <span className="flex-1 text-text">Settings</span>
+          {isActive && <span className="font-mono text-xs text-text-muted">⌘,</span>}
+        </>
+      )}
+    </Link>
+  );
+}
+
 function AccountRow({ collapsed }: { collapsed: boolean }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
@@ -293,6 +332,7 @@ function AccountRow({ collapsed }: { collapsed: boolean }) {
 
   return (
     <div className="flex flex-none flex-col gap-0.5 border-t border-border p-2">
+      <SettingsRow collapsed={false} />
       <DropdownMenu>
         <DropdownMenuTrigger className="flex h-10 items-center gap-2 rounded-md px-2 text-left hover:bg-text/8">
           {avatar}

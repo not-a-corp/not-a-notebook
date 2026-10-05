@@ -6,6 +6,8 @@ import { AuthPage } from "@/routes/auth/auth-page";
 import { ConversationScreen } from "@/routes/conversation/conversation-screen";
 import { Home } from "@/routes/home/home";
 import { Root } from "@/routes/root";
+import { GeneralSettings } from "@/routes/settings/general";
+import { SettingsLayout } from "@/routes/settings/settings-layout";
 
 // Routes are declared in code, not generated from the file tree: the route
 // table is read here, in one place (design.md §2).
@@ -80,10 +82,35 @@ const conversationRoute = createRoute({
   },
 });
 
+// design.md §2.6: each section has its own route, so it can be linked to.
+const settingsRoute = createRoute({
+  getParentRoute: () => appRoute,
+  path: "/settings",
+  component: SettingsLayout,
+});
+
+const settingsIndexRoute = createRoute({
+  getParentRoute: () => settingsRoute,
+  path: "/",
+  beforeLoad: () => {
+    throw redirect({ to: "/settings/general" });
+  },
+});
+
+const generalRoute = createRoute({
+  getParentRoute: () => settingsRoute,
+  path: "/general",
+  component: GeneralSettings,
+});
+
 const routeTree = rootRoute.addChildren([
   loginRoute,
   registerRoute,
-  appRoute.addChildren([homeRoute, conversationRoute]),
+  appRoute.addChildren([
+    homeRoute,
+    conversationRoute,
+    settingsRoute.addChildren([settingsIndexRoute, generalRoute]),
+  ]),
 ]);
 
 export const router = createRouter({ routeTree });
