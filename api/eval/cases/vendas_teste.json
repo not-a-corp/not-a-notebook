@@ -1,0 +1,49 @@
+{
+  "file": "vendas_teste.csv",
+  "about": "577 rows of sales, 2024-01 to 2025-06, with every problem the profile detects: subtotal rows, exact duplicates, three number formats, two date formats, labels spelled several ways, three revenues ten times too big, one order of R$ 2,05 million. The numbers below were worked out with plain Python (csv and decimal, no model): 561 orders once subtotals and duplicates are out; revenue is completed orders plus returned ones, which are stored negative, with cancelled out. A regression for the agent's economy, not the Phase 9 dataset: a file with planted errors is a file written to be graded.",
+  "cases": [
+    {
+      "question": "Analise esse arquivo",
+      "expect": [3982633.92, 561, 2050000],
+      "first": null,
+      "max_cells": 10,
+      "max_calls": 14
+    },
+    {
+      "question": "Qual foi a receita total?",
+      "expect": [3982633.92],
+      "first": 3982633.92,
+      "max_cells": 0,
+      "max_calls": 2
+    },
+    {
+      "question": "Qual a receita por região?",
+      "expect": [2147125.34, 830329.67, 451525.74, 386209.2, 167443.97],
+      "first": null,
+      "max_cells": 2,
+      "max_calls": 4
+    },
+    {
+      "question": "Qual região vendeu mais este ano?",
+      "expect": [2094878.95, 300628.29],
+      "first": null,
+      "max_cells": 3,
+      "max_calls": 5
+    },
+    {
+      "question": "Quem é o melhor vendedor?",
+      "expect": [2146454.42, 300064.98, 96454.42],
+      "first": null,
+      "max_cells": 6,
+      "max_calls": 9
+    },
+    {
+      "question": "Qual a margem de lucro por produto?",
+      "expect": [],
+      "first": null,
+      "words": ["custo"],
+      "max_cells": 1,
+      "max_calls": 2
+    }
+  ]
+}

@@ -19,6 +19,7 @@ COPY api/alembic.ini ./
 COPY api/alembic ./alembic
 COPY api/app ./app
 COPY api/tests ./tests
+COPY api/eval ./eval
 
 # The drift test compares the migrations against this file.
 COPY schema.sql ./schema.sql
