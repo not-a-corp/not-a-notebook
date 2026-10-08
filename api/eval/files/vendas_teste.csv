@@ -1,0 +1,578 @@
+id_pedido;data;regiao;estado;vendedor;produto;categoria;quantidade;preco_unitario;receita;canal;status
+10379;2024-01-07;Sudeste;RJ;Ana Souza;Monitor 27;Informática;1;1430.99;1430.99;Loja online;concluido
+10235;2024-01-10;Sudeste;ES;Carla Dias;Webcam HD;Acessórios;2;330,88;661,76;Representante;concluido
+10327;2024-01-10;Nordeste;CE;Gabriela Nunes;Teclado Mecânico;Acessórios;5;370.29;1851.45;Marketplace;concluido
+10428;2024-01-13;Nordeste;BA;Gabriela Nunes;Webcam HD;Acessórios;10;323.72;3237.20;Marketplace;concluido
+10534;17/01/2024;Sudeste;SP;Bruno Lima;Monitor 27;Informática;3;1373.90;4121.70;Marketplace;concluido
+10457;2024-01-19;Centro-Oeste;GO;Hugo Alves;Teclado Mecânico;Acessórios;1;352.57;352.57;Representante;concluido
+10461;2024-01-19;Sudeste;MG;Ana Souza;Headset USB;Acessórios;2;297.41;594.82;Loja online;concluido
+10459;2024-01-20;Centro-Oeste;DF;Hugo Alves;Mesa Regulável;Mobiliário;3;2613,19;7839,57;Representante;cancelado
+10137;2024-01-21;sul;SC;Elisa Prado;Cadeira Ergonômica;Mobiliário;1;1801.12;1801.12;Representante;concluido
+10326;2024-01-21;Sudeste;ES;Bruno Lima;Monitor 27;Informática;2;1437.16;2874.32;Marketplace;concluido
+10456;2024-01-24;Nordeste;BA;Fábio Melo;Headset USB;Acessórios;-2;287.49;-574.98;Marketplace;devolvido
+10559;2024-01-24;Norte;AM;Iara Costa;Cadeira Ergonômica;Mobiliário;3;1842.03;5526.09;Loja online;concluido
+10032;2024-01-26;Norte;PA;Iara Costa;Headset USB;Acessórios;3;272.80;818.40;Loja online;concluido
+10098;2024-01-27;SE;RJ;Carla Dias;Cadeira Ergonômica;Mobiliário;1;1742.68;1742.68;Representante;concluido
+10517;2024-01-28;Sudeste;SP;Bruno Lima;Headset USB;Acessórios;1;271,80;271,80;Loja online;concluido
+10400;2024-01-29;Sudeste;ES;Carla Dias;Mouse Sem Fio;Acessórios;1;120.96;120.96;Representante;concluido
+10418;2024-01-30;Sudeste;MG;Bruno Lima;Webcam HD;Acessórios;2;355.89;711.78;Representante;concluido
+10261;2024-01-31;Sul;SC;Diego Rocha;Headset USB;Acessórios;2;293.65;587.30;Representante;concluido
+10308;2024-02-01;Sul;PR;Diego Rocha;Webcam HD;Acessórios;1;338.74;338.74;Representante;concluido
+10365;2024-02-01;Sul;RS;Elisa Prado;Headset USB;Acessórios;1;303,00;303,00;Marketplace;concluido
+10002;2024-02-02;Sudeste ;SP;Carla Dias;Mouse Sem Fio;Acessórios;3;121.57;364.71;Representante;concluido
+10208;2024-02-02;Sudeste;ES;Ana Souza;Notebook Pro 14;Informática;1;5259.12;5259.12;Marketplace;concluido
+10427;2024-02-02;Centro Oeste;GO;Hugo Alves;Headset USB;Acessórios;1;296.04;296.04;Loja online;concluido
+10287;2024-02-03;Sudeste;RJ;Carla Dias;Monitor 27;Informática;1;1510.57;1510.57;Loja online;concluido
+10307;2024-02-03;Centro-Oeste;GO;Hugo Alves;Cadeira Ergonômica;Mobiliário;2;1.941,14;R$ 3.882,28;Loja online;concluido
+10128;2024-02-14;Nordeste;BA;;Headset USB;Acessórios;4;295.17;11806.80;Loja online;concluido
+10545;2024-02-14;Sudeste;RJ;Ana Souza;Notebook Pro 14;Informática;1;5111.90;5111.90;Marketplace;cancelado
+10332;2024-02-16;Sudeste;RJ;Bruno Lima;Cadeira Ergonômica;Mobiliário;10;1.958,59;R$ 19.585,90;Marketplace;concluido
+10192;2024-02-19;Sudeste;ES;Ana Souza;Mouse Sem Fio;Acessórios;4;122.17;488.68;Representante;concluido
+10339;2024-02-21;Sul;PR;Elisa Prado;Mouse Sem Fio;Acessórios;2;111,63;R$ 223,26;Loja online;concluido
+10028;2024-02-22;Sul;PR;Diego Rocha;Notebook Pro 14;Informática;-1;5009.48;-5009.48;Loja online;devolvido
+10476;2024-02-22;Sudeste;ES;Bruno Lima;Teclado Mecânico;Acessórios;1;355.41;355.41;Marketplace;concluido
+10174;2024-02-23;Sudeste;ES;Ana Souza;Teclado Mecânico;Acessórios;2;349.86;699.72;Representante;cancelado
+10248;2024-02-23;Sudeste;RJ;Bruno Lima;Monitor 27;Informática;1;1466.65;1466.65;Loja online;concluido
+10393;2024-02-23;Norte;AM;Iara Costa;Teclado Mecânico;Acessórios;2;372.90;745.80;Representante;concluido
+10458;2024-02-24;Norte;AM;Iara Costa;Headset USB;Acessórios;5;291.79;1458.95;Loja online;concluido
+10338;2024-02-25;Norte;PA;Iara Costa;Teclado Mecânico;Acessórios;2;353.30;706.60;Representante;concluido
+10353;2024-02-25;Sudeste;ES;Ana Souza;Cadeira Ergonômica;Mobiliário;2;1924.33;3848.66;Marketplace;concluido
+10455;2024-02-25;Nordeste;BA;Gabriela Nunes;Notebook Pro 14;Informática;4;5016.05;20064.20;Representante;concluido
+10186;26/02/2024;Sul;PR;Diego Rocha;Webcam HD;Acessórios;1;342.54;342.54;Representante;concluido
+10259;2024-02-26;Nordeste;CE;Fábio Melo;Monitor 27;Informática;1;1336.39;1336.39;Representante;concluido
+10119;2024-02-27;Sudeste;ES;Bruno Lima;Notebook Pro 14;Informática;4;4822.46;19289.84;Loja online;concluido
+10119;2024-02-27;Sudeste;ES;Bruno Lima;Notebook Pro 14;Informática;4;4822.46;19289.84;Loja online;concluido
+10022;2024-02-28;Sul;SC;Diego Rocha;Notebook Pro 14;Informática;1;5433.49;5433.49;Marketplace;concluido
+10433;2024-03-02;Nordeste;CE;Fábio Melo;Teclado Mecânico;Acessórios;1;373.70;373.70;Marketplace;concluido
+10279;2024-03-03;Sudeste;ES;Ana Souza;Mouse Sem Fio;Acessórios;4;120.24;480.96;Representante;concluido
+10135;2024-03-05;Centro-Oeste;GO;Hugo Alves;Teclado Mecânico;Acessórios;1;363.99;363.99;Marketplace;concluido
+10135;2024-03-05;Centro-Oeste;GO;Hugo Alves;Teclado Mecânico;Acessórios;1;363.99;363.99;Marketplace;concluido
+10376;2024-03-05;Sudeste ;RJ;Carla Dias;Cadeira Ergonômica;Mobiliário;5;1834.15;9170.75;Loja online;cancelado
+10560;2024-03-05;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;3;2637.36;7912.08;Representante;concluido
+10258;2024-03-08;sul;RS;Diego Rocha;Mouse Sem Fio;Acessórios;2;111.74;223.48;Marketplace;concluido
+10306;2024-03-08;Sul;RS;Diego Rocha;Teclado Mecânico;Acessórios;4;359.12;1436.48;Loja online;concluido
+10469;2024-03-08;Norte;PA;Iara Costa;Cadeira Ergonômica;Mobiliário;5;1951.77;9758.85;Loja online;concluido
+10424;2024-03-11;Sudeste;ES;Carla Dias;Webcam HD;Acessórios;2;324.83;649.66;Loja online;concluido
+10108;2024-03-12;Nordeste;BA;Fábio Melo;Mouse Sem Fio;Acessórios;2;116.27;232.54;Representante;concluido
+10042;15/03/2024;Centro-Oeste;GO;Hugo Alves;Webcam HD;Acessórios;1;330.46;330.46;Loja online;concluido
+10187;2024-03-15;Sudeste;SP;Carla Dias;Notebook Pro 14;Informática;1;5415.78;5415.78;Loja online;cancelado
+10285;2024-03-15;Norte;PA;Iara Costa;Cadeira Ergonômica;Mobiliário;1;1.812,94;R$ 1.812,94;Representante;concluido
+10364;2024-03-15;Sul;PR;Elisa Prado;Monitor 27;Informática;5;1387.07;6935.35;Marketplace;concluido
+10152;16/03/2024;Nordeste;PE;Fábio Melo;Teclado Mecânico;Acessórios;1;387.53;387.53;Loja online;concluido
+10152;16/03/2024;Nordeste;PE;Fábio Melo;Teclado Mecânico;Acessórios;1;387.53;387.53;Loja online;concluido
+10223;16/03/2024;Sul;SC;Elisa Prado;Mesa Regulável;Mobiliário;4;2625.29;10501.16;Marketplace;concluido
+10547;2024-03-16;Sul;PR;Diego Rocha;Mouse Sem Fio;Acessórios;2;124,88;249,76;Loja online;concluido
+10069;2024-03-17;Sudeste;ES;Bruno Lima;Notebook Pro 14;Informática;3;4940.48;14821.44;Representante;concluido
+10276;2024-03-17;Sudeste;ES;Ana Souza;Monitor 27;Informática;4;1504.61;6018.44;Loja online;concluido
+10207;2024-03-21;Sudeste;RJ;Carla Dias;Mouse Sem Fio;Acessórios;4;115.08;460.32;Marketplace;concluido
+10212;2024-03-21;Norte;AM;Iara Costa;Mesa Regulável;Mobiliário;1;2517,97;2517,97;Marketplace;concluido
+10416;2024-03-22;Sudeste;SP;Ana Souza;Webcam HD;Acessórios;1;337.04;337.04;Loja online;concluido
+10440;2024-03-22;Nordeste;PE;Gabriela Nunes;Cadeira Ergonômica;Mobiliário;1;1933.95;1933.95;Marketplace;concluido
+10540;2024-03-23;Sudeste;SP;Carla Dias;Headset USB;Acessórios;4;282.49;1129.96;Marketplace;concluido
+10132;2024-03-24;Sudeste;SP;Carla Dias;Cadeira Ergonômica;Mobiliário;1;1933.24;1933.24;Representante;concluido
+10132;2024-03-24;Sudeste;SP;Carla Dias;Cadeira Ergonômica;Mobiliário;1;1933.24;1933.24;Representante;concluido
+10184;2024-03-24;Sul;PR;Diego Rocha;Monitor 27;Informática;2;1345.64;2691.28;Marketplace;concluido
+10224;2024-03-28;Sudeste;MG;Ana Souza;Notebook Pro 14;Informática;2;5164.74;10329.48;Representante;concluido
+10058;29/03/2024;sul;PR;Elisa Prado;Cadeira Ergonômica;Mobiliário;5;1745.85;8729.25;Loja online;concluido
+10151;2024-03-29;Sudeste;ES;Carla Dias;Mesa Regulável;Mobiliário;4;2702.98;10811.92;Representante;concluido
+10493;2024-03-30;Centro-Oeste;GO;Hugo Alves;Notebook Pro 14;Informática;1;5174.43;5174.43;Representante;cancelado
+;;SUBTOTAL 1T2024;;;;;;;278978.09;;
+10453;2024-04-01;Sudeste;MG;Bruno Lima;Mouse Sem Fio;Acessórios;2;115,40;R$ 230,80;Representante;concluido
+10083;2024-04-02;Sudeste;SP;Bruno Lima;Teclado Mecânico;Acessórios;5;383.88;1919.40;Loja online;concluido
+10309;2024-04-02;Sudeste;RJ;Carla Dias;Mouse Sem Fio;Acessórios;2;123,77;247,54;Representante;concluido
+10426;2024-04-02;sul;PR;Elisa Prado;Headset USB;Acessórios;2;296,42;R$ 592,84;Marketplace;concluido
+10474;2024-04-02;Nordeste;CE;;Monitor 27;Informática;3;1.351,19;R$ 4.053,57;Loja online;concluido
+10531;02/04/2024;Centro-Oeste;DF;Hugo Alves;Webcam HD;Acessórios;1;346.41;346.41;Marketplace;concluido
+10269;05/04/2024;SE;ES;Carla Dias;Cadeira Ergonômica;Mobiliário;3;1.851,44;R$ 5.554,32;Marketplace;concluido
+10333;2024-04-05;sudeste;SP;Bruno Lima;Mesa Regulável;Mobiliário;1;2769.52;2769.52;Representante;concluido
+10386;2024-04-05;Sudeste;SP;Carla Dias;Mesa Regulável;Mobiliário;1;2617.84;2617.84;Marketplace;concluido
+10429;2024-04-06;Norte;PA;Iara Costa;Headset USB;Acessórios;1;302.10;302.10;Marketplace;concluido
+10241;07/04/2024;Nordeste;PE;Fábio Melo;Headset USB;Acessórios;1;299.49;299.49;Loja online;concluido
+10337;2024-04-07;Nordeste;PE;;Mesa Regulável;Mobiliário;4;2489,21;9956,84;Marketplace;cancelado
+10018;2024-04-10;Nordeste;BA;Fábio Melo;Mouse Sem Fio;Acessórios;2;113.37;226.74;Representante;concluido
+10439;2024-04-11;NE;PE;Gabriela Nunes;Headset USB;Acessórios;1;268.65;268.65;Loja online;concluido
+10025;2024-04-12;Sudeste;MG;Ana Souza;Cadeira Ergonômica;Mobiliário;5;1955,23;9776,15;Loja online;concluido
+10005;2024-04-13;sul;PR;Diego Rocha;Cadeira Ergonômica;Mobiliário;3;1826.09;5478.27;Marketplace;concluido
+10117;2024-04-15;Sudeste;RJ;Carla Dias;Monitor 27;Informática;4;1367.39;5469.56;Marketplace;concluido
+10417;2024-04-16;Sudeste;ES;Bruno Lima;Mouse Sem Fio;Acessórios;1;114.26;114.26;Loja online;concluido
+10087;19/04/2024;Sul;SC;Elisa Prado;Headset USB;Acessórios;4;267.63;1070.52;Loja online;concluido
+10168;2024-04-22;Sul;PR;Diego Rocha;Mesa Regulável;Mobiliário;2;2675.88;5351.76;Representante;concluido
+10001;2024-04-24;Sudeste;RJ;Ana Souza;Monitor 27;Informática;5;1461.56;7307.80;Representante;concluido
+10191;2024-04-25;Nordeste;CE;Fábio Melo;Mouse Sem Fio;Acessórios;1;113.61;113.61;Marketplace;concluido
+10473;2024-04-25;Sul;SC;Diego Rocha;Mesa Regulável;Mobiliário;2;2.580,47;R$ 5.160,94;Marketplace;concluido
+10263;2024-04-28;Sul;RS;Diego Rocha;Mouse Sem Fio;Acessórios;1;111.12;111.12;Loja online;cancelado
+10328;2024-04-30;Nordeste;PE;Fábio Melo;Mouse Sem Fio;Acessórios;-4;122.54;-490.16;Representante;devolvido
+10182;2024-05-01;Sudeste;MG;Carla Dias;Monitor 27;Informática;10;1454.40;14544.00;Loja online;concluido
+10465;2024-05-01;Centro-Oeste;GO;Hugo Alves;Cadeira Ergonômica;Mobiliário;2;1955.05;3910.10;Representante;concluido
+10525;2024-05-02;Sul;PR;Diego Rocha;Monitor 27;Informática;1;1465.13;1465.13;Loja online;concluido
+10557;05/05/2024;Sul;SC;Elisa Prado;Webcam HD;Acessórios;4;340.25;1361.00;Loja online;cancelado
+10153;2024-05-07;Sudeste;RJ;Bruno Lima;Mouse Sem Fio;Acessórios;10;115.80;1158.00;Loja online;cancelado
+10081;09/05/2024;Sul;RS;Elisa Prado;Monitor 27;Informática;2;1433.14;2866.28;Representante;concluido
+10145;2024-05-09;Nordeste;PE;Gabriela Nunes;Mesa Regulável;Mobiliário;1;2765.09;2765.09;Representante;concluido
+10541;2024-05-09;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;1;2520,42;2520,42;Marketplace;concluido
+10346;2024-05-11;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;2;2582.23;5164.46;Loja online;concluido
+10405;2024-05-11;Nordeste;PE;Fábio Melo;Cadeira Ergonômica;Mobiliário;3;1835.54;5506.62;Loja online;concluido
+10325;2024-05-14;Sudeste;RJ;Ana Souza;Cadeira Ergonômica;Mobiliário;4;1913.52;7654.08;Marketplace;concluido
+10552;2024-05-15;Sudeste;SP;Ana Souza;Webcam HD;Acessórios;1;342.37;342.37;Marketplace;concluido
+10324;2024-05-17;Centro-Oeste;DF;Hugo Alves;Teclado Mecânico;Acessórios;5;396.44;1982.20;Loja online;concluido
+10374;2024-05-17;Sul;PR;Elisa Prado;Notebook Pro 14;Informática;4;5231,97;20927,88;Marketplace;concluido
+10094;2024-05-18;SE;ES;Carla Dias;Teclado Mecânico;Acessórios;3;393.34;1180.02;Marketplace;concluido
+10511;2024-05-19;NE;PE;Gabriela Nunes;Mesa Regulável;Mobiliário;2;2652.71;5305.42;Representante;concluido
+10165;2024-05-23;Sul;RS;Elisa Prado;Headset USB;Acessórios;2;289,18;R$ 578,36;Representante;concluido
+10375;2024-05-23;Sudeste;RJ;Carla Dias;Webcam HD;Acessórios;1;354.31;354.31;Loja online;concluido
+10533;2024-05-23;Sudeste;RJ;Bruno Lima;Mesa Regulável;Mobiliário;2;2459.70;4919.40;Marketplace;concluido
+10366;2024-05-24;Sudeste;ES;Carla Dias;Monitor 27;Informática;3;1391.43;4174.29;Representante;cancelado
+10227;2024-05-25;Sudeste;RJ;Carla Dias;Webcam HD;Acessórios;1;328.19;328.19;Representante;concluido
+10251;2024-05-26;Sul;SC;Diego Rocha;Webcam HD;Acessórios;1;328.32;328.32;Representante;concluido
+10319;2024-05-26;NE;BA;Gabriela Nunes;Cadeira Ergonômica;Mobiliário;1;1893.84;1893.84;Loja online;concluido
+10078;2024-05-28;Norte;AM;Iara Costa;Headset USB;Acessórios;5;295,93;1479,65;Marketplace;concluido
+10172;2024-05-29;Sudeste;SP;Bruno Lima;Webcam HD;Acessórios;3;341.79;1025.37;Marketplace;concluido
+10201;29/05/2024;Sul;SC;Elisa Prado;Headset USB;Acessórios;1;272.55;272.55;Loja online;concluido
+10299;2024-05-30;Nordeste;BA;Fábio Melo;Mouse Sem Fio;Acessórios;1;123,01;123,01;Marketplace;concluido
+10506;2024-06-01;Sudeste;ES;Ana Souza;Mouse Sem Fio;Acessórios;1;121.03;121.03;Marketplace;concluido
+10185;2024-06-02;Centro-Oeste;DF;Hugo Alves;Mouse Sem Fio;Acessórios;2;121.58;243.16;Representante;cancelado
+10425;2024-06-04;Sul;RS;Diego Rocha;Headset USB;Acessórios;3;276.95;830.85;Loja online;concluido
+10057;2024-06-05;Nordeste;CE;Gabriela Nunes;Webcam HD;Acessórios;4;333,35;R$ 1.333,40;Representante;concluido
+10257;2024-06-05;Sudeste;RJ;Ana Souza;Cadeira Ergonômica;Mobiliário;2;1834.80;3669.60;Marketplace;concluido
+10077;2024-06-06;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;10;2725.56;27255.60;Marketplace;concluido
+10155;06/06/2024;Nordeste;CE;Gabriela Nunes;Notebook Pro 14;Informática;1;5341,86;5341,86;Marketplace;concluido
+10155;06/06/2024;Nordeste;CE;Gabriela Nunes;Notebook Pro 14;Informática;1;5341,86;5341,86;Marketplace;concluido
+10082;2024-06-07;Nordeste;PE;Gabriela Nunes;Mesa Regulável;Mobiliário;5;2661.87;13309.35;Marketplace;concluido
+10432;2024-06-07;Sudeste;RJ;Bruno Lima;Monitor 27;Informática;-1;1463.30;-1463.30;Marketplace;devolvido
+10027;2024-06-08;Sul;SC;Elisa Prado;Mouse Sem Fio;Acessórios;5;121.12;605.60;Representante;concluido
+10086;10/06/2024;Norte;PA;Iara Costa;Headset USB;Acessórios;-1;284.02;-284.02;Representante;devolvido
+10357;2024-06-12;Sul;RS;Elisa Prado;Mouse Sem Fio;Acessórios;3;124,18;R$ 372,54;Representante;concluido
+10436;2024-06-13;Sudeste;MG;Bruno Lima;Cadeira Ergonômica;Mobiliário;4;1850,37;7401,48;Marketplace;concluido
+10411;2024-06-16;Nordeste;PE;Fábio Melo;Webcam HD;Acessórios;1;345,71;R$ 345,71;Marketplace;concluido
+10014;2024-06-18;Centro-Oeste;DF;Hugo Alves;Mouse Sem Fio;Acessórios;1;121.52;121.52;Representante;concluido
+10519;2024-06-20;nordeste;PE;Fábio Melo;Headset USB;Acessórios;1;295.28;295.28;Representante;concluido
+10006;2024-06-24;Sudeste;ES;Bruno Lima;Headset USB;Acessórios;2;304.11;608.22;Marketplace;concluido
+10496;2024-06-24;Sul;PR;Elisa Prado;Notebook Pro 14;Informática;2;4871,93;9743,86;Loja online;concluido
+;;SUBTOTAL 2T2024;;;;;;;238173.85;;
+10349;2024-07-01;Nordeste;PE;Fábio Melo;Cadeira Ergonômica;Mobiliário;2;1876.95;3753.90;Marketplace;cancelado
+10402;2024-07-01;Sudeste;MG;Ana Souza;Mouse Sem Fio;Acessórios;1;118.18;118.18;Representante;concluido
+10527;2024-07-01;Sul;RS;Elisa Prado;Teclado Mecânico;Acessórios;1;381.49;381.49;Representante;concluido
+10206;2024-07-02;Sudeste;RJ;Ana Souza;Mouse Sem Fio;Acessórios;1;120.07;120.07;Representante;concluido
+10265;2024-07-02;Sul;RS;Elisa Prado;Monitor 27;Informática;5;1.499,31;R$ 7.496,55;Representante;concluido
+10442;2024-07-02;Sul;SC;Diego Rocha;Cadeira Ergonômica;Mobiliário;3;1904.52;5713.56;Loja online;concluido
+10142;2024-07-03;Sudeste ;SP;Bruno Lima;Headset USB;Acessórios;2;278,35;R$ 556,70;Marketplace;concluido
+10231;2024-07-10;Sudeste ;SP;Bruno Lima;Webcam HD;Acessórios;2;336.13;672.26;Marketplace;concluido
+10278;2024-07-10;Sul;RS;Diego Rocha;Mouse Sem Fio;Acessórios;2;120.50;241.00;Representante;cancelado
+10407;2024-07-10;Sudeste;ES;Carla Dias;Cadeira Ergonômica;Mobiliário;2;1828.71;3657.42;Marketplace;concluido
+10422;2024-07-12;Sul;PR;Diego Rocha;Teclado Mecânico;Acessórios;2;384.92;769.84;Loja online;concluido
+10197;2024-07-14;Sudeste;SP;Ana Souza;Mouse Sem Fio;Acessórios;2;122.95;2459.00;Loja online;concluido
+10532;2024-07-14;Sudeste ;SP;Carla Dias;Cadeira Ergonômica;Mobiliário;5;1858.33;9291.65;Loja online;concluido
+10034;2024-07-16;Sudeste;SP;Bruno Lima;Cadeira Ergonômica;Mobiliário;-1;1896.41;-1896.41;Marketplace;devolvido
+10468;2024-07-16;Sudeste;SP;Bruno Lima;Mesa Regulável;Mobiliário;3;2514.67;7544.01;Loja online;concluido
+10129;2024-07-17;Norte;PA;Iara Costa;Headset USB;Acessórios;2;296.14;592.28;Loja online;concluido
+10354;2024-07-17;Sudeste;SP;Ana Souza;Teclado Mecânico;Acessórios;1;385.91;385.91;Representante;concluido
+10483;2024-07-17;sudeste;SP;Carla Dias;Mouse Sem Fio;Acessórios;10;122.87;1228.70;Representante;concluido
+10486;2024-07-17;Sudeste;ES;Bruno Lima;Notebook Pro 14;Informática;2;5220.46;10440.92;Marketplace;concluido
+10486;2024-07-17;Sudeste;ES;Bruno Lima;Notebook Pro 14;Informática;2;5220.46;10440.92;Marketplace;concluido
+10523;2024-07-18;Nordeste;BA;Gabriela Nunes;Notebook Pro 14;Informática;4;5238.81;20955.24;Loja online;concluido
+10409;2024-07-19;Norte;AM;Iara Costa;Notebook Pro 14;Informática;-2;4.903,39;R$ -9.806,78;Marketplace;devolvido
+10452;2024-07-19;Norte;AM;Iara Costa;Monitor 27;Informática;2;1384.19;2768.38;Marketplace;concluido
+10037;2024-07-20;Sudeste;MG;Carla Dias;Cadeira Ergonômica;Mobiliário;1;1901.79;1901.79;Marketplace;cancelado
+10372;2024-07-20;Centro-Oeste;GO;Hugo Alves;Notebook Pro 14;Informática;2;5358,32;10716,64;Marketplace;concluido
+10070;2024-07-21;Sul;SC;Diego Rocha;Headset USB;Acessórios;1;297.96;297.96;Representante;concluido
+10397;2024-07-24;Nordeste;BA;Fábio Melo;Headset USB;Acessórios;2;294.18;588.36;Representante;concluido
+10494;2024-07-24;sudeste;MG;Bruno Lima;Monitor 27;Informática;1;1385.40;1385.40;Marketplace;concluido
+10548;26/07/2024;Sudeste;SP;Bruno Lima;Teclado Mecânico;Acessórios;2;355.09;710.18;Representante;concluido
+10199;2024-07-28;Sudeste;MG;Bruno Lima;Mesa Regulável;Mobiliário;2;2.598,62;R$ 5.197,24;Representante;concluido
+10555;2024-07-28;Sudeste;SP;Carla Dias;Webcam HD;Acessórios;;345,39;R$ 1.036,17;Marketplace;concluido
+10097;2024-07-29;Nordeste;BA;Fábio Melo;Mouse Sem Fio;Acessórios;1;115.53;115.53;Loja online;cancelado
+10403;30/07/2024;Centro-Oeste;DF;Hugo Alves;Monitor 27;Informática;-1;1356.60;-1356.60;Representante;devolvido
+10488;2024-08-01;Sudeste;MG;Ana Souza;Teclado Mecânico;Acessórios;-1;363.45;-363.45;Marketplace;devolvido
+10222;2024-08-02;Sudeste;SP;Bruno Lima;Webcam HD;Acessórios;1;318.95;318.95;Loja online;concluido
+10367;2024-08-04;Nordeste;CE;Fábio Melo;Teclado Mecânico;Acessórios;2;358,69;717,38;Loja online;concluido
+10103;2024-08-08;Centro-Oeste;DF;Hugo Alves;Webcam HD;Acessórios;3;330.42;991.26;Representante;concluido
+10383;2024-08-09;Norte;PA;Iara Costa;Mouse Sem Fio;Acessórios;2;123.35;246.70;Loja online;concluido
+10282;12/08/2024;Norte;PA;Iara Costa;Teclado Mecânico;Acessórios;2;358.30;716.60;Marketplace;concluido
+10537;2024-08-13;Sudeste;MG;Carla Dias;Mesa Regulável;Mobiliário;10;2549.70;25497.00;Loja online;concluido
+10394;2024-08-15;Sul;SC;Elisa Prado;Mesa Regulável;Mobiliário;2;2649.51;5299.02;Marketplace;concluido
+10290;2024-08-18;Sudeste;SP;;Notebook Pro 14;Informática;10;4999,45;49994,50;Loja online;concluido
+10556;2024-08-18;Centro-Oeste;DF;Hugo Alves;Notebook Pro 14;Informática;1;4826.84;4826.84;Marketplace;concluido
+10249;2024-08-19;sul;RS;Elisa Prado;Monitor 27;Informática;2;1520.27;3040.54;Loja online;concluido
+10530;19/08/2024;Norte;PA;Iara Costa;Cadeira Ergonômica;Mobiliário;1;1820.73;1820.73;Marketplace;concluido
+10463;2024-08-20;Sul;PR;Elisa Prado;Cadeira Ergonômica;Mobiliário;1;1849.16;1849.16;Marketplace;concluido
+10016;2024-08-22;SE;MG;Ana Souza;Mouse Sem Fio;Acessórios;2;114.74;229.48;Marketplace;concluido
+10250;2024-08-22;NE;BA;Fábio Melo;Cadeira Ergonômica;Mobiliário;1;1829.11;1829.11;Loja online;concluido
+10392;2024-08-23;Nordeste;BA;Fábio Melo;Mouse Sem Fio;Acessórios;4;118.33;473.32;Marketplace;concluido
+10549;2024-08-23;Centro-Oeste;DF;Hugo Alves;Webcam HD;Acessórios;1;349.79;349.79;Marketplace;concluido
+10176;2024-08-25;Nordeste;BA;Fábio Melo;Mesa Regulável;Mobiliário;1;2741.93;2741.93;Representante;cancelado
+10023;2024-08-28;Norte;AM;Iara Costa;Monitor 27;Informática;2;1413,02;2826,04;Representante;concluido
+10046;2024-08-28;Sudeste;SP;Ana Souza;Teclado Mecânico;Acessórios;3;361.02;1083.06;Loja online;concluido
+10369;2024-08-28;Sul;RS;Elisa Prado;Webcam HD;Acessórios;2;332.72;665.44;Marketplace;concluido
+10181;2024-08-29;sudeste;MG;Bruno Lima;Notebook Pro 14;Informática;1;4960.81;4960.81;Marketplace;concluido
+10518;2024-08-29;Nordeste;BA;Gabriela Nunes;Monitor 27;Informática;2;1516.34;3032.68;Representante;concluido
+10020;2024-08-30;Sul;RS;Elisa Prado;Notebook Pro 14;Informática;1;4895.29;4895.29;Representante;concluido
+10239;2024-08-30;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;1;2.495,18;R$ 2.495,18;Loja online;concluido
+10437;2024-09-01;Sudeste;ES;Ana Souza;Webcam HD;Acessórios;1;346.65;346.65;Representante;concluido
+10085;2024-09-03;Sul;RS;Elisa Prado;Headset USB;Acessórios;3;284.13;852.39;Representante;cancelado
+10161;2024-09-03;sudeste;SP;Bruno Lima;Webcam HD;Acessórios;4;339.21;1356.84;Representante;concluido
+10061;2024-09-06;Sul;PR;Elisa Prado;Mesa Regulável;Mobiliário;2;2781.34;5562.68;Representante;concluido
+10115;2024-09-06;Sudeste;SP;Bruno Lima;Headset USB;Acessórios;1;294.92;294.92;Loja online;concluido
+10229;06/09/2024;sul;PR;Elisa Prado;Webcam HD;Acessórios;2;323.05;646.10;Marketplace;concluido
+10550;2024-09-09;sul;RS;Diego Rocha;Notebook Pro 14;Informática;-1;5066.41;-5066.41;Marketplace;devolvido
+10238;2024-09-10;Norte;PA;Iara Costa;Cadeira Ergonômica;Mobiliário;1;1950.64;1950.64;Loja online;concluido
+10447;12/09/2024;Nordeste;BA;Gabriela Nunes;Mouse Sem Fio;Acessórios;3;121.85;365.55;Loja online;concluido
+10072;2024-09-13;Sudeste;SP;Carla Dias;Headset USB;Acessórios;3;288,52;865,56;Marketplace;concluido
+10154;2024-09-13;Norte;PA;Iara Costa;Headset USB;Acessórios;1;289.96;289.96;Marketplace;concluido
+10351;2024-09-13;Sudeste;MG;Ana Souza;Notebook Pro 14;Informática;2;5026.47;10052.94;Marketplace;concluido
+10363;2024-09-14;Sul;RS;Elisa Prado;Mesa Regulável;Mobiliário;2;2571.68;5143.36;Loja online;concluido
+10477;2024-09-16;Sul;PR;Diego Rocha;Webcam HD;Acessórios;2;323,31;R$ 646,62;Representante;concluido
+10477;2024-09-16;Sul;PR;Diego Rocha;Webcam HD;Acessórios;2;323,31;R$ 646,62;Representante;concluido
+10104;2024-09-18;Sudeste;ES;Ana Souza;Monitor 27;Informática;1;1490.79;1490.79;Marketplace;concluido
+10112;2024-09-18;Sudeste;ES;Carla Dias;Mesa Regulável;Mobiliário;1;2.498,53;R$ 2.498,53;Marketplace;concluido
+10412;20/09/2024;Sudeste;MG;Carla Dias;Mouse Sem Fio;Acessórios;2;119.40;238.80;Representante;concluido
+10528;2024-09-22;SE;MG;Bruno Lima;Notebook Pro 14;Informática;1;5390,04;5390,04;Loja online;concluido
+10373;2024-09-23;Norte;PA;Iara Costa;Cadeira Ergonômica;Mobiliário;5;1835,24;9176,20;Representante;concluido
+10035;2024-09-24;Norte;PA;Iara Costa;Monitor 27;Informática;1;1446.45;1446.45;Representante;concluido
+10296;2024-09-26;SE;MG;Carla Dias;Notebook Pro 14;Informática;3;4886,16;14658,48;Marketplace;concluido
+10423;2024-09-26;nordeste;CE;Gabriela Nunes;Headset USB;Acessórios;2;291.25;582.50;Loja online;concluido
+10331;2024-09-27;Sudeste;RJ;Ana Souza;Headset USB;Acessórios;3;280.38;841.14;Loja online;concluido
+10355;2024-09-27;Sul;PR;Diego Rocha;Cadeira Ergonômica;Mobiliário;10;1853.38;18533.80;Representante;concluido
+10107;2024-09-30;Sudeste;MG;Bruno Lima;Cadeira Ergonômica;Mobiliário;5;1740.30;8701.50;Representante;concluido
+10159;2024-09-30;Sudeste;SP;Bruno Lima;Mesa Regulável;Mobiliário;-2;2735.70;-5471.40;Loja online;devolvido
+;;SUBTOTAL 3T2024;;;;;;;301056.07;;
+10218;2024-10-02;Sul;RS;Diego Rocha;Mesa Regulável;Mobiliário;1;2533.07;2533.07;Representante;concluido
+10062;2024-10-04;Sudeste;RJ;Bruno Lima;Monitor 27;Informática;10;1474.03;14740.30;Loja online;concluido
+10210;04/10/2024;Sudeste;MG;Carla Dias;Notebook Pro 14;Informática;5;4905.24;24526.20;Loja online;concluido
+10173;2024-10-05;Sul;SC;Diego Rocha;Mouse Sem Fio;Acessórios;5;111.19;555.95;Loja online;concluido
+10064;2024-10-07;SE;MG;Carla Dias;Teclado Mecânico;Acessórios;3;381,11;1143,33;Loja online;concluido
+10347;2024-10-07;Sudeste;MG;Bruno Lima;Teclado Mecânico;Acessórios;2;356.43;712.86;Marketplace;cancelado
+10466;2024-10-07;Sudeste;RJ;Ana Souza;Notebook Pro 14;Informática;2;5299.41;10598.82;Marketplace;concluido
+10398;2024-10-10;Norte;PA;Iara Costa;Notebook Pro 14;Informática;2;4.960,51;R$ 9.921,02;Loja online;concluido
+10095;13/10/2024;Sudeste;ES;Bruno Lima;Mouse Sem Fio;Acessórios;1;123.75;123.75;Marketplace;concluido
+10462;2024-10-13;Sudeste;ES;Carla Dias;Teclado Mecânico;Acessórios;-1;353.94;-353.94;Marketplace;devolvido
+10514;2024-10-13;Sudeste;SP;Ana Souza;Webcam HD;Acessórios;3;340.68;1022.04;Marketplace;concluido
+10281;14/10/2024;Norte;PA;Iara Costa;Teclado Mecânico;Acessórios;3;354.55;1063.65;Marketplace;concluido
+10293;2024-10-15;Sudeste;ES;Carla Dias;Webcam HD;Acessórios;1;319.59;319.59;Representante;concluido
+10245;2024-10-17;Sul;SC;;Cadeira Ergonômica;Mobiliário;3;1958.49;5875.47;Marketplace;concluido
+10388;2024-10-17;Sul;PR;Diego Rocha;Notebook Pro 14;Informática;4;5263.38;21053.52;Loja online;concluido
+10065;2024-10-18;Sul;RS;Diego Rocha;Headset USB;Acessórios;2;302,28;604,56;Representante;concluido
+10178;2024-10-18;Nordeste;CE;Gabriela Nunes;Teclado Mecânico;Acessórios;2;391,64;783,28;Loja online;concluido
+10021;19/10/2024;Norte;PA;Iara Costa;Mouse Sem Fio;Acessórios;10;115,03;R$ 1.150,30;Marketplace;concluido
+10188;2024-10-20;Nordeste;CE;Gabriela Nunes;Cadeira Ergonômica;Mobiliário;1;1982.74;1982.74;Representante;concluido
+10421;2024-10-20;Sudeste;ES;Bruno Lima;Headset USB;Acessórios;2;267.14;534.28;Loja online;concluido
+10482;2024-10-21;Centro-Oeste;DF;Hugo Alves;Teclado Mecânico;Acessórios;2;379.95;759.90;Representante;concluido
+10071;2024-10-22;Sul;PR;Elisa Prado;Headset USB;Acessórios;2;285.67;571.34;Loja online;concluido
+10163;2024-10-22;Sul;SC;Elisa Prado;Monitor 27;Informática;1;1358.25;1358.25;Representante;concluido
+10084;2024-10-27;Sul;RS;Elisa Prado;Teclado Mecânico;Acessórios;1;358.00;358.00;Marketplace;concluido
+10317;2024-10-28;sudeste;SP;Carla Dias;Monitor 27;Informática;1;1.423,01;R$ 1.423,01;Marketplace;concluido
+10516;2024-10-28;Sudeste;MG;Carla Dias;Headset USB;Acessórios;2;269,12;538,24;Loja online;concluido
+10012;2024-11-01;sul;RS;Diego Rocha;Cadeira Ergonômica;Mobiliário;2;1.926,15;R$ 3.852,30;Marketplace;concluido
+10479;2024-11-01;Sudeste;SP;Bruno Lima;Teclado Mecânico;Acessórios;1;357.57;357.57;Marketplace;concluido
+10166;2024-11-02;Sudeste;MG;Carla Dias;Monitor 27;Informática;2;1518.71;3037.42;Marketplace;concluido
+10211;2024-11-02;SE;ES;Carla Dias;Cadeira Ergonômica;Mobiliário;3;1833,11;5499,33;Marketplace;concluido
+10348;2024-11-02;Sul;PR;Diego Rocha;Mouse Sem Fio;Acessórios;3;113.67;341.01;Marketplace;concluido
+10194;2024-11-03;Sul;SC;Diego Rocha;Mesa Regulável;Mobiliário;1;2629.49;2629.49;Marketplace;concluido
+10448;2024-11-03;Nordeste;PE;Fábio Melo;Notebook Pro 14;Informática;1;5407.19;5407.19;Representante;concluido
+10039;2024-11-04;centro-oeste;DF;Hugo Alves;Mouse Sem Fio;Acessórios;2;117.11;234.22;Representante;concluido
+10055;2024-11-04;sul;RS;Diego Rocha;Cadeira Ergonômica;Mobiliário;3;1869.70;5609.10;Marketplace;concluido
+10253;2024-11-04;Sul;RS;Elisa Prado;Headset USB;Acessórios;4;291.16;1164.64;Loja online;concluido
+10356;2024-11-04;sul;PR;Diego Rocha;Cadeira Ergonômica;Mobiliário;10;1867.89;18678.90;Marketplace;concluido
+10542;2024-11-04;Sudeste;RJ;Ana Souza;Monitor 27;Informática;10;1.519,97;R$ 15.199,70;Marketplace;concluido
+10026;2024-11-05;Norte;AM;Iara Costa;Monitor 27;Informática;1;1510.99;1510.99;Loja online;concluido
+10093;2024-11-05;Sudeste;SP;Ana Souza;Headset USB;Acessórios;1;304.35;304.35;Marketplace;concluido
+10247;2024-11-05;Norte;PA;Iara Costa;Cadeira Ergonômica;Mobiliário;1;1800.32;1800.32;Loja online;cancelado
+10445;2024-11-05;Norte;AM;Iara Costa;Notebook Pro 14;Informática;10;5305.55;53055.50;Marketplace;concluido
+10273;07/11/2024;Nordeste;BA;Fábio Melo;Cadeira Ergonômica;Mobiliário;-3;1775.24;-5325.72;Representante;devolvido
+10341;07/11/2024;sul;SC;Elisa Prado;Cadeira Ergonômica;Mobiliário;1;1.828,07;R$ 1.828,07;Representante;concluido
+10441;2024-11-07;Sudeste;SP;Ana Souza;Mouse Sem Fio;Acessórios;1;118.69;118.69;Loja online;concluido
+10068;2024-11-08;sudeste;SP;;Mouse Sem Fio;Acessórios;1;114,53;114,53;Marketplace;concluido
+10311;2024-11-08;Nordeste;PE;Gabriela Nunes;Mesa Regulável;Mobiliário;2;2731.37;5462.74;Representante;concluido
+10268;2024-11-10;sul;RS;Elisa Prado;Webcam HD;Acessórios;10;355.28;3552.80;Representante;concluido
+10536;2024-11-10;Sudeste;RJ;Carla Dias;Monitor 27;Informática;1;1488.16;1488.16;Marketplace;concluido
+10038;2024-11-12;Sudeste;MG;Carla Dias;Teclado Mecânico;Acessórios;3;359,08;R$ 1.077,24;Marketplace;concluido
+10464;2024-11-12;Centro-Oeste;GO;Hugo Alves;Teclado Mecânico;Acessórios;2;382.02;764.04;Loja online;concluido
+10499;2024-11-13;Nordeste;PE;Gabriela Nunes;Mouse Sem Fio;Acessórios;1;125.18;125.18;Representante;cancelado
+10054;15/11/2024;Centro-Oeste;DF;Hugo Alves;Mouse Sem Fio;Acessórios;3;111.59;334.77;Loja online;concluido
+10515;2024-11-15;Centro-Oeste;GO;;Webcam HD;Acessórios;2;335,46;R$ 670,92;Representante;concluido
+10160;2024-11-16;Sudeste;ES;Bruno Lima;Headset USB;Acessórios;1;285.55;285.55;Representante;concluido
+10233;2024-11-16;Sudeste;RJ;Bruno Lima;Teclado Mecânico;Acessórios;2;374.83;749.66;Representante;concluido
+10024;2024-11-17;Sudeste;MG;Bruno Lima;Cadeira Ergonômica;Mobiliário;10;1.967,06;R$ 19.670,60;Marketplace;concluido
+10008;2024-11-18;sul;SC;Elisa Prado;Teclado Mecânico;Acessórios;1;362.69;362.69;Representante;concluido
+10158;2024-11-22;Centro-Oeste;DF;Hugo Alves;Cadeira Ergonômica;Mobiliário;1;1865.33;1865.33;Loja online;concluido
+10193;2024-11-22;Nordeste;PE;Fábio Melo;Headset USB;Acessórios;10;299.83;2998.30;Representante;concluido
+10195;2024-11-22;Sudeste;MG;Bruno Lima;Teclado Mecânico;Acessórios;2;386.87;773.74;Representante;concluido
+10221;2024-11-22;Nordeste;PE;Fábio Melo;Cadeira Ergonômica;Mobiliário;4;1831.20;7324.80;Loja online;concluido
+10228;2024-11-22;Sudeste;SP;Ana Souza;Cadeira Ergonômica;Mobiliário;3;1898.01;5694.03;Marketplace;concluido
+10149;2024-11-23;Nordeste;CE;Gabriela Nunes;Headset USB;Acessórios;3;298,90;R$ 896,70;Marketplace;cancelado
+10305;2024-11-24;Sudeste;SP;Ana Souza;Webcam HD;Acessórios;4;322.14;1288.56;Marketplace;concluido
+10359;2024-11-24;nordeste;BA;Gabriela Nunes;Headset USB;Acessórios;1;287.17;287.17;Representante;cancelado
+10438;2024-11-25;Sul;RS;Diego Rocha;Teclado Mecânico;Acessórios;;358.42;358.42;Loja online;concluido
+10538;2024-11-25;Nordeste;BA;Fábio Melo;Cadeira Ergonômica;Mobiliário;1;1754.33;1754.33;Loja online;concluido
+10118;2024-11-26;Nordeste;BA;Gabriela Nunes;Monitor 27;Informática;2;1422,39;2844,78;Marketplace;concluido
+10480;2024-11-26;Sudeste;SP;Bruno Lima;Monitor 27;Informática;1;1389.20;1389.20;Representante;concluido
+10377;2024-11-27;Norte;PA;Iara Costa;Teclado Mecânico;Acessórios;1;368,21;368,21;Loja online;concluido
+10444;2024-11-27;sul;RS;Elisa Prado;Headset USB;Acessórios;-2;280,37;R$ -560,74;Loja online;devolvido
+10485;2024-11-27;Sudeste;MG;Bruno Lima;Mesa Regulável;Mobiliário;2;2687.55;5375.10;Loja online;concluido
+10526;2024-11-27;Nordeste;PE;Fábio Melo;Mesa Regulável;Mobiliário;;2571.87;25718.70;Representante;concluido
+10007;2024-11-28;Nordeste;BA;Fábio Melo;Cadeira Ergonômica;Mobiliário;1;1837.37;1837.37;Marketplace;cancelado
+10109;2024-11-28;Sul;RS;Diego Rocha;Teclado Mecânico;Acessórios;2;357.38;714.76;Representante;concluido
+10313;2024-11-28;sudeste;MG;Ana Souza;Teclado Mecânico;Acessórios;1;375,15;R$ 375,15;Marketplace;concluido
+10431;28/11/2024;NE;CE;Fábio Melo;Mesa Regulável;Mobiliário;1;2709.86;2709.86;Marketplace;concluido
+10502;2024-11-29;Sudeste;MG;Carla Dias;Webcam HD;Acessórios;2;330.52;661.04;Marketplace;concluido
+10213;2024-11-30;Sudeste;ES;Bruno Lima;Mouse Sem Fio;Acessórios;10;115.95;1159.50;Marketplace;concluido
+10271;2024-11-30;Sudeste;SP;Ana Souza;Teclado Mecânico;Acessórios;2;388.13;776.26;Loja online;concluido
+10051;2024-12-01;sudeste;ES;Bruno Lima;Mesa Regulável;Mobiliário;1;2524.91;2524.91;Marketplace;concluido
+10266;2024-12-01;Sul;PR;Diego Rocha;Headset USB;Acessórios;1;288.06;288.06;Representante;concluido
+10492;01/12/2024;Centro-Oeste;GO;Hugo Alves;Notebook Pro 14;Informática;3;5094.53;15283.59;Loja online;concluido
+10125;2024-12-02;Nordeste;CE;Fábio Melo;Mesa Regulável;Mobiliário;1;2613.17;2613.17;Loja online;concluido
+10074;2024-12-03;sul;SC;Elisa Prado;Notebook Pro 14;Informática;1;5091.46;5091.46;Representante;concluido
+10105;2024-12-03;Sudeste;ES;Carla Dias;Notebook Pro 14;Informática;2;5438.64;10877.28;Marketplace;concluido
+10220;2024-12-03;Sul;SC;Diego Rocha;Headset USB;Acessórios;10;278.89;2788.90;Representante;concluido
+10481;2024-12-03;Sul;SC;Diego Rocha;Notebook Pro 14;Informática;3;4857.89;14573.67;Loja online;concluido
+10179;2024-12-04;Sul;PR;Diego Rocha;Notebook Pro 14;Informática;4;5281.95;21127.80;Loja online;concluido
+10209;2024-12-05;Centro-Oeste;GO;Hugo Alves;Mouse Sem Fio;Acessórios;5;113.70;568.50;Representante;cancelado
+10284;2024-12-05;Sudeste ;RJ;Bruno Lima;Teclado Mecânico;Acessórios;4;394.99;1579.96;Loja online;concluido
+10342;2024-12-05;Sul;PR;Elisa Prado;Webcam HD;Acessórios;;317.84;953.52;Representante;concluido
+10138;2024-12-06;Sudeste;MG;Carla Dias;Teclado Mecânico;Acessórios;-3;390,62;R$ -1.171,86;Representante;devolvido
+10124;2024-12-07;Nordeste;PE;Gabriela Nunes;Mesa Regulável;Mobiliário;3;2482.42;7447.26;Marketplace;concluido
+10123;2024-12-08;Sudeste;ES;Bruno Lima;Headset USB;Acessórios;3;294.08;882.24;Loja online;cancelado
+10041;2024-12-09;Norte;AM;Iara Costa;Mouse Sem Fio;Acessórios;1;122.98;122.98;Representante;concluido
+10288;2024-12-09;Sudeste;RJ;Carla Dias;Monitor 27;Informática;4;1400,07;5600,28;Loja online;concluido
+10316;2024-12-09;Sudeste;RJ;;Headset USB;Acessórios;5;282.65;1413.25;Marketplace;concluido
+10487;2024-12-09;Nordeste;CE;Fábio Melo;Headset USB;Acessórios;3;288.10;864.30;Loja online;concluido
+10554;2024-12-09;Sudeste;MG;Ana Souza;Monitor 27;Informática;2;1406.19;2812.38;Representante;concluido
+10304;2024-12-11;Sudeste;MG;Bruno Lima;Monitor 27;Informática;1;1517.32;1517.32;Marketplace;concluido
+10414;2024-12-11;sul;PR;Diego Rocha;Monitor 27;Informática;1;1364,54;1364,54;Representante;concluido
+10003;2024-12-14;Sudeste;MG;Ana Souza;Monitor 27;Informática;1;1405.62;1405.62;Representante;concluido
+10011;2024-12-14;Sul;PR;Diego Rocha;Headset USB;Acessórios;3;303.44;910.32;Loja online;concluido
+10056;2024-12-15;Sul;PR;Diego Rocha;Mesa Regulável;Mobiliário;2;2768.99;5537.98;Marketplace;concluido
+10297;2024-12-18;Sudeste;RJ;Carla Dias;Notebook Pro 14;Informática;4;5352.38;21409.52;Marketplace;concluido
+10302;2024-12-18;Sudeste;ES;Carla Dias;Webcam HD;Acessórios;1;314.46;314.46;Marketplace;concluido
+10260;21/12/2024;Nordeste;CE;Gabriela Nunes;Teclado Mecânico;Acessórios;3;367.97;1103.91;Marketplace;concluido
+10434;2024-12-21;Sul;RS;Diego Rocha;Mesa Regulável;Mobiliário;1;2561.39;2561.39;Representante;cancelado
+10052;2024-12-24;Sudeste;SP;Ana Souza;Mouse Sem Fio;Acessórios;1;113.51;113.51;Loja online;concluido
+10484;2024-12-24;Nordeste;BA;Fábio Melo;Headset USB;Acessórios;1;276.39;276.39;Marketplace;concluido
+10088;2024-12-26;sudeste;MG;Carla Dias;Teclado Mecânico;Acessórios;5;380.64;1903.20;Representante;concluido
+10203;2024-12-26;Nordeste;PE;Fábio Melo;Notebook Pro 14;Informática;4;5138.19;20552.76;Marketplace;concluido
+10113;28/12/2024;Centro Oeste;GO;Hugo Alves;Notebook Pro 14;Informática;1;5094.79;5094.79;Representante;concluido
+10170;28/12/2024;Centro Oeste;DF;Hugo Alves;Mouse Sem Fio;Acessórios;1;125.33;125.33;Representante;concluido
+10059;2024-12-29;Sudeste;MG;Carla Dias;Notebook Pro 14;Informática;1;5133.24;5133.24;Representante;concluido
+10343;2024-12-29;Norte;PA;Iara Costa;Monitor 27;Informática;1;1342.63;1342.63;Marketplace;concluido
+10413;2024-12-29;sul;SC;Elisa Prado;Monitor 27;Informática;1;1405.83;1405.83;Loja online;concluido
+;;SUBTOTAL 4T2024;;;;;;;488786.44;;
+10031;2025-01-01;Sudeste;SP;Bruno Lima;Mesa Regulável;Mobiliário;3;2773.49;8320.47;Loja online;cancelado
+10096;2025-01-02;Sudeste;SP;Bruno Lima;Monitor 27;Informática;2;1458.93;2917.86;Loja online;concluido
+10280;2025-01-02;Nordeste;PE;Gabriela Nunes;Mesa Regulável;Mobiliário;1;2531.17;2531.17;Loja online;concluido
+10315;02/01/2025;Centro-Oeste;GO;Hugo Alves;Monitor 27;Informática;3;1422.74;4268.22;Marketplace;concluido
+10467;2025-01-02;Nordeste;BA;Gabriela Nunes;Cadeira Ergonômica;Mobiliário;1;1784,00;1784,00;Loja online;concluido
+10508;2025-01-02;Sudeste;SP;Ana Souza;Mesa Regulável;Mobiliário;1;2679.92;2679.92;Representante;concluido
+10396;2025-01-03;Sudeste;RJ;Ana Souza;Headset USB;Acessórios;1;296.19;296.19;Marketplace;concluido
+10380;2025-01-05;Nordeste;CE;Fábio Melo;Mesa Regulável;Mobiliário;3;2717.45;8152.35;Representante;concluido
+10500;2025-01-07;NE;CE;Gabriela Nunes;Cadeira Ergonômica;Mobiliário;1;1850.17;1850.17;Representante;concluido
+10090;2025-01-09;Centro-Oeste;GO;Hugo Alves;Webcam HD;Acessórios;1;355,56;R$ 355,56;Loja online;concluido
+10091;2025-01-09;Sudeste;MG;Carla Dias;Monitor 27;Informática;3;1419.73;4259.19;Marketplace;concluido
+10513;2025-01-10;Sudeste;ES;Carla Dias;Cadeira Ergonômica;Mobiliário;2;1.766,60;R$ 3.533,20;Loja online;concluido
+10267;2025-01-12;Sul;RS;Diego Rocha;Teclado Mecânico;Acessórios;2;349.92;699.84;Representante;concluido
+10030;2025-01-13;Sudeste;RJ;Ana Souza;Headset USB;Acessórios;-10;280.55;-2805.50;Loja online;devolvido
+10539;2025-01-13;Sul;SC;Diego Rocha;Teclado Mecânico;Acessórios;4;354.54;1418.16;Loja online;concluido
+10146;2025-01-14;Nordeste;CE;Fábio Melo;Cadeira Ergonômica;Mobiliário;2;1836.60;3673.20;Loja online;concluido
+10092;2025-01-15;Sudeste;SP;Carla Dias;Cadeira Ergonômica;Mobiliário;1;1963.68;1963.68;Representante;concluido
+10130;2025-01-15;Sudeste;SP;Bruno Lima;Monitor 27;Informática;1;1477.85;1477.85;Loja online;cancelado
+10404;2025-01-15;Sul;SC;Elisa Prado;Webcam HD;Acessórios;3;320.88;962.64;Representante;concluido
+10490;2025-01-15;Norte;AM;Iara Costa;Teclado Mecânico;Acessórios;4;355.14;1420.56;Loja online;concluido
+10408;2025-01-16;Sudeste;ES;Ana Souza;Teclado Mecânico;Acessórios;3;397.98;1193.94;Marketplace;concluido
+10189;2025-01-19;Norte;AM;Iara Costa;Monitor 27;Informática;2;1367.64;2735.28;Marketplace;concluido
+10291;2025-01-19;Sudeste;SP;;Webcam HD;Acessórios;2;343,94;R$ 687,88;Marketplace;concluido
+10004;2025-01-22;Sudeste;MG;Carla Dias;Mouse Sem Fio;Acessórios;1;121.39;121.39;Representante;concluido
+10505;2025-01-23;Nordeste;BA;Fábio Melo;Mouse Sem Fio;Acessórios;5;123.15;615.75;Marketplace;cancelado
+10048;2025-01-24;Norte;PA;Iara Costa;Mesa Regulável;Mobiliário;3;2623.42;7870.26;Loja online;concluido
+10214;2025-01-24;Sul;RS;Diego Rocha;Monitor 27;Informática;1;1384.51;1384.51;Loja online;concluido
+10318;25/01/2025;Sudeste;RJ;Ana Souza;Mouse Sem Fio;Acessórios;10;115.75;1157.50;Representante;cancelado
+10449;2025-01-26;Sul;PR;Diego Rocha;Cadeira Ergonômica;Mobiliário;1;1862.24;1862.24;Marketplace;concluido
+10497;2025-01-27;Sul;RS;Elisa Prado;Cadeira Ergonômica;Mobiliário;4;1815.57;7262.28;Marketplace;concluido
+10252;2025-01-28;Sul;RS;Diego Rocha;Headset USB;Acessórios;1;291.10;291.10;Marketplace;concluido
+10503;2025-01-28;Sudeste;ES;;Cadeira Ergonômica;Mobiliário;;1872.59;1872.59;Loja online;concluido
+10512;2025-01-28;Sudeste;SP;Carla Dias;Webcam HD;Acessórios;1;350,23;R$ 350,23;Representante;concluido
+10217;2025-01-29;Sudeste;SP;Carla Dias;Mouse Sem Fio;Acessórios;1;119.32;119.32;Loja online;concluido
+10141;2025-01-30;Sudeste;ES;Bruno Lima;Headset USB;Acessórios;3;297.00;891.00;Marketplace;concluido
+10289;2025-01-30;Sudeste;RJ;Bruno Lima;Webcam HD;Acessórios;1;351.77;351.77;Representante;concluido
+10215;2025-02-02;Sudeste;SP;Bruno Lima;Webcam HD;Acessórios;1;328.71;328.71;Loja online;concluido
+10352;2025-02-02;nordeste;CE;Gabriela Nunes;Notebook Pro 14;Informática;-1;5410.30;-5410.30;Marketplace;devolvido
+10489;2025-02-02;Sudeste;MG;Carla Dias;Cadeira Ergonômica;Mobiliário;1;1913.21;1913.21;Loja online;concluido
+10529;2025-02-03;Nordeste;PE;Fábio Melo;Webcam HD;Acessórios;2;333,93;R$ 667,86;Loja online;concluido
+10232;2025-02-05;Sudeste;ES;Carla Dias;Teclado Mecânico;Acessórios;3;389,80;R$ 1.169,40;Marketplace;concluido
+10242;06/02/2025;Sul;PR;Elisa Prado;Mesa Regulável;Mobiliário;2;2593.71;5187.42;Loja online;cancelado
+10270;2025-02-07;Sul;PR;Diego Rocha;Mouse Sem Fio;Acessórios;5;114.95;574.75;Representante;cancelado
+10470;2025-02-07;Nordeste;CE;Fábio Melo;Monitor 27;Informática;4;1419.13;5676.52;Loja online;concluido
+10415;2025-02-08;Sul;PR;Elisa Prado;Mesa Regulável;Mobiliário;5;2495.64;12478.20;Loja online;concluido
+10301;2025-02-10;Centro-Oeste;DF;Hugo Alves;Mesa Regulável;Mobiliário;1;2476.76;2476.76;Marketplace;concluido
+10312;2025-02-10;Sudeste;MG;;Headset USB;Acessórios;1;278,05;278,05;Representante;concluido
+10256;2025-02-11;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;1;2679,77;2679,77;Marketplace;concluido
+10009;2025-02-12;Norte;AM;Iara Costa;Monitor 27;Informática;5;1476.46;7382.30;Loja online;concluido
+10451;12/02/2025;Sudeste;ES;Carla Dias;Teclado Mecânico;Acessórios;2;387.24;774.48;Representante;concluido
+10164;2025-02-15;Sudeste;RJ;Carla Dias;Cadeira Ergonômica;Mobiliário;2;1936.33;3872.66;Marketplace;concluido
+10303;2025-02-15;Centro-Oeste;DF;Hugo Alves;Notebook Pro 14;Informática;5;5288.13;26440.65;Loja online;cancelado
+10443;2025-02-15;Nordeste;CE;Gabriela Nunes;Cadeira Ergonômica;Mobiliário;-2;1.960,54;R$ -3.921,08;Representante;devolvido
+10243;2025-02-16;Sudeste;MG;Bruno Lima;Webcam HD;Acessórios;1;327.27;327.27;Marketplace;concluido
+10314;2025-02-18;Sudeste;RJ;Bruno Lima;Mouse Sem Fio;Acessórios;2;121.11;242.22;Marketplace;concluido
+10144;2025-02-19;Nordeste;CE;Fábio Melo;Notebook Pro 14;Informática;2;4.880,52;R$ 9.761,04;Loja online;concluido
+10509;2025-02-19;Sul;SC;Diego Rocha;Webcam HD;Acessórios;2;318.95;637.90;Representante;concluido
+10553;2025-02-19;Centro-Oeste;DF;Hugo Alves;Monitor 27;Informática;3;1406,55;4219,65;Representante;concluido
+10310;2025-02-23;Centro-Oeste;GO;Hugo Alves;Teclado Mecânico;Acessórios;2;381.58;763.16;Representante;concluido
+10329;2025-02-23;Sudeste;ES;Ana Souza;Webcam HD;Acessórios;1;327.41;327.41;Loja online;concluido
+10344;2025-02-23;Sul;RS;Diego Rocha;Mesa Regulável;Mobiliário;4;2512.27;10049.08;Representante;concluido
+10080;2025-02-24;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;4;2778.51;11114.04;Loja online;concluido
+10204;2025-02-26;Nordeste;BA;Fábio Melo;Notebook Pro 14;Informática;2;4931.85;9863.70;Marketplace;concluido
+10047;2025-02-28;Sul;PR;Diego Rocha;Mouse Sem Fio;Acessórios;1;123.39;123.39;Marketplace;concluido
+10067;2025-03-02;Nordeste;BA;Gabriela Nunes;Webcam HD;Acessórios;1;352.96;352.96;Representante;concluido
+10136;2025-03-02;Nordeste;CE;Gabriela Nunes;Monitor 27;Informática;2;1513.72;3027.44;Marketplace;concluido
+10156;2025-03-02;Sudeste;MG;Carla Dias;Headset USB;Acessórios;4;285.01;1140.04;Representante;concluido
+10196;2025-03-02;Sudeste;RJ;Bruno Lima;Mouse Sem Fio;Acessórios;1;115.55;115.55;Representante;concluido
+10114;2025-03-03;Sudeste;MG;Ana Souza;Webcam HD;Acessórios;5;349.58;17479.00;Loja online;concluido
+10510;2025-03-03;Norte;AM;Iara Costa;Notebook Pro 14;Informática;1;4832.50;4832.50;Representante;concluido
+10264;2025-03-05;Sudeste;MG;Bruno Lima;Monitor 27;Informática;1;1441.73;1441.73;Loja online;concluido
+10255;06/03/2025;Nordeste;PE;Fábio Melo;Notebook Pro 14;Informática;1;5181,06;5181,06;Loja online;concluido
+10334;2025-03-07;Nordeste;BA;Fábio Melo;Notebook Pro 14;Informática;4;5447,54;21790,16;Marketplace;concluido
+10010;2025-03-08;Sudeste;ES;;Headset USB;Acessórios;5;303,41;R$ 1.517,05;Marketplace;concluido
+10234;2025-03-09;Nordeste;CE;Fábio Melo;Teclado Mecânico;Acessórios;1;373.79;373.79;Representante;concluido
+10390;2025-03-09;Sul;SC;Elisa Prado;Mouse Sem Fio;Acessórios;4;116.85;467.40;Representante;concluido
+10043;2025-03-11;Nordeste;CE;Gabriela Nunes;Notebook Pro 14;Informática;5;5.160,81;R$ 25.804,05;Loja online;concluido
+10370;2025-03-14;SE;RJ;Carla Dias;Mesa Regulável;Mobiliário;1;2533,32;2533,32;Representante;concluido
+10321;15/03/2025;Norte;PA;Iara Costa;Notebook Pro 14;Informática;-3;5144.84;-15434.52;Representante;devolvido
+10387;2025-03-15;NE;PE;Gabriela Nunes;Monitor 27;Informática;1;1414.20;1414.20;Loja online;concluido
+10225;2025-03-16;Sudeste;RJ;Carla Dias;Mouse Sem Fio;Acessórios;1;117.35;117.35;Marketplace;concluido
+10162;2025-03-17;Sudeste;MG;Bruno Lima;Cadeira Ergonômica;Mobiliário;1;1749.92;1749.92;Representante;concluido
+10216;17/03/2025;Sul;PR;Diego Rocha;Notebook Pro 14;Informática;2;4844,58;9689,16;Representante;concluido
+10230;2025-03-18;Nordeste;BA;Gabriela Nunes;Mesa Regulável;Mobiliário;3;2.571,95;R$ 7.715,85;Marketplace;concluido
+10522;2025-03-18;Nordeste;PE;Gabriela Nunes;Headset USB;Acessórios;1;276.87;276.87;Representante;concluido
+10561;2025-03-18;Centro-Oeste;DF;Hugo Alves;Notebook Pro 14;Informática;500;4.100,00;R$ 2.050.000,00;Representante;concluido
+10292;2025-03-20;Sudeste;RJ;Ana Souza;Mesa Regulável;Mobiliário;3;2678.18;8034.54;Representante;concluido
+10300;2025-03-21;Centro-Oeste;GO;Hugo Alves;Cadeira Ergonômica;Mobiliário;5;1962.58;9812.90;Representante;concluido
+10362;2025-03-21;Norte;AM;Iara Costa;Webcam HD;Acessórios;1;344.49;344.49;Loja online;concluido
+10521;2025-03-21;Norte;PA;Iara Costa;Cadeira Ergonômica;Mobiliário;3;1.975,11;R$ 5.925,33;Marketplace;concluido
+10073;22/03/2025;Sul;RS;Elisa Prado;Cadeira Ergonômica;Mobiliário;1;1839.13;1839.13;Loja online;concluido
+10131;23/03/2025;Centro-Oeste;DF;Hugo Alves;Notebook Pro 14;Informática;1;5064.47;5064.47;Representante;concluido
+10335;24/03/2025;Sudeste;MG;Carla Dias;Notebook Pro 14;Informática;5;5367.10;26835.50;Loja online;concluido
+10435;2025-03-24;Sul;PR;Diego Rocha;Teclado Mecânico;Acessórios;1;376.45;376.45;Marketplace;concluido
+10122;2025-03-25;Sul;PR;Elisa Prado;Headset USB;Acessórios;4;281.41;1125.64;Loja online;concluido
+10395;2025-03-25;Centro-Oeste;DF;Hugo Alves;Notebook Pro 14;Informática;2;5313,96;10627,92;Marketplace;concluido
+10089;2025-03-27;Sudeste;RJ;Ana Souza;Headset USB;Acessórios;2;279.12;558.24;Marketplace;concluido
+10336;2025-03-27;SE;MG;Ana Souza;Mouse Sem Fio;Acessórios;3;125.66;376.98;Marketplace;concluido
+10029;2025-03-28;Sul;RS;Diego Rocha;Monitor 27;Informática;3;1512,14;4536,42;Loja online;concluido
+10040;28/03/2025;Sudeste;ES;Carla Dias;Teclado Mecânico;Acessórios;1;382.15;382.15;Marketplace;concluido
+10420;2025-03-28;Sudeste;RJ;Bruno Lima;Notebook Pro 14;Informática;4;4784.06;19136.24;Representante;concluido
+10454;2025-03-28;Sul;RS;Diego Rocha;Cadeira Ergonômica;Mobiliário;3;1777.13;5331.39;Marketplace;concluido
+10478;2025-03-28;Sul;RS;Elisa Prado;Mouse Sem Fio;Acessórios;1;111.16;111.16;Loja online;concluido
+10110;29/03/2025;sul;PR;Elisa Prado;Headset USB;Acessórios;2;274.93;549.86;Loja online;concluido
+10101;2025-03-30;Sudeste;RJ;Ana Souza;Teclado Mecânico;Acessórios;2;363.19;726.38;Representante;concluido
+10143;2025-03-30;Sudeste;MG;Carla Dias;Mesa Regulável;Mobiliário;10;2532.58;25325.80;Loja online;cancelado
+10491;2025-03-30;Nordeste;CE;Fábio Melo;Mouse Sem Fio;Acessórios;2;115.71;231.42;Representante;concluido
+10546;2025-03-31;Sudeste;RJ;;Cadeira Ergonômica;Mobiliário;1;1795.33;1795.33;Loja online;concluido
+;;SUBTOTAL 1T2025;;;;;;;2459156.61;;
+10360;2025-04-01;Sudeste;RJ;Bruno Lima;Monitor 27;Informática;-1;1512.74;-1512.74;Marketplace;devolvido
+10079;2025-04-02;Sudeste;ES;Bruno Lima;Cadeira Ergonômica;Mobiliário;10;1952.46;19524.60;Representante;concluido
+10272;2025-04-05;Sudeste;MG;Ana Souza;Webcam HD;Acessórios;1;326.43;326.43;Loja online;concluido
+10345;06/04/2025;sul;SC;Diego Rocha;Webcam HD;Acessórios;3;312.99;938.97;Representante;concluido
+10015;2025-04-07;Sudeste;MG;Ana Souza;Mouse Sem Fio;Acessórios;1;119.58;119.58;Loja online;concluido
+10320;2025-04-07;Nordeste;BA;Fábio Melo;Webcam HD;Acessórios;4;347.51;1390.04;Representante;concluido
+10157;09/04/2025;Sudeste ;ES;Bruno Lima;Webcam HD;Acessórios;1;333.33;333.33;Marketplace;concluido
+10419;2025-04-12;Nordeste;CE;Gabriela Nunes;Headset USB;Acessórios;2;301.07;602.14;Loja online;concluido
+10139;2025-04-13;Sudeste;RJ;Ana Souza;Cadeira Ergonômica;Mobiliário;-2;1968.13;-3936.26;Marketplace;devolvido
+10558;2025-04-13;Sudeste;RJ;Bruno Lima;Monitor 27;Informática;1;1354,62;1354,62;Representante;concluido
+10244;2025-04-14;Nordeste;BA;Gabriela Nunes;Mouse Sem Fio;Acessórios;4;125,50;R$ 502,00;Representante;concluido
+10244;2025-04-14;Nordeste;BA;Gabriela Nunes;Mouse Sem Fio;Acessórios;4;125,50;R$ 502,00;Representante;concluido
+10246;2025-04-15;Norte;AM;Iara Costa;Webcam HD;Acessórios;10;312.83;3128.30;Marketplace;concluido
+10277;2025-04-17;Norte;PA;Iara Costa;Webcam HD;Acessórios;3;314.10;942.30;Loja online;concluido
+10368;2025-04-17;Sudeste;SP;Bruno Lima;Monitor 27;Informática;-2;1371.21;-2742.42;Representante;devolvido
+10472;2025-04-17;Sudeste;SP;Carla Dias;Teclado Mecânico;Acessórios;2;372.50;745.00;Marketplace;concluido
+10019;2025-04-18;Norte;PA;Iara Costa;Notebook Pro 14;Informática;2;5.224,85;R$ 10.449,70;Loja online;concluido
+10075;2025-04-18;Sudeste;MG;Carla Dias;Webcam HD;Acessórios;3;340.44;1021.32;Marketplace;concluido
+10275;18/04/2025;Nordeste;BA;Fábio Melo;Notebook Pro 14;Informática;10;5345.33;53453.30;Representante;concluido
+10190;19/04/2025;Sul;SC;Elisa Prado;Mouse Sem Fio;Acessórios;1;114.26;114.26;Marketplace;concluido
+10044;2025-04-20;Norte;PA;Iara Costa;Mesa Regulável;Mobiliário;2;2724,13;5448,26;Marketplace;cancelado
+10200;2025-04-22;Norte;PA;Iara Costa;Mouse Sem Fio;Acessórios;2;116.18;232.36;Loja online;concluido
+10133;2025-04-25;Sudeste;SP;Ana Souza;Headset USB;Acessórios;1;274.93;274.93;Marketplace;cancelado
+10033;2025-04-26;NE;PE;Gabriela Nunes;Headset USB;Acessórios;5;297.73;1488.65;Marketplace;concluido
+10295;2025-04-27;Nordeste;BA;Gabriela Nunes;Teclado Mecânico;Acessórios;1;367.93;367.93;Loja online;concluido
+10017;29/04/2025;Sul;PR;Diego Rocha;Monitor 27;Informática;2;1352.27;2704.54;Representante;concluido
+10053;2025-04-29;Sul;RS;Elisa Prado;Headset USB;Acessórios;1;295.71;295.71;Marketplace;concluido
+10140;29/04/2025;Nordeste;BA;Gabriela Nunes;Cadeira Ergonômica;Mobiliário;1;1950.63;1950.63;Representante;concluido
+10045;2025-05-01;Nordeste;CE;Gabriela Nunes;Webcam HD;Acessórios;1;340.50;340.50;Representante;concluido
+10298;2025-05-01;Sudeste;MG;Ana Souza;Mesa Regulável;Mobiliário;3;2749,01;8247,03;Marketplace;concluido
+10121;2025-05-02;Norte;PA;Iara Costa;Cadeira Ergonômica;Mobiliário;1;1980.17;1980.17;Loja online;concluido
+10175;2025-05-02;Sudeste ;MG;Bruno Lima;Headset USB;Acessórios;5;291.15;1455.75;Marketplace;concluido
+10520;2025-05-02;Nordeste;CE;Fábio Melo;Mesa Regulável;Mobiliário;1;2673.47;2673.47;Marketplace;concluido
+10183;04/05/2025;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;5;2.679,82;R$ 13.399,10;Marketplace;concluido
+10198;2025-05-05;Centro Oeste;DF;Hugo Alves;Mouse Sem Fio;Acessórios;10;125.02;1250.20;Representante;concluido
+10381;2025-05-05;sudeste;ES;Ana Souza;Mouse Sem Fio;Acessórios;2;111,07;222,14;Marketplace;concluido
+10501;2025-05-05;Sudeste ;MG;Carla Dias;Teclado Mecânico;Acessórios;2;374,69;R$ 749,38;Loja online;concluido
+10167;2025-05-06;Nordeste;CE;Gabriela Nunes;Teclado Mecânico;Acessórios;1;390.19;390.19;Marketplace;concluido
+10294;2025-05-06;Sudeste;RJ;Carla Dias;Headset USB;Acessórios;;303.64;607.28;Representante;concluido
+10371;06/05/2025;Sudeste;MG;Bruno Lima;Monitor 27;Informática;2;1367.13;2734.26;Loja online;concluido
+10205;09/05/2025;Sudeste;ES;Ana Souza;Notebook Pro 14;Informática;-1;5141.89;-5141.89;Loja online;devolvido
+10391;2025-05-10;Sudeste;MG;Carla Dias;Mesa Regulável;Mobiliário;5;2691.48;13457.40;Marketplace;concluido
+10076;2025-05-11;Norte;AM;Iara Costa;Headset USB;Acessórios;2;287.57;575.14;Loja online;concluido
+10126;2025-05-12;Norte;AM;Iara Costa;Headset USB;Acessórios;1;298,63;R$ 298,63;Marketplace;concluido
+10111;13/05/2025;SE;RJ;Bruno Lima;Notebook Pro 14;Informática;1;4789.20;4789.20;Loja online;concluido
+10286;2025-05-13;Sudeste;MG;Ana Souza;Teclado Mecânico;Acessórios;3;368,29;R$ 1.104,87;Loja online;concluido
+10504;2025-05-13;sul;PR;Diego Rocha;Webcam HD;Acessórios;10;320,59;R$ 3.205,90;Loja online;concluido
+10049;2025-05-14;Sul;RS;Elisa Prado;Cadeira Ergonômica;Mobiliário;4;1903.14;7612.56;Representante;concluido
+10013;2025-05-15;Norte;PA;Iara Costa;Notebook Pro 14;Informática;2;4.946,83;R$ 9.893,66;Marketplace;concluido
+10060;2025-05-15;Sudeste;ES;Carla Dias;Webcam HD;Acessórios;1;332.61;332.61;Representante;concluido
+10171;2025-05-15;SE;MG;Bruno Lima;Monitor 27;Informática;2;1442.10;2884.20;Representante;cancelado
+10236;2025-05-15;Sul;RS;Elisa Prado;Notebook Pro 14;Informática;2;4969,80;9939,60;Representante;concluido
+10535;2025-05-15;Sul;SC;Diego Rocha;Mouse Sem Fio;Acessórios;1;121,34;R$ 121,34;Loja online;concluido
+10148;2025-05-17;Sudeste;SP;Bruno Lima;Teclado Mecânico;Acessórios;2;393,99;787,98;Marketplace;concluido
+10066;18/05/2025;Nordeste;BA;Fábio Melo;Teclado Mecânico;Acessórios;10;389.67;3896.70;Loja online;concluido
+10283;2025-05-19;Sudeste;SP;Ana Souza;Notebook Pro 14;Informática;1;4941,25;4941,25;Loja online;concluido
+10330;2025-05-20;Sudeste;SP;Carla Dias;Monitor 27;Informática;2;1504.55;3009.10;Representante;concluido
+10254;2025-05-21;Sudeste;SP;;Notebook Pro 14;Informática;10;5451,13;54511,30;Marketplace;concluido
+10177;22/05/2025;nordeste;PE;Fábio Melo;Notebook Pro 14;Informática;2;4985.71;9971.42;Representante;cancelado
+10219;2025-05-22;Sudeste;SP;Ana Souza;Headset USB;Acessórios;1;267.06;267.06;Representante;concluido
+10237;2025-05-22;SE;SP;Bruno Lima;Cadeira Ergonômica;Mobiliário;3;1871.98;5615.94;Representante;concluido
+10544;2025-05-24;Nordeste;BA;Fábio Melo;Cadeira Ergonômica;Mobiliário;2;1.808,84;R$ 3.617,68;Representante;concluido
+10340;2025-05-25;Sudeste;ES;Carla Dias;Notebook Pro 14;Informática;2;4.853,39;R$ 9.706,78;Loja online;concluido
+10147;2025-05-26;Centro-Oeste;GO;Hugo Alves;Headset USB;Acessórios;1;293.34;293.34;Marketplace;concluido
+10202;2025-05-26;Norte;PA;Iara Costa;Webcam HD;Acessórios;2;355,52;711,04;Loja online;concluido
+10226;2025-05-27;Norte;PA;Iara Costa;Headset USB;Acessórios;10;282.48;2824.80;Marketplace;concluido
+10323;2025-05-30;Sudeste;SP;Bruno Lima;Headset USB;Acessórios;2;283.99;567.98;Representante;concluido
+10399;2025-05-30;Norte;PA;Iara Costa;Webcam HD;Acessórios;2;355.50;711.00;Representante;concluido
+10385;2025-05-31;Centro-Oeste;GO;Hugo Alves;Webcam HD;Acessórios;2;352.65;705.30;Marketplace;concluido
+10450;2025-05-31;Sul;PR;Diego Rocha;Teclado Mecânico;Acessórios;2;366.21;732.42;Marketplace;concluido
+10551;2025-05-31;Sul;PR;Diego Rocha;Webcam HD;Acessórios;1;334.69;334.69;Marketplace;concluido
+10106;03/06/2025;Nordeste;BA;Fábio Melo;Cadeira Ergonômica;Mobiliário;1;1.946,51;R$ 1.946,51;Marketplace;concluido
+10120;2025-06-03;Sul;SC;Diego Rocha;Webcam HD;Acessórios;2;352.98;705.96;Marketplace;concluido
+10543;2025-06-03;Nordeste;CE;Fábio Melo;Headset USB;Acessórios;1;268.80;268.80;Representante;concluido
+10150;2025-06-04;Norte;AM;Iara Costa;Webcam HD;Acessórios;2;313.96;627.92;Marketplace;concluido
+10116;2025-06-06;Sul;RS;Elisa Prado;Cadeira Ergonômica;Mobiliário;4;1917.52;7670.08;Loja online;concluido
+10507;2025-06-06;sudeste;MG;Ana Souza;Cadeira Ergonômica;Mobiliário;10;1960.19;19601.90;Marketplace;concluido
+10036;2025-06-07;Centro-Oeste;GO;Hugo Alves;Notebook Pro 14;Informática;1;5263.14;5263.14;Marketplace;cancelado
+10262;2025-06-07;Sul;SC;Diego Rocha;Cadeira Ergonômica;Mobiliário;4;1777.45;7109.80;Marketplace;cancelado
+10384;2025-06-07;Nordeste;PE;Gabriela Nunes;Monitor 27;Informática;1;1377.32;1377.32;Loja online;concluido
+10446;2025-06-07;Norte;AM;Iara Costa;Notebook Pro 14;Informática;1;5095,21;5095,21;Marketplace;concluido
+10475;2025-06-07;Sudeste;ES;Ana Souza;Teclado Mecânico;Acessórios;2;394,67;789,34;Loja online;concluido
+10382;2025-06-08;Sul;RS;Diego Rocha;Headset USB;Acessórios;2;301,58;603,16;Marketplace;concluido
+10274;2025-06-09;Sudeste ;RJ;Ana Souza;Mesa Regulável;Mobiliário;2;2732.41;5464.82;Loja online;concluido
+10495;10/06/2025;Sul;SC;Elisa Prado;Headset USB;Acessórios;3;272.14;816.42;Loja online;concluido
+10180;2025-06-11;Sudeste;SP;Ana Souza;Teclado Mecânico;Acessórios;10;373.19;3731.90;Representante;concluido
+10401;2025-06-12;Nordeste;PE;Fábio Melo;Headset USB;Acessórios;3;270.31;810.93;Loja online;concluido
+10378;2025-06-13;Norte;AM;Iara Costa;Cadeira Ergonômica;Mobiliário;1;1939.60;1939.60;Marketplace;concluido
+10410;13/06/2025;sudeste;ES;Bruno Lima;Headset USB;Acessórios;2;287.99;575.98;Marketplace;concluido
+10406;2025-06-14;Nordeste;BA;Fábio Melo;Mesa Regulável;Mobiliário;1;2638.16;2638.16;Representante;concluido
+10169;2025-06-15;Sudeste;ES;Carla Dias;Mesa Regulável;Mobiliário;1;2546.09;2546.09;Representante;cancelado
+10471;15/06/2025;Norte;AM;Iara Costa;Notebook Pro 14;Informática;2;4912.34;9824.68;Representante;cancelado
+10389;2025-06-16;Nordeste;CE;Gabriela Nunes;Mesa Regulável;Mobiliário;1;2562.80;2562.80;Representante;concluido
+10100;2025-06-17;nordeste;BA;Fábio Melo;Webcam HD;Acessórios;2;350.25;700.50;Marketplace;concluido
+10430;2025-06-17;Sul;PR;Diego Rocha;Cadeira Ergonômica;Mobiliário;5;1956.86;9784.30;Loja online;concluido
+10430;2025-06-17;Sul;PR;Diego Rocha;Cadeira Ergonômica;Mobiliário;5;1956.86;9784.30;Loja online;concluido
+10063;2025-06-21;Norte;AM;Iara Costa;Mouse Sem Fio;Acessórios;1;116,03;R$ 116,03;Loja online;concluido
+10524;2025-06-21;Sul;RS;Elisa Prado;Headset USB;Acessórios;1;274,08;R$ 274,08;Marketplace;concluido
+10099;2025-06-22;Sudeste;ES;Bruno Lima;Monitor 27;Informática;1;1419.20;1419.20;Marketplace;concluido
+10127;2025-06-23;Sudeste;RJ;Carla Dias;Mesa Regulável;Mobiliário;1;2491.14;2491.14;Marketplace;concluido
+10134;2025-06-24;Nordeste;BA;Gabriela Nunes;Monitor 27;Informática;2;1343.00;2686.00;Representante;concluido
+10102;2025-06-27;Sul;PR;Diego Rocha;Monitor 27;Informática;3;1494.75;4484.25;Marketplace;concluido
+10322;2025-06-27;Nordeste;CE;Fábio Melo;Mouse Sem Fio;Acessórios;1;121.22;121.22;Representante;concluido
+10358;27/06/2025;Sul;SC;Diego Rocha;Monitor 27;Informática;2;1460.09;2920.18;Marketplace;cancelado
+10460;2025-06-28;Sudeste;ES;Carla Dias;Notebook Pro 14;Informática;5;4810.87;24054.35;Representante;concluido
+10240;2025-06-29;Sul;PR;Elisa Prado;Headset USB;Acessórios;10;288.39;2883.90;Marketplace;concluido
+10050;2025-06-30;Sudeste;SP;Ana Souza;Mesa Regulável;Mobiliário;2;2484,75;4969,50;Representante;concluido
+10350;30/06/2025;Centro-Oeste;GO;Hugo Alves;Notebook Pro 14;Informática;1;5041.47;5041.47;Representante;concluido
+10361;2025-06-30;Sudeste;RJ;Carla Dias;Mesa Regulável;Mobiliário;1;2725.89;2725.89;Marketplace;concluido
+10498;2025-06-30;Norte;PA;Iara Costa;Monitor 27;Informática;5;1487.22;7436.10;Representante;concluido
+;;SUBTOTAL 2T2025;;;;;;;450210.88;;
+;;TOTAL GERAL;;;;;;;4216361.94;;
