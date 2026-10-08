@@ -172,6 +172,22 @@ def test_an_answer_keeps_its_grounding_check(
     assert (checked["numbers"], checked["found"], checked["unfound"]) == (2, 1, ["41%"])
 
 
+def test_an_answer_taken_from_an_earlier_cell_is_grounded_in_it(
+    client: TestClient, token: str, conversation: str, script: Any, sql: Run
+) -> None:
+    script([wants("print(1840231.5)"), answers("Computed.")], [prints("1840231.5\n")])
+    settled(sql, send(client, token, conversation, "Total?").json()["run_id"])
+
+    script([answers("The total is 1840231.5.")], [])
+    run_id = send(client, token, conversation, "Say the total again.").json()["run_id"]
+    settled(sql, run_id)
+
+    events = events_of(sql, run_id)
+    checked = next(e for e in events if e["type"] == "grounding.checked")
+    assert (checked["numbers"], checked["found"], checked["unfound"]) == (1, 1, [])
+    assert "cell.created" not in [e["type"] for e in events]
+
+
 def test_every_event_is_stored_in_order_without_gaps(
     client: TestClient, token: str, conversation: str, script: Any, sql: Run
 ) -> None:
