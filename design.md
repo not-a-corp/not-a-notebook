@@ -4,10 +4,9 @@ How the web app looks and behaves, decided before any component is written. The
 HTTP contract is [api.md](api.md), the stream contract is [events.md](events.md);
 this is the third contract: what a person sees for every endpoint and every event.
 
-The mockups made from [the brief at the end](#appendix-a--brief-for-mockups) live
-in [mockups/](mockups/): they are the visual reference for this document, and where
-the two disagree, this document wins. What changes in a mockup changes here first,
-then in code.
+The mockups were made from [the brief at the end](#appendix-a--brief-for-mockups)
+and are not kept in the repository: this document is the visual reference, and
+what changes in the interface changes here first, then in code.
 
 ---
 
