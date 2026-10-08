@@ -38,6 +38,10 @@ export function Composer({ conversation, uploadDisabled, onUpload }: ComposerPro
   }
   if (answering) {
     placeholder = "Answer the question…";
+    const offered = lastMessage.options ?? [];
+    if (offered.length > 0) {
+      placeholder = "Pick an option, or answer in your own words…";
+    }
   }
   if (noModel) {
     placeholder = "Pick a model to ask questions.";

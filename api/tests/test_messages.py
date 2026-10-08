@@ -245,6 +245,41 @@ def test_a_question_back_leaves_the_run_awaiting_the_user(
     assert (asked["kind"], asked["grounding"]) == ("question", None)
 
 
+def test_a_question_keeps_its_options_and_an_answer_has_none(
+    client: TestClient, token: str, conversation: str, script: Any, sql: Run
+) -> None:
+    script([asks("Which year?", ("2024", "2025"))], [])
+    run_id = send(client, token, conversation, "Sales this year?").json()["run_id"]
+    settled(sql, run_id)
+
+    events = events_of(sql, run_id)
+    assert events[-2]["message"]["options"] == ["2024", "2025"]
+
+    script([answers("2025: 1840231.5.")], [])
+    run_id = send(client, token, conversation, "2025").json()["run_id"]
+    settled(sql, run_id)
+
+    body = client.get(f"{CONVERSATIONS}/{conversation}", headers=bearer(token)).json()
+    options = [(m["role"], m["kind"], m["options"]) for m in body["messages"]]
+    assert options == [
+        ("user", None, None),
+        ("assistant", "question", ["2024", "2025"]),
+        ("user", None, None),
+        ("assistant", "answer", None),
+    ]
+
+
+def test_a_question_without_options_has_an_empty_list(
+    client: TestClient, token: str, conversation: str, script: Any, sql: Run
+) -> None:
+    script([asks("What do you mean?")], [])
+    run_id = send(client, token, conversation, "Hm?").json()["run_id"]
+    settled(sql, run_id)
+
+    body = client.get(f"{CONVERSATIONS}/{conversation}", headers=bearer(token)).json()
+    assert body["messages"][-1]["options"] == []
+
+
 def test_a_provider_failure_is_a_run_error_then_a_failed_run(
     client: TestClient, token: str, conversation: str, script: Any, sql: Run
 ) -> None:

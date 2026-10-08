@@ -45,8 +45,12 @@ ASK_NAME = "ask_user"
 ASK_DESCRIPTION = (
     "Ask the user a question and stop. Use it when the question is ambiguous, or when "
     "the data cannot answer it as asked — a period the file does not cover, a column "
-    "that could mean two things — instead of guessing."
+    "that could mean two things — instead of guessing. When the answer is a choice, "
+    "offer the choices as options; the user can still reply in their own words."
 )
+
+# More than this and the buttons stop being a shortcut and become a form.
+MAX_OPTIONS = 4
 
 ASK_PARAMETERS: dict[str, Any] = {
     "type": "object",
@@ -54,6 +58,14 @@ ASK_PARAMETERS: dict[str, Any] = {
         "question": {
             "type": "string",
             "description": "The question, in the user's language.",
+        },
+        "options": {
+            "type": "array",
+            "items": {"type": "string"},
+            "description": (
+                f"Up to {MAX_OPTIONS} short replies the user can pick, in their language, "
+                "the one you would choose first. Omit when the question is open."
+            ),
         },
     },
     "required": ["question"],
@@ -73,8 +85,10 @@ TOOLS = [
     ToolSpec(name=ASK_NAME, description=ASK_DESCRIPTION, parameters=ASK_PARAMETERS),
 ]
 
-# The text dialect's way to ask: a reply that starts with this.
+# The text dialect's way to ask: a reply that starts with this, then the question,
+# then one option per line, each starting with this.
 QUESTION_MARKER = "QUESTION:"
+OPTION_MARKER = "- "
 
 # The first ```python block. A bare ``` fence counts only when nothing else does:
 # models write ```text and ```json for things that are not code.
@@ -142,6 +156,7 @@ class Call:
 class Reading:
     code: str | None
     question: str | None
+    options: tuple[str, ...]
     # The call the next ToolResult answers; None in the text dialect.
     call_id: str | None
     extra_call_ids: tuple[str, ...]
@@ -156,13 +171,16 @@ def read_reply(dialect: str, text: str, calls: list[Call]) -> Reading:
     if dialect == "text":
         code = extract_code(text)
         question = None
+        options: tuple[str, ...] = ()
         if code is None:
-            question = question_in(text)
+            question, options = question_in(text)
 
-        return Reading(code=code, question=question, call_id=None, extra_call_ids=())
+        return Reading(
+            code=code, question=question, options=options, call_id=None, extra_call_ids=()
+        )
 
     if not calls:
-        return Reading(code=None, question=None, call_id=None, extra_call_ids=())
+        return Reading(code=None, question=None, options=(), call_id=None, extra_call_ids=())
 
     first = calls[0]
     extra = tuple(call.id for call in calls[1:])
@@ -172,7 +190,15 @@ def read_reply(dialect: str, text: str, calls: list[Call]) -> Reading:
         if not isinstance(question, str):
             raise ProviderError("protocol", "an ask_user call without a question string")
 
-        return Reading(code=None, question=question, call_id=first.id, extra_call_ids=extra)
+        options = clean_options(first.arguments.get("options"))
+
+        return Reading(
+            code=None,
+            question=question,
+            options=options,
+            call_id=first.id,
+            extra_call_ids=extra,
+        )
 
     if first.name != TOOL_NAME:
         raise ProviderError("protocol", f"a call to a tool that does not exist: {first.name}")
@@ -181,19 +207,51 @@ def read_reply(dialect: str, text: str, calls: list[Call]) -> Reading:
     if not isinstance(code, str):
         raise ProviderError("protocol", "a run_python call without a code string")
 
-    return Reading(code=code, question=None, call_id=first.id, extra_call_ids=extra)
+    return Reading(code=code, question=None, options=(), call_id=first.id, extra_call_ids=extra)
 
 
-def question_in(text: str) -> str | None:
+def question_in(text: str) -> tuple[str | None, tuple[str, ...]]:
+    """The question a text-dialect reply asks and the options under it — the lines
+    that start with a dash — or no question at all."""
     stripped = text.lstrip()
     if not stripped.upper().startswith(QUESTION_MARKER):
-        return None
+        return None, ()
 
-    question = stripped[len(QUESTION_MARKER) :].strip()
+    body = stripped[len(QUESTION_MARKER) :]
+
+    asked = []
+    offered = []
+    for line in body.splitlines():
+        line = line.strip()
+        if line.startswith(OPTION_MARKER):
+            offered.append(line)
+        else:
+            asked.append(line)
+
+    question = "\n".join(asked).strip()
     if not question:
-        return None
+        return None, ()
 
-    return question
+    return question, clean_options(offered)
+
+
+def clean_options(offered: object) -> tuple[str, ...]:
+    """The options worth showing: short strings, no dashes, no blanks, no repeats,
+    at most MAX_OPTIONS. A model that offers something else offers none — the
+    question still stands."""
+    if not isinstance(offered, (list, tuple)):
+        return ()
+
+    options: list[str] = []
+    for item in offered:
+        if not isinstance(item, str):
+            continue
+
+        option = item.strip().removeprefix(OPTION_MARKER.strip()).strip()
+        if option and option not in options:
+            options.append(option)
+
+    return tuple(options[:MAX_OPTIONS])
 
 
 def stop_of(reading: Reading, refused: bool, cut_off: bool) -> StopReason:

@@ -397,10 +397,10 @@ Everything the conversation screen needs, in one call.
   "messages": [
     { "id": "019b2a91-…", "role": "user", "run_id": "019b2a92-…",
       "text": "Which region sold the most?", "kind": null, "grounding": null,
-      "created_at": "2026-10-03T14:06:10.330192Z" },
+      "options": null, "created_at": "2026-10-03T14:06:10.330192Z" },
     { "id": "019b2a95-…", "role": "assistant", "run_id": "019b2a92-…",
       "text": "Sudeste, with R$ 1.84M — 41% of the total.", "kind": "answer",
-      "grounding": { "numbers": 2, "found": 1, "unfound": ["41%"] },
+      "grounding": { "numbers": 2, "found": 1, "unfound": ["41%"] }, "options": null,
       "created_at": "2026-10-03T14:06:24.004817Z" }
   ],
   "cells": [
@@ -419,7 +419,11 @@ Everything the conversation screen needs, in one call.
 `run_id` is what ties an answer to the cells it came with. An analyst's message
 has a **`kind`** — `answer`, or `question` when it asked instead of guessing — and
 yours has `null`. An answer keeps its **`grounding`** check (events.md,
-`grounding.checked`); anything else has `null`. `active_run_id` is set
+`grounding.checked`); anything else has `null`. A question carries its
+**`options`** — the replies the analyst suggests, short strings, at most four,
+`[]` when it offered none; anything else has `null`. A client shows them as
+buttons beside the text box: picking one sends it as the next message, exactly as
+if it had been typed, and the text box still takes the user's own words. `active_run_id` is set
 while a run is in progress — a client opening the page mid-run attaches to its
 stream.
 
@@ -476,7 +480,7 @@ There is no trash.
 // 202
 { "message": { "id": "019b2a91-…", "role": "user", "run_id": "019b2a92-…",
                "text": "Which region sold the most?", "kind": null, "grounding": null,
-               "created_at": "2026-10-03T14:06:10.330192Z" },
+               "options": null, "created_at": "2026-10-03T14:06:10.330192Z" },
   "run_id": "019b2a92-…" }
 ```
 `VALIDATION_ERROR` · `CONVERSATION_NOT_FOUND` · `NO_MODEL_SELECTED` ·

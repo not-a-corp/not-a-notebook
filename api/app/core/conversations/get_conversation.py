@@ -70,6 +70,7 @@ async def get_conversation(
                m.text,
                m.kind,
                m.grounding,
+               m.options,
                m.created_at
           FROM messages m
           LEFT JOIN runs r
@@ -104,6 +105,7 @@ async def get_conversation(
             message_row["text"],
             message_row["kind"],
             grounding_of(message_row["grounding"]),
+            message_row["options"],
             message_row["created_at"],
         )
         messages.append(message)

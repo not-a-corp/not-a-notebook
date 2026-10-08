@@ -223,7 +223,9 @@ class StreamedResponse:
             cut_off=self.incomplete_reason == "max_output_tokens",
         )
 
-        return Reply(turn=turn, usage=usage, stop=stop, question=reading.question)
+        return Reply(
+            turn=turn, usage=usage, stop=stop, question=reading.question, options=reading.options
+        )
 
 
 def failure_message(event: dict[str, Any]) -> str:

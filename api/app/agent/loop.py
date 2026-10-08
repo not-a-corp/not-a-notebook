@@ -74,6 +74,8 @@ class Meter:
 class Outcome:
     kind: Literal["answer", "question"]
     text: str
+    # The replies a question suggests; none for an answer.
+    options: tuple[str, ...] = ()
     # Everything the turn's code produced, as text: what grounding checks the
     # answer's numbers against.
     produced: list[str] = field(default_factory=list)
@@ -124,7 +126,12 @@ async def run_turn(
             raise ModelRefused
 
         if reply.stop == "question" and reply.question is not None:
-            return Outcome(kind="question", text=reply.question, produced=turn.produced)
+            return Outcome(
+                kind="question",
+                text=reply.question,
+                options=reply.options,
+                produced=turn.produced,
+            )
 
         code = reply.turn.code
         if code is None:

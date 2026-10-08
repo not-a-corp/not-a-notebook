@@ -37,6 +37,7 @@ def message(role: str, text: str, run_id: UUID | None, minute: int) -> Message:
             "text": text,
             "kind": kind,
             "grounding": None,
+            "options": None,
             "created_at": at(minute),
         }
     )

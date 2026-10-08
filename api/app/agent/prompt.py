@@ -87,7 +87,9 @@ before building on it."""
 ASKING = """\
 When the data cannot answer the question as asked — a period the file does not
 cover, a column that could mean two things in a way that changes the answer —
-ask instead of guessing: one short question, then stop. When one reading is
+ask instead of guessing: one short question, then stop. When the answer is a
+choice, offer two to four short options, the one you would pick first; the user
+can click one or write their own. An open question gets none. When one reading is
 clearly the usual one, take it, lead with it, say which in the answer, and answer;
 do not ask what you can state."""
 
@@ -112,13 +114,15 @@ the cells."""
 DIALECTS: dict[Dialect, str] = {
     "tools": """\
 How you work: call the run_python tool to run code — one call at a time, then read
-its result before the next. To ask the user something, call the ask_user tool.
-When you are done, answer in plain text without calling a tool.""",
+its result before the next. To ask the user something, call the ask_user tool, with
+options when the answer is a choice. When you are done, answer in plain text without
+calling a tool.""",
     "text": """\
 How you work: to run code, reply with exactly one ```python fenced block and
 nothing after it; you will get its output back. One block per reply. To ask the
-user something, start your reply with QUESTION: and write only the question. When
-you are done, reply with your answer in plain text and no code block.""",
+user something, start your reply with QUESTION: and write only the question; when
+the answer is a choice, put each option on its own line after it, starting with "- ".
+When you are done, reply with your answer in plain text and no code block.""",
 }
 
 
