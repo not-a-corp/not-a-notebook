@@ -77,6 +77,10 @@ A desktop app, database connectors, SQL cells, promoting an analysis to a pipeli
 
 Messy real-world datasets (anonymized) that break other tools are the most useful contribution. Open an issue describing what you'd analyze and where current tools fail you.
 
+## License
+
+[AGPL-3.0](LICENSE). Use it, change it, host it. If you offer a modified version as a service, share your changes under the same terms.
+
 ---
 
 Part of [not-a-corp](https://github.com/not-a-corp).
