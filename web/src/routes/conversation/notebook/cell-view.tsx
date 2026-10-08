@@ -4,7 +4,6 @@ import type { ReactNode } from "react";
 import type { Cell } from "@/api/conversation-detail";
 import { CellEditor } from "@/components/cell-editor";
 import { PythonCode } from "@/components/code";
-import { Outputs } from "@/components/outputs/outputs";
 import { Button } from "@/components/ui/button";
 import { Tooltip } from "@/components/ui/tooltip";
 import { cn } from "@/lib/cn";
@@ -13,6 +12,7 @@ import { useElapsed } from "@/lib/use-elapsed";
 
 import type { FailedAttempt } from "../live/live-run";
 import { FailedAttemptRow } from "./failed-attempt";
+import { OutputsFold } from "./outputs-fold";
 
 // design.md §2.5 and §3.3 — one cell: a 48 px gutter and its body.
 
@@ -156,7 +156,7 @@ export function CellView(props: CellViewProps) {
         </div>
 
         <div className={cn("flex flex-col gap-2", cell.stale && "opacity-45")}>
-          <Outputs outputs={cell.outputs} />
+          <OutputsFold outputs={cell.outputs} />
           {running && cell.outputs.length === 0 && (
             <div className="flex items-center gap-2 pl-3 text-xs text-text-muted">
               <LoaderCircle className="size-3.5 animate-spin text-accent" />

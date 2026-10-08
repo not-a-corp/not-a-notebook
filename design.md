@@ -286,9 +286,13 @@ each cell a 48 px gutter and its body:
   a link that loads them (`GET /runs/{run_id}/events`, the cell's events only)
   and shows the rows again. The notebook holds the working cell; the attempts
   are one click away (decision 18).
-- **Outputs**, under the source, indented 12 px, in the order they came (§3.4).
-  Until the first one arrives, a running cell shows *Waiting for output…* with a
-  small loader.
+- **Outputs**, under the source, **closed by default**: one muted 24 px row — a
+  chevron and *Output · table, chart* (what is inside, in the order it came, a
+  kind that repeats as *table ×2*) — that opens on a click to the outputs
+  themselves, indented 12 px, in the order they came (§3.4). A cell that ended in
+  an error says *Error · KeyError* in `danger` instead. Closed is the notebook's
+  resting state: a dozen cells read as a dozen lines. Until the first output
+  arrives, a running cell shows *Waiting for output…* with a small loader.
 - **Footer** (12 px, muted): at the left what the outputs need said (*5 of 1,284
   rows*); at the right the attempts when more than one, the duration and when it
   ran — *2 attempts · 640 ms · 14:06*.
